@@ -4,7 +4,7 @@ exports.setRoutes = (app) => {
 
     app.get('/', (req, res) => res.send('Hello World!'));
 
-    app.post('/connect', "");
+    app.post('/connect', db.login);
 
     app.get('/check', (req, res) => {
         console.log("check get");
