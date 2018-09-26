@@ -4,7 +4,7 @@ const initialState = {
     logged: false
 }
 
-const reducer = (state=initialState, action) => {
+const reducer = (state = initialState, action) => {
     let nextState;
     console.log('in login reducer');
         switch(action.type) {

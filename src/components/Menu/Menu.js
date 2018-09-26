@@ -3,7 +3,7 @@ import './Menu.css';
 
 const Menu = () => {
     return (
-        <div className='Menu'>
+      <div className='Menu'>
           <ul>
             <li><a href="default.asp">Home</a></li>
             <li><a href="news.asp">My profile</a></li>

@@ -7,17 +7,14 @@ import { BrowserRouter } from 'react-router-dom';
 import loginReducer from './containers/Login/Reducer';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import 'semantic-ui-css/semantic.min.css';
 import axios from 'axios';
 import thunk from 'redux-thunk';
 
 axios.defaults.baseURL = 'http://localhost:4000';
 
-
 const rootReducer = combineReducers({
     login: loginReducer,
-})
-
+});
 
 /*const initialState = {
     login: "ok"
@@ -32,11 +29,12 @@ const store = createStore(
 );
 
 ReactDOM.render(
-<Provider store={store}>
-    <BrowserRouter>
-        <App className="App"/>
-    </BrowserRouter>
-</Provider>
+    <Provider store={store}>
+        <BrowserRouter>
+            <App className="App"/>
+        </BrowserRouter>
+    </Provider>
+    , document.getElementById('root')
+);
 
-, document.getElementById('root'));
 registerServiceWorker();
