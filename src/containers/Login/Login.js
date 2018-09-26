@@ -38,7 +38,7 @@ const mapStateToProps = null;
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogin: (userName, password) => dispatch(actions.login(userName, password))
+        onLogin: (userName, password) => actions.login(userName, password)
     }
 }
 

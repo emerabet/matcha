@@ -15,6 +15,7 @@ const config = {
 
 const reducer = (state=initialState, action) => {
     let nextState;
+    console.log('in login reducer');
         switch(action.type) {
             case actions.LOGIN:
                 console.log("from reducer", action);

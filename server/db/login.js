@@ -16,6 +16,7 @@ exports.login = (req, res) => {
         var token = jwt.sign({ login: req.body.login }, "config.secret", {
       expiresIn: 86400 // expires in 24 hours
     });
+    console.log("token", token);
     res.status(200).send({ auth: true, token: token });
     });
 }
