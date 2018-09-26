@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import loginReducer from './containers/Login/Reducer';
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
+import 'semantic-ui-css/semantic.min.css';
 
 const rootReducer = combineReducers({
     login: loginReducer

@@ -4,6 +4,10 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "bcrypt": "^3.0.1",
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.2",
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "graphql": "^14.0.2",
     "jsonwebtoken": "^8.3.0",
@@ -15,6 +19,7 @@
     "react-scripts": "1.1.5",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
+    "semantic-ui-css": "^2.4.0",
     "semantic-ui-react": "^0.82.5",
     "socket.io": "^2.1.1"
   },

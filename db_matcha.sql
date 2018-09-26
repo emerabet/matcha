@@ -301,6 +301,12 @@ ALTER TABLE `visit`
 --
 
 --
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `address`
 --
 ALTER TABLE `address`
