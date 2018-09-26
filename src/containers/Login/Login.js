@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, Button, Form } from 'semantic-ui-react';
-import * as actionTypes from './ActionTypes';
+import * as actions from './Actions';
 import { connect } from 'react-redux';
 import { Component } from 'react';
 
@@ -38,7 +38,7 @@ const mapStateToProps = null;
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogin: (userName, password) => dispatch({type: actionTypes.LOGIN, userName: userName, password: password})
+        onLogin: (userName, password) => dispatch(actions.login(userName, password))
     }
 }
 

@@ -5,19 +5,23 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import loginReducer from './containers/Login/Reducer';
-import { combineReducers, createStore } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
 import axios from 'axios';
+import thunk from 'redux-thunk';
 
 axios.defaults.baseURL = 'http://localhost:4000';
 
 
 const rootReducer = combineReducers({
-    login: loginReducer
+    login: loginReducer,
 })
 
-const store = createStore(rootReducer);
+const store = createStore(
+    rootReducer,
+    applyMiddleware(thunk)
+);
 
 ReactDOM.render(
 <Provider store={store}>

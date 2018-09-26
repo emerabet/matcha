@@ -1,4 +1,4 @@
-import * as actionTypes from './ActionTypes';
+import * as actions from './Actions';
 import axios from 'axios';
 
 const initialState = {
@@ -16,15 +16,11 @@ const config = {
 const reducer = (state=initialState, action) => {
     let nextState;
         switch(action.type) {
-            case actionTypes.LOGIN:
+            case actions.LOGIN:
                 console.log("from reducer", action);
-                console.log("login", action.userName);
-                console.log('password', action.password);
-                axios.post('/connect', `login=${action.userName}&password=${action.password}`, config)
-                .then ( response => {
-                    console.log(response);
-                });
-                nextState = state;
+                console.log("token", action.data);
+                nextState = {...state,
+                            token: action.data};
                 break ;
                 default:
                     return state;
