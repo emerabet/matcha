@@ -1,7 +1,15 @@
 import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { Menu } from 'semantic-ui-react'
+import Menu from '../../components/Menu/Menu';
+import classes from './Home.css';
+import './Home.css';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import RestoreIcon from '@material-ui/icons/Restore';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+
 
 class Home extends Component {
     state = {}
@@ -12,33 +20,18 @@ class Home extends Component {
     const { activeItem } = this.state
 
     return (
-        <div>
-      <Menu stackable>
-        <Menu.Item>
-          <img src='/logo.png' />
-        </Menu.Item>
-
-        <Menu.Item
-          name='features'
-          active={activeItem === 'features'}
-          onClick={this.handleItemClick}
-        >
-          Features
-        </Menu.Item>
-
-        <Menu.Item
-          name='testimonials'
-          active={activeItem === 'testimonials'}
-          onClick={this.handleItemClick}
-        >
-          Testimonials
-        </Menu.Item>
-
-        <Menu.Item name='sign-in' active={activeItem === 'sign-in'} onClick={this.handleItemClick}>
-          Sign-in
-        </Menu.Item>
-      </Menu>
-      <h1> { localStorage.getItem('token') } </h1>
+        <div className='Menu'>
+          <Menu />
+          <BottomNavigation
+        value={5}
+        onChange={null}
+        showLabels
+        className={classes.root}
+      >
+        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
+        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
+        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+      </BottomNavigation>
       </div>
     )
   }
