@@ -9,10 +9,6 @@
     background-image: linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%);
 }
 
-
-
-
-/* Bordered form */
 .Login {
     align-items: center;
     justify-content: center;
@@ -23,7 +19,6 @@
     box-shadow: 1px 1px 12px #ffffff;
 }
 
-/* Full-width inputs */
 .Login > input[type=text], .Login > input[type=password] {
     width: 100%;
     padding: 12px 20px;
@@ -33,7 +28,6 @@
     box-sizing: border-box;
 }
 
-/* Set a style for all buttons */
 .Login > button {
     background-color: #FE8953;;
     color: white;
@@ -44,7 +38,6 @@
     width: 100%;
 }
 
-/* Add a hover effect for buttons */
 .Login > button:hover {
     opacity: 0.8;
 }
