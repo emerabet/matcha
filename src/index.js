@@ -18,9 +18,17 @@ const rootReducer = combineReducers({
     login: loginReducer,
 })
 
+
+/*const initialState = {
+    login: "ok"
+}*/
+
+const middleware = applyMiddleware(thunk);
+
 const store = createStore(
     rootReducer,
-    applyMiddleware(thunk)
+ //   initialState,
+    middleware
 );
 
 ReactDOM.render(
