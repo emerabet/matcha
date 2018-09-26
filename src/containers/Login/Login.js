@@ -25,7 +25,7 @@ class  Login extends Component {
       <div>
           <Form onSubmit={this.handleLogin}>
             <Input icon="user" iconPosition="left" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name" />
-            <Input onChange={this.handleChange} name="password" placeholder="Password" />
+            <Input icon="lock" iconPosition="left" onChange={this.handleChange} name="password" placeholder="Password" />
             <Button primary> Login </Button>
           </Form>
       </div>
