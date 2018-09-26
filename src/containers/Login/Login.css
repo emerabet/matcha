@@ -1,10 +1,30 @@
+.Container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-image: linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%);
+}
+
+
+
+
 /* Bordered form */
 .Login {
-    border: 3px solid #f1f1f1;
+    align-items: center;
+    justify-content: center;
+    width: 40%;
+    padding: 3vw;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 1px 1px 12px #ffffff;
 }
 
 /* Full-width inputs */
-input[type=text], input[type=password] {
+.Login > input[type=text], .Login > input[type=password] {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -14,8 +34,8 @@ input[type=text], input[type=password] {
 }
 
 /* Set a style for all buttons */
-button {
-    background-color: #4CAF50;
+.Login > button {
+    background-color: #FE8953;;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -25,6 +45,6 @@ button {
 }
 
 /* Add a hover effect for buttons */
-button:hover {
+.Login > button:hover {
     opacity: 0.8;
 }

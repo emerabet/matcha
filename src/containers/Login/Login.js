@@ -25,16 +25,15 @@ class  Login extends Component {
 
     render (){
         return (
-            <div className={classes.Auth} >
-                <form onSubmit={this.handleLogin}>
-                    <label htmlFor="userName">Username</label>
-                    <input type="text" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name"></input>
-                    <label htmlFor="password">Password</label>
-                    <input type="password" onChange={this.handleChange} name="password" value={ this.state.password } placeholder="Password"></input>
-                    <button type="submit">Login</button>
-                </form>
-            </div>
-
+                <div className={classes.Container}>
+                    <form className={classes.Login} onSubmit={this.handleLogin}>
+                        <label htmlFor="userName">Username</label>
+                        <input type="text" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name"></input>
+                        <label htmlFor="password">Password</label>
+                        <input type="password" onChange={this.handleChange} name="password" value={ this.state.password } placeholder="Password"></input>
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
                 /*<Form onSubmit={this.handleLogin}>
                     <Input icon="user" iconPosition="left" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name" />
                     <Input icon="lock" iconPosition="left" onChange={this.handleChange} name="password" placeholder="Password" />
