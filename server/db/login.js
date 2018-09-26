@@ -1,22 +1,41 @@
 const db = require('./connection');
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
+const mysql = require('mysql');
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
     console.log("Connected");
-    console.log("body", req.body);
     console.log("login", req.body.login);
     console.log("password", req.body.password);
-   const hash = bcrypt.hashSync(req.body.password, 10);
-    console.log("T", bcrypt.compareSync(req.body.password, hash));
-    console.log("F", bcrypt.compareSync("test", hash));
-    db.conn.queryAsync("SELECT * FROM user").then(function(rows){   
-        console.log(rows);
+ //  const hash = bcrypt.hashSync(req.body.password, 10);
+ try {
+  // console.log("F", bcrypt.compareSync("test", hash));
+    let sql = `SELECT password FROM user where login= ?`; 
+    sql = mysql.format(sql, req.body.login);
+    
+      const rows = await db.conn.queryAsync(sql);
+    
+        //console.log("hash", hash);
+        
+        console.log("row", rows);
+        console.log(rows[0].password);
+
+        console.log("compare", bcrypt.compareSync(req.body.password, rows[0].password));
+        if (bcrypt.compareSync(req.body.password, rows[0].password)) {
+           var token = jwt.sign({ login: req.body.login }, "config.secret", {
+             expiresIn: 86400 // expires in 24 hours  
+            });
+            res.status(200).send({ auth: true, token: token });
+        } else {
+            res.status(403).send({ auth: false, token: null });
+        }
         //res.status(200).send(rows);
-        var token = jwt.sign({ login: req.body.login }, "config.secret", {
-      expiresIn: 86400 // expires in 24 hours
-    });
-    console.log("token", token);
-    res.status(200).send({ auth: true, token: token });
-    });
+    } catch (err) {
+        console.log(err);
+        res.status(403).send({ auth: false, token: null });
+    }
+   
+    //console.log("token", token);
+    //res.status(200).send({ auth: true, token: token });
+    
 }

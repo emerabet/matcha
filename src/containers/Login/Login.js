@@ -11,10 +11,11 @@ class  Login extends Component {
         password: ""
     }
 
-    handleLogin = (e, values) => {
+    handleLogin = async (e, values) => {
         e.preventDefault();
         console.log('in handle login');
-        this.props.onLogin(this.state.userName, this.state.password);
+        await this.props.onLogin(this.state.userName, this.state.password);
+        this.props.history.push('/home');
     }
 
     handleChange = (e, data) => {
@@ -36,9 +37,9 @@ class  Login extends Component {
 
 const mapStateToProps = null;
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        onLogin: (userName, password) => actions.login(userName, password)
+        onLogin: (userName, password) => dispatch(actions.login(userName, password))
     }
 }
 

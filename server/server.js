@@ -11,8 +11,6 @@ const jwt = require('jsonwebtoken');
 
 const route = require('./routes/route');
 
-const token = jwt.sign({ foo: 'bar' }, 'shhhhh');
-
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());

@@ -1,17 +1,8 @@
 import * as actions from './Actions';
-import axios from 'axios';
 
 const initialState = {
     logged: false
 }
-
-const config = {
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Accept': 'application/json'
-  }
-};
-
 
 const reducer = (state=initialState, action) => {
     let nextState;
@@ -23,9 +14,15 @@ const reducer = (state=initialState, action) => {
                 nextState = {...state,
                             token: action.data};
                 break ;
+            case actions.LOGIN_FAIL:
+                nextState = {...state,
+                    token: null};
+                    
+                break ;
                 default:
                     return state;
         }
+        console.log(nextState);
     return nextState;
 }
 
