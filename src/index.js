@@ -8,6 +8,10 @@ import loginReducer from './containers/Login/Reducer';
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:4000';
+
 
 const rootReducer = combineReducers({
     login: loginReducer

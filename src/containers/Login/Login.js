@@ -13,6 +13,7 @@ class  Login extends Component {
 
     handleLogin = (e, values) => {
         e.preventDefault();
+        console.log('in handle login');
         this.props.onLogin(this.state.userName, this.state.password);
     }
 
