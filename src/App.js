@@ -3,6 +3,7 @@ import './App.css';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Login from './containers/Login/Login';
 import Home from './containers/Home/Home';
+import Register from './components/Register/Register';
 
 class App extends Component {
 
@@ -11,6 +12,7 @@ class App extends Component {
     let routes = (
        <Switch>
         <Route path="/login" exact component={ Login }/>
+        <Route path="/register" exact component={ Register }/>
         <Redirect from="/" to="/login"/>
       </Switch>
     );

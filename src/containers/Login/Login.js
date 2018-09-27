@@ -3,6 +3,7 @@ import * as actions from './Actions';
 import { connect } from 'react-redux';
 import { Component } from 'react';
 import classes from './Login.css';
+import { Link } from 'react-router-dom';
 
 class  Login extends Component {
    
@@ -33,6 +34,7 @@ class  Login extends Component {
                         <input type="password" onChange={this.handleChange} name="password" value={ this.state.password } placeholder="Password"></input>
                         <button type="submit">Login</button>
                     </form>
+                    <Link to="/register"> Register </Link>
                 </div>
                 /*<Form onSubmit={this.handleLogin}>
                     <Input icon="user" iconPosition="left" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name" />
