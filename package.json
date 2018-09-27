@@ -36,6 +36,7 @@
     "file-loader": "1.1.5",
     "fs-extra": "3.0.1",
     "graphql": "^14.0.2",
+    "graphql-tools": "^4.0.0",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
     "jsonwebtoken": "^8.3.0",

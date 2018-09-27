@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 var express_graphql = require('express-graphql');
 var { buildSchema } = require('graphql');
 var mysql = require('mysql');
-const db = require('./connection');
+const db = require('./db/connection');
 const schemas = require('./graphql/schemas');
 const route = require('./routes/route');
 
@@ -17,31 +17,39 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 class User {
-    constructor(user_name, first_name, last_name, email, password) {
+    constructor(id, {user_name}) {
+        this.id = id;
         this.user_name = user_name;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.password = password;
     }
 }
 
 const root = {
-    addUser: /*async*/ function({user_name, first_name, last_name, email, password}) {
-        new User(user_name, first_name, last_name, email, password);
-        //let sql = `INSERT into VALUES (null, ?, ?, ?, ?, ?, "token", "token", null, null, 1)`; 
-        //
-          //      sql = mysql.format(sql, [user_name, email, last_name, first_name, password]);
-            //    const rows = await db.conn.queryAsync(sql);
-
+    addUser: async function({user}) {
+            console.log("user to add in db", user);
+            let sql = "INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`) VALUES (NULL, ?, ?, ?, ?, ?, 'sadas', 'asdad', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1');"; 
+            sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, user.password]);
+            const result = await db.conn.queryAsync(sql);
+            console.log("ID", result.insertId);
+            return result.insertId;
+    },
+    getUser: async function({id}) {
+        console.log("uuser to get from db", id);
+            let sql = "SELECT * from `user` WHERE `user_id` = ?;"; 
+            sql = mysql.format(sql, id);
+            const result = await db.conn.queryAsync(sql);
+            console.log("ID", result);
+            return result[0];
     }
+
 }
+
 
 app.use('/api', express_graphql({
     schema: schemas.registerSchema,
     rootValue: root,
     graphiql: true
 }));
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 

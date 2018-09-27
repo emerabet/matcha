@@ -1,47 +1,16 @@
 import React, { Component } from 'react';
-import classes from './Register.css';
+import classes from './Profile.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Button } from '@material-ui/core';
 
-class Register extends Component{
+class Profile extends Component{
 
     state = {
         userName: "",
         firstName: "",
         lastName: "",
-        email: "",
-        password1: "",
-        password2: ""
-    }
-
-    handleRegister = async (e) => {
-        e.preventDefault();
-        console.log('in handle register');
-        const query = `
-                        mutation addUser($user: AddUserInput!) {
-                            addUser(user: $user)
-                        }
-                    `;
-
-        const user = {
-            user_name: this.state.userName,
-            first_name: this.state.firstName,
-            last_name: this.state.lastName,
-            email: this.state.email,
-            password: this.state.password1
-        }
-        
-        axios.post(`/api`,
-            {
-                query: query,
-                variables: {user: user}
-            })
-            .then( response => {
-                console.log("response", response);   
-                return response.data.data;
-            });
-        //this.props.history.push('/home');
+        email: ""
     }
 
     handleChange = (e) => {
@@ -49,10 +18,35 @@ class Register extends Component{
         this.setState({ [name]: value });
     }
 
+    componentDidMount() {
+        const query = `
+                        query getUser ($id: Int) {
+                            getUser(id: $id){
+                                login
+                            }
+                        }
+                    `;
+
+        
+        axios.post(`/api`,
+            {
+                query: query,
+                variables: {
+                    id: 5
+                }
+            })
+            .then( response => {
+                this.setState({...this.state, userName: response.data.data.getUser.login});
+                console.log("response", response.data.data.getUser.login);   
+                return response.data.data;
+            });
+    }
+
+
     render () {
        return (
             <div className={classes.Container}>
-                <form className={classes.Register} onSubmit={this.handleRegister}>
+                <form className={classes.Profile} onSubmit={this.handleRegister}>
                     <label htmlFor="userName">Username</label>
                     <input type="text" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name" required></input>
                     
@@ -65,18 +59,11 @@ class Register extends Component{
                     <label htmlFor="email">Email</label>
                     <input type="email" onChange={this.handleChange} name="email" value={ this.state.email } placeholder="Email" required></input>
                     
-                    <label htmlFor="password1">Password</label>
-                    <input type="password" onChange={this.handleChange} name="password1" value={ this.state.password1 } placeholder="Password" required></input>
-                    
-                    <label htmlFor="password2">Confirm password</label>
-                    <input type="password" onChange={this.handleChange} name="password2" value={ this.state.password2 } placeholder="Confirm password" required></input>
-                    
-                    <button type="submit">Register</button>
+                    <button type="submit">Update profile information</button>
                 </form>
-                <Link to="/login"> Login </Link>
             </div>
         )
     }
 }
 
-export default Register;
+export default Profile;
