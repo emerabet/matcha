@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 01, 2018 at 04:43 PM
--- Server version: 5.7.22-0ubuntu18.04.1
--- PHP Version: 7.2.7-0ubuntu0.18.04.2
+-- Generation Time: Sep 27, 2018 at 01:53 PM
+-- Server version: 5.7.23-0ubuntu0.18.04.1
+-- PHP Version: 7.2.10-0ubuntu0.18.04.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -179,13 +179,19 @@ CREATE TABLE `user` (
   `last_name` varchar(100) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `register_token` varchar(255) NOT NULL,
+  `register_token` varchar(255) DEFAULT NULL,
   `reset_token` varchar(255) NOT NULL,
-  `login_token` varchar(255) NOT NULL,
-  `last_visit` datetime NOT NULL,
-  `creation_date` datetime NOT NULL,
+  `last_visit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `role` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`) VALUES
+(1, 'aaaa', 'aaaa@fdg.fr', 'esgrdhg', 'sfdg', '$2b$10$uVvBCeQNOmF6rl7ODXuxzOAX1ys91xCRmRzJ1fWwhYk.KdFAKcBCq', 'wafesdhj', 'fdsgh', '2018-09-26 15:52:35', '2018-09-26 15:52:35', 1);
 
 -- --------------------------------------------------------
 
@@ -301,12 +307,6 @@ ALTER TABLE `visit`
 --
 
 --
--- AUTO_INCREMENT for table `user`
---
-ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `address`
 --
 ALTER TABLE `address`
@@ -331,6 +331,11 @@ ALTER TABLE `notification`
 --
 ALTER TABLE `picture`
   MODIFY `picture_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `visit`
 --
