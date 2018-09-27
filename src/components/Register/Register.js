@@ -7,12 +7,12 @@ import { Button } from '@material-ui/core';
 class Register extends Component{
 
     state = {
-        userName: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        password1: "",
-        password2: ""
+        userName: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        password1: '',
+        password2: ''
     }
 
     handleRegister = async (e) => {
@@ -32,15 +32,15 @@ class Register extends Component{
             password: this.state.password1
         }
         
-        axios.post(`/api`,
-            {
-                query: query,
-                variables: {user: user}
-            })
-            .then( response => {
-                console.log("response", response);   
-                return response.data.data;
-            });
+        try {
+            const result = await axios.post(`/api`, {   query: query,
+                                                        variables: { user: user }
+                                            });
+            console.log(result);
+            console.log('data', result.data.data);
+        } catch (err) {
+            console.log(err);
+        }
         //this.props.history.push('/home');
     }
 
@@ -53,27 +53,27 @@ class Register extends Component{
        return (
             <div className={classes.Container}>
                 <form className={classes.Register} onSubmit={this.handleRegister}>
-                    <label htmlFor="userName">Username</label>
-                    <input type="text" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name" required></input>
+                    <label htmlFor='userName'>Username</label>
+                    <input type='text' onChange={this.handleChange} name='userName' value={ this.state.userName } placeholder='User name' required></input>
                     
-                    <label htmlFor="firstName">First name</label>
-                    <input type="text" onChange={this.handleChange} name="firstName" value={ this.state.firstName } placeholder="First name" required></input>
+                    <label htmlFor='firstName'>First name</label>
+                    <input type='text' onChange={this.handleChange} name='firstName' value={ this.state.firstName } placeholder='First name' required></input>
                     
-                    <label htmlFor="lastName">Last name</label>
-                    <input type="text" onChange={this.handleChange} name="lastName" value={ this.state.lastName } placeholder="Last name" required></input>
+                    <label htmlFor='lastName'>Last name</label>
+                    <input type='text' onChange={this.handleChange} name='lastName' value={ this.state.lastName } placeholder='Last name' required></input>
                     
-                    <label htmlFor="email">Email</label>
-                    <input type="email" onChange={this.handleChange} name="email" value={ this.state.email } placeholder="Email" required></input>
+                    <label htmlFor='email'>Email</label>
+                    <input type='email' onChange={this.handleChange} name='email' value={ this.state.email } placeholder='Email' required></input>
                     
-                    <label htmlFor="password1">Password</label>
-                    <input type="password" onChange={this.handleChange} name="password1" value={ this.state.password1 } placeholder="Password" required></input>
+                    <label htmlFor='password1'>Password</label>
+                    <input type='password' onChange={this.handleChange} name='password1' value={ this.state.password1 } placeholder='Password' required></input>
                     
-                    <label htmlFor="password2">Confirm password</label>
-                    <input type="password" onChange={this.handleChange} name="password2" value={ this.state.password2 } placeholder="Confirm password" required></input>
+                    <label htmlFor='password2'>Confirm password</label>
+                    <input type='password' onChange={this.handleChange} name='password2' value={ this.state.password2 } placeholder='Confirm password' required></input>
                     
-                    <button type="submit">Register</button>
+                    <button type='submit'>Register</button>
                 </form>
-                <Link to="/login"> Login </Link>
+                <Link to='/login'> Login </Link>
             </div>
         )
     }
