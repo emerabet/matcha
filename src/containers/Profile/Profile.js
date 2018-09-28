@@ -20,19 +20,20 @@ class Profile extends Component{
 
     componentDidMount() {
         const query = `
-                        query getUser ($id: Int) {
-                            getUser(id: $id){
+                        query getUser ($token: String) {
+                            getUser(token: $token){
                                 login
                             }
                         }
                     `;
 
-        
+        const token = localStorage.getItem("token");
+
         axios.post(`/api`,
             {
                 query: query,
                 variables: {
-                    id: 5
+                    token: token
                 }
             })
             .then( response => {
@@ -44,6 +45,7 @@ class Profile extends Component{
 
 
     render () {
+        console.log(localStorage.getItem("token"));
        return (
             <div className={classes.Container}>
                 <form className={classes.Profile} onSubmit={this.handleRegister}>

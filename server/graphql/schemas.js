@@ -24,6 +24,6 @@ exports.registerSchema = buildSchema(`
     }
 
     type Query {
-        getUser(id: Int): User
+        getUser(token: String): User
     }
 `);

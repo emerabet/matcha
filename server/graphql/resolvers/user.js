@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const db = require('../../db/connection');
+var jwt = require('jsonwebtoken');
 
 module.exports = {
     addUser: async ({ user }) => {
@@ -12,12 +13,19 @@ module.exports = {
     },
 
 
-    getUser: async ({ id }) => {
-        console.log("uuser to get from db", id);
-        let sql = "SELECT * from `user` WHERE `user_id` = ?;"; 
-        sql = mysql.format(sql, id);
-        const result = await db.conn.queryAsync(sql);
-        console.log("ID", result);
-        return result[0];
+    getUser: async ({ token }) => {
+       // if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+        console.log("token", token);
+        const decoded = await jwt.verify(token, "config.secret");
+        // if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+            //res.status(200).send(decoded);
+            console.log("decoded", decoded);
+            console.log("uuser to get from db", decoded.login);
+            let sql = "SELECT * from `user` WHERE `login` = ?;"; 
+            sql = mysql.format(sql, decoded.login);
+            const result = await db.conn.queryAsync(sql);
+            console.log("ID", result[0]);
+            return result[0];
+        
     }
 }
