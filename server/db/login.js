@@ -8,7 +8,7 @@ exports.login = async (req, res) => {
     console.log("login", req.body.login);
     console.log("password", req.body.password);
     try {
-        let sql = `SELECT password FROM user WHERE login= ?`; 
+        let sql = `SELECT password, user_id FROM user WHERE login= ?`; 
         sql = mysql.format(sql, req.body.login);
         
         const rows = await db.conn.queryAsync(sql);
@@ -18,7 +18,7 @@ exports.login = async (req, res) => {
 
         console.log("compare", bcrypt.compareSync(req.body.password, rows[0].password));
         if (bcrypt.compareSync(req.body.password, rows[0].password)) {
-        const token = jwt.sign({ login: req.body.login }, "config.secret", { expiresIn: 86400 });
+        const token = jwt.sign({ user_id: rows[0].user_id }, "config.secret", { expiresIn: 86400 });
             res.status(200).send({ auth: true, token: token });
         } else {
             res.status(403).send({ auth: false, token: null });

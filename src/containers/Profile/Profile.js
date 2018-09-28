@@ -22,7 +22,10 @@ class Profile extends Component{
         const query = `
                         query getUser ($token: String) {
                             getUser(token: $token){
-                                login
+                                login,
+                                first_name,
+                                last_name,
+                                email
                             }
                         }
                     `;
@@ -37,8 +40,16 @@ class Profile extends Component{
                 }
             })
             .then( response => {
-                this.setState({...this.state, userName: response.data.data.getUser.login});
-                console.log("response", response.data.data.getUser.login);   
+                console.log('response', response);
+                if (!response.data.errors)
+                    this.setState({...this.state,
+                        userName: response.data.data.getUser.login,
+                        firstName: response.data.data.getUser.first_name,
+                        lastName :response.data.data.getUser.last_name,
+                        email: response.data.data.getUser.email
+                });
+                else
+                    console.log("TOAST", response.data.errors[0].statusCode, response.data.errors[0].message);
                 return response.data.data;
             });
     }

@@ -7,6 +7,7 @@ const express_graphql = require('express-graphql');
 const schemas = require('./graphql/schemas');
 const route = require('./routes/route');
 const resolversUser = require('./graphql/resolvers/user');
+const errors = require('./graphql/errors');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -19,7 +20,11 @@ const root = {
 app.use('/api', express_graphql({
     schema: schemas.registerSchema,
     rootValue: root,
-    graphiql: true
+    graphiql: true,
+    formatError: (err) => {
+        console.log(err);
+        return ({ message: err.message, statusCode: errors.errorCodes[err.message].statusCode})
+    }
 }));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
