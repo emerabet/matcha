@@ -2,6 +2,7 @@ const db = require('./connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
+const config = require('../config');
 
 exports.login = async (req, res) => {
     console.log("Connected");
@@ -18,7 +19,7 @@ exports.login = async (req, res) => {
 
         console.log("compare", bcrypt.compareSync(req.body.password, rows[0].password));
         if (bcrypt.compareSync(req.body.password, rows[0].password)) {
-        const token = jwt.sign({ user_id: rows[0].user_id }, "config.secret", { expiresIn: 86400 });
+        const token = jwt.sign({ user_id: rows[0].user_id }, config.SECRET_KEY, { expiresIn: 86400 });
             res.status(200).send({ auth: true, token: token });
         } else {
             res.status(403).send({ auth: false, token: null });

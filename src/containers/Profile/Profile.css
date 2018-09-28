@@ -19,6 +19,11 @@
     box-shadow: 1px 1px 12px #ffffff;
 }
 
+.Profile > label {
+    width: 100%;
+    display: inline-block;
+}
+
 .Profile > input {
     width: 100%;
     padding: 12px 20px;

@@ -9,7 +9,7 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import axios from 'axios';
 import thunk from 'redux-thunk';
-
+import 'semantic-ui-css/semantic.min.css';
 
 axios.defaults.baseURL = 'http://10.18.201.85:4000';
 

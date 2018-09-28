@@ -32,16 +32,17 @@ class Register extends Component{
             password: this.state.password1
         }
         
-        try {
             const result = await axios.post(`/api`, {   query: query,
                                                         variables: { user: user }
                                             });
-            console.log(result);
+            console.log("RES", result.data.errors);
             console.log('data', result.data.data);
-        } catch (err) {
-            console.log(err);
-        }
-        //this.props.history.push('/home');
+            if (!result.data.errors)
+                this.props.history.push('/login');
+            else
+                console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].message);
+        console.log("here");
+       // this.props.history.push('/login');
     }
 
     handleChange = (e) => {

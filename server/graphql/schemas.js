@@ -17,6 +17,8 @@ exports.registerSchema = buildSchema(`
         password: String
         insertId: Int
         login: String
+        share_location: Int,
+        last_visit: String
     }
         
     type Mutation {
