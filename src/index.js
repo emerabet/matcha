@@ -10,7 +10,8 @@ import { Provider } from 'react-redux';
 import axios from 'axios';
 import thunk from 'redux-thunk';
 
-axios.defaults.baseURL = 'http://localhost:4000';
+
+axios.defaults.baseURL = 'http://10.18.201.85:4000';
 
 const rootReducer = combineReducers({
     login: loginReducer,

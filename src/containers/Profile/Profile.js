@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classes from './Profile.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Button } from '@material-ui/core';
+import { Checkbox } from 'semantic-ui-react';
 
 class Profile extends Component{
 
@@ -72,6 +72,11 @@ class Profile extends Component{
                     <label htmlFor="email">Email</label>
                     <input type="email" onChange={this.handleChange} name="email" value={ this.state.email } placeholder="Email" required></input>
                     
+                    <label htmlFor="location">Location</label>
+                    <Checkbox toggle />
+                    <input type="text" onChange={this.handleChange} name="location" value={ this.state.location } placeholder="Location"></input>
+
+
                     <button type="submit">Update profile information</button>
                 </form>
             </div>
