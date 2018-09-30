@@ -96,7 +96,7 @@ module.exports = {
                 
                 sql = "";
                 for (let i in profile.tags) {
-                    sql += 'INSERT INTO `interest` (`user_id`, `tag`) VALUES (?,?);';
+                    sql += 'INSERT INTO `interest` (`user_id`, `tag`) VALUES (?,?); ';
                     sql = mysql.format(sql, [decoded.user_id, profile.tags[i]]);
                 }
                 console.log("SQL", sql);

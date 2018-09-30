@@ -4,6 +4,9 @@ import { Checkbox, Card, Input, Select, Form, Button, TextArea } from 'semantic-
 import * as styles  from './Styles';
 import ip from 'ip';
 import TopMenu from '../../components/Menu/TopMenu';
+import ChipInput from 'material-ui-chip-input';
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 
 class Profile extends Component{
 
@@ -23,7 +26,8 @@ class Profile extends Component{
         current_location: "",
         last_visit: "",
         latitude: "",
-        longitude: ""
+        longitude: "",
+        tags: ["aaa", "bbbb"]
     }
     
     handleChange = async (e, data) => {
@@ -49,6 +53,7 @@ class Profile extends Component{
         const query = `
                         query getUser ($token: String) {
                             getUser(token: $token){
+                                user_id,
                                 login,
                                 first_name,
                                 last_name,
@@ -116,7 +121,8 @@ class Profile extends Component{
             first_name: this.state.first_name,
             last_name: this.state.last_name,
             email: this.state.email,
-            password: this.state.password1
+            password: this.state.password1,
+            old_password: this.state.old_password
         }
 
         const profile = {
@@ -126,7 +132,8 @@ class Profile extends Component{
             popularity: 5000,
             birthdate: this.state.birthdate,
             old_password: this.state.old_password,
-            share_location: this.state.share_location
+            share_location: this.state.share_location,
+            tags: this.state.tags
         }
 
         const result = await axios.post(`/api`, {   query: query,
@@ -135,14 +142,29 @@ class Profile extends Component{
             user: user,
             profile: profile
             }
-});
-console.log("RES", result.data.errors);
-console.log('data', result.data.data);
-if (!result.data.errors)
-    console.log("TOAST", "update successfully");
-else
-console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].message);
+        });
+        console.log("RES", result.data.errors);
+        console.log('data', result.data.data);
+        if (!result.data.errors)
+            toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
+        else
+            toast("Error updating your profile information, please check that the password you put is correct !", {type: toast.TYPE.ERROR});
 
+    }
+
+    handleAddChip = (chip) => {
+        console.log("CHIP", chip);
+        const chips = [...this.state.tags, chip];
+        this.setState({tags: chips});
+    }
+
+    handleDeleteChip = (chip, index) => {
+        console.log("INDEX", index);
+        const chips = this.state.tags.filter((element) => {
+            console.log(element);
+            return element !== chip;
+        });
+        this.setState({tags: chips});
     }
 
     render () {
@@ -159,9 +181,14 @@ console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].mes
             { key: 'other', text: 'Other', value: 'other' }
         ]
 
-        console.log(localStorage.getItem("token"));
+        const passwordRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+        const passOK = (this.state.password1 === this.state.password2) && passwordRegex.test(this.state.password1);
+        const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const emailOK = emailRegex.test(String(this.state.email).toLowerCase()) && this.state.email !== "";
+
        return (
             <div className="Profile_Container">
+                <ToastContainer />
                 <TopMenu />
                 <Card style={styles.card} centered>
                     <Card.Content header={this.state.login} />
@@ -180,7 +207,7 @@ console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].mes
                                 <Input type="text" onChange={this.handleChange} name="last_name" value={ this.state.last_name } placeholder="Last name" required></Input>                   
                             </Form.Field>
                             <Form.Field>
-                                <label htmlFor="email">Email</label>
+                                <label style={emailOK ? styles.ok : styles.nok} htmlFor="email">Email</label>
                                 <Input type="email" onChange={this.handleChange} name="email" value={ this.state.email } placeholder="Email" required></Input>
                             </Form.Field>
                             <Form.Field>
@@ -188,16 +215,16 @@ console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].mes
                                 <Input type="password" onChange={this.handleChange} name="old_password" value={ this.state.old_password } placeholder="Old password" required></Input>                   
                             </Form.Field>
                             <Form.Field>
-                                <label htmlFor="password1">New password</label>
+                                <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password1">New password (must contains at least 8 characters including a lower letter, a capital letter and a number)</label>
                                 <Input type="password" onChange={this.handleChange} name="password1" value={ this.state.password1 } placeholder="New password" required></Input>                   
                             </Form.Field>
                             <Form.Field>
-                                <label htmlFor="password2">New password confirmation</label>
+                                <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password2">New password confirmation</label>
                                 <Input type="password" onChange={this.handleChange} name="password2" value={ this.state.password2 } placeholder="New password confirmation" required></Input>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="share_location">Share current location?</label>
-                                <Checkbox toggle onChange={this.handleChange} name="share_location" checked={this.state.location_check}/>
+                                <Checkbox toggle onChange={this.handleChange} name="share_location" checked={this.state.share_location}/>
                             </Form.Field>
                             {this.state.share_location &&
                             <Form.Field>
@@ -226,6 +253,15 @@ console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].mes
                             <Form.Field>
                                 <label htmlFor="bio">Bio</label>
                                 <TextArea type="textArea" onChange={this.handleChange} name="bio" value={ this.state.bio } placeholder="Bio" required></TextArea>                   
+                            </Form.Field>
+                            <Form.Field>
+                                <label htmlFor="interest">Interest</label>
+                                <ChipInput 
+                                    fullWidthInput
+                                    value={this.state.tags}
+                                    onAdd={this.handleAddChip}
+                                    onDelete={this.handleDeleteChip}
+                                />
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="birthdate">Birthdate</label>

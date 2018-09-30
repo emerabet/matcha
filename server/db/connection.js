@@ -6,5 +6,6 @@ exports.conn = Bluebird.promisifyAll(mysql.createConnection({
 	host: "localhost",
 	user: config.DB_USER,
 	password: config.DB_PWD,
-	database: "db_matcha"
+	database: "db_matcha",
+	multipleStatements: true
 }));
