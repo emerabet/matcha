@@ -32,11 +32,23 @@ module.exports = {
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
                 console.log("decoded", decoded);
                 console.log("uuser to get from db", decoded.id);
-                let sql = "SELECT `user_id`, `login`, `email`, `last_name`, `first_name`, `share_location`, `last_visit` from `user` WHERE `user_id` = ?;"; 
+                let sql = "SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, profil.popularity from `user` LEFT JOIN `profil` on user.user_id = profil.user_id WHERE user.user_id = ?;"; 
                 sql = mysql.format(sql, decoded.user_id);
                 const result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
                 return result[0];
+        } catch (err) {
+            throw err.message;
+        }
+    },
+
+    getUsers: async () => {
+        try {
+            console.log("in get users");
+            let sql = "SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, profil.popularity from `user` LEFT JOIN `profil` on user.user_id = profil.user_id;"; 
+            const result = await db.conn.queryAsync(sql);
+                console.log("ID", result);
+                return result;
         } catch (err) {
             throw err.message;
         }

@@ -10,16 +10,20 @@ exports.registerSchema = buildSchema(`
     }       
 
     type User {
-        user_name: String
+        login: String
         first_name: String
         last_name: String
         email: String
-        old_password: String
-        password: String
         insertId: Int
-        login: String
         share_location: Int
         last_visit: String
+        latitude: Int
+        longitude: Int
+        gender: String
+        orientation: String
+        bio: String
+        birthdate: String
+        popularity: Int
     }
 
     input AddProfileInput {
@@ -39,6 +43,7 @@ exports.registerSchema = buildSchema(`
 
 
     type Query {
-        getUser(token: String): User
+        getUser(token: String): User,
+        getUsers: [User]
     }
 `);
