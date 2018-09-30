@@ -6,7 +6,8 @@ exports.registerSchema = buildSchema(`
         first_name: String
         last_name: String
         email: String
-        password: String   
+        password: String
+        old_password: String
     }       
 
     type User {
@@ -35,7 +36,8 @@ exports.registerSchema = buildSchema(`
         popularity: Int
         birthdate: String
         old_password: String
-        share_location: Boolean
+        share_location: Int
+        tags: [String]
     }
         
     type Mutation {

@@ -78,11 +78,11 @@ module.exports = {
                 console.log("SQL", sql);
                 let result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
-                if (!bcrypt.compareSync(user.password, result[0].password))
+                if (!bcrypt.compareSync(user.old_password, result[0].password))
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
                 
                 var hash = bcrypt.hashSync(user.password, 10);
-                console.log(hash);
+                console.log("NEW PASSWORD", hash);
                 sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
                 sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, 1, decoded.user_id]);
                 console.log("SQL", sql);
@@ -93,6 +93,17 @@ module.exports = {
                 console.log("SQL", sql);
                 result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
+                
+                sql = "";
+                for (let i in profile.tags) {
+                    sql += 'INSERT INTO `interest` (`user_id`, `tag`) VALUES (?,?);';
+                    sql = mysql.format(sql, [decoded.user_id, profile.tags[i]]);
+                }
+                console.log("SQL", sql);
+                result = await db.conn.queryAsync(sql);
+                console.log("ID", result[0]);
+                
+
                 return "Update done";
         } catch (err) {
             throw err.message;
