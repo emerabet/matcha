@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import classes from './Profile.css';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Checkbox, Card, Input, Label, Form, Button, TextArea } from 'semantic-ui-react';
+import { Checkbox, Card, Input, Select, Form, Button, TextArea } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import ip from 'ip';
 import TopMenu from '../../components/Menu/TopMenu';
@@ -29,7 +27,7 @@ class Profile extends Component{
     }
     
     handleChange = async (e, data) => {
-        if (data.name == "share_location") {
+        if (data.name === "share_location") {
             const { name, checked } = data;    
             this.setState({ [name]: checked });
             const geolocation = navigator.geolocation;
@@ -38,7 +36,10 @@ class Profile extends Component{
                 console.log(ip.address());
             });
             console.log(ip.address());
-        } else {
+        } else if (data.name === "gender" || data.name === "orientation") {
+            const { name, value } = data;    
+            this.setState({ [name]: value });
+        }else {
             const { name, value } = e.target;
             this.setState({ [name]: value });
         }
@@ -52,8 +53,16 @@ class Profile extends Component{
                                 first_name,
                                 last_name,
                                 email,
+                                insertId,
                                 share_location,
-                                last_visit
+                                last_visit,
+                                latitude,
+                                longitude,
+                                gender,
+                                orientation,
+                                bio,
+                                birthdate,
+                                popularity
                             }
                         }
                     `;
@@ -69,15 +78,24 @@ class Profile extends Component{
             })
             .then( response => {
                 console.log('response', response);
-                if (!response.data.errors)
+                if (!response.data.errors) {
+                    // format birtdate to fit the form format
+                    const bday = new Date(response.data.data.getUser.birthdate / 1);
+                    let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
                     this.setState({...this.state,
                         login: response.data.data.getUser.login,
                         first_name: response.data.data.getUser.first_name,
                         last_name :response.data.data.getUser.last_name,
                         email: response.data.data.getUser.email,
                         share_location: response.data.data.getUser.share_location,
-                        last_visit: response.data.data.getUser.last_visit
+                        last_visit: response.data.data.getUser.last_visit,
+                        gender: response.data.data.getUser.gender,
+                        orientation: response.data.data.getUser.orientation,
+                        bio: response.data.data.getUser.bio,
+                        birthdate: bday_string,
+                        popularity: response.data.data.getUser.popularity
                 });
+                }
                 else
                     console.log("TOAST", response.data.errors[0].statusCode, response.data.errors[0].message);
                 return response.data.data;
@@ -128,6 +146,19 @@ console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].mes
     }
 
     render () {
+        const gender_options = [
+            { key: 'male', text: 'Male', value: 'male' },
+            { key: 'female', text: 'Female', value: 'female' },
+            { key: 'other', text: 'Other', value: 'other' }
+          ]
+        
+        const orientation_options = [
+            { key: 'male', text: 'Male', value: 'male' },
+            { key: 'female', text: 'Female', value: 'female' },
+            { key: 'both', text: 'Both', value: 'both' },
+            { key: 'other', text: 'Other', value: 'other' }
+        ]
+
         console.log(localStorage.getItem("token"));
        return (
             <div className="Profile_Container">
@@ -171,7 +202,7 @@ console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].mes
                             {this.state.share_location &&
                             <Form.Field>
                                 <label htmlFor="current_location">Current location</label>
-                                <Input type="text" onChange={this.handleChange} name="current_location" value={ this.state.current_location } placeholder="Current location" required></Input>
+                                <Input type="text" onChange={this.handleChange} name="current_location" value={ this.state.current_location } placeholder="Current location"></Input>
                             </Form.Field>
                             }
                             <Form.Field>
@@ -186,11 +217,11 @@ console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].mes
                             
                             <Form.Field>
                                 <label htmlFor="gender">Gender</label>
-                                <Input type="text" onChange={this.handleChange} name="gender" value={ this.state.gender } placeholder="Gender" required></Input>                   
+                                <Select compact options={gender_options} defaultValue='Please choose a gender' onChange={this.handleChange} name="gender" value={ this.state.gender } required></Select>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="Orientation">Orientation</label>
-                                <Input type="text" onChange={this.handleChange} name="orientation" value={ this.state.orientation } placeholder="Orientation" required></Input>                   
+                                <Select compact options={orientation_options} defaultValue='Please choose an orientation' onChange={this.handleChange} name="orientation" value={ this.state.orientation } required></Select>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="bio">Bio</label>

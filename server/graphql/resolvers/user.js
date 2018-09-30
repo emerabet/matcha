@@ -66,8 +66,10 @@ module.exports = {
                 console.log("decoded", decoded);
                 console.log("USER", user);
                 console.log("PROFILE", profile);
+                var hash = bcrypt.hashSync(user.password, 10);
+                console.log(hash);
                 let sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
-                sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, user.password, 1, decoded.user_id]);
+                sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, 1, decoded.user_id]);
                 console.log("SQL", sql);
                 let result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
