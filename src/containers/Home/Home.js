@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import Menu from '../../components/Menu/Menu';
+import TopMenu from '../../components/Menu/TopMenu';
 import classes from './Home.css';
 import './Home.css';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
@@ -21,7 +21,7 @@ class Home extends Component {
 
     return (
         <div className='Menu'>
-          <Menu />
+          <TopMenu />
           <BottomNavigation
         value={5}
         onChange={null}

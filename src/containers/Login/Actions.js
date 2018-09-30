@@ -9,7 +9,7 @@ export const login =(userName, password) => {
             const token = await axios.post('/connect', { login: userName, password: password });
             console.log("actions login");
             console.log('token', token.data.token);
-            localStorage.setItem('token', token.data.token);
+            sessionStorage.setItem('token', token.data.token);
             dispatch({ type: LOGIN, data: token.data.token });
         } catch (err) {
             dispatch({

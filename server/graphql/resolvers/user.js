@@ -31,7 +31,7 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
                 console.log("decoded", decoded);
-                console.log("uuser to get from db", decoded.login);
+                console.log("uuser to get from db", decoded.id);
                 let sql = "SELECT `user_id`, `login`, `email`, `last_name`, `first_name`, `share_location`, `last_visit` from `user` WHERE `user_id` = ?;"; 
                 sql = mysql.format(sql, decoded.user_id);
                 const result = await db.conn.queryAsync(sql);
@@ -40,5 +40,34 @@ module.exports = {
         } catch (err) {
             throw err.message;
         }
+    },
+
+    updateUser: async ({ token, user, profile }) => {
+        console.log("user to update in db", user);
+        try {
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            console.log("token", token);
+            const decoded = await jwt.verify(token, "config.secret");
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+                console.log("decoded", decoded);
+                console.log("USER", user);
+                console.log("PROFILE", profile);
+                let sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
+                sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, user.password, 1, decoded.user_id]);
+                console.log("SQL", sql);
+                let result = await db.conn.queryAsync(sql);
+                console.log("ID", result[0]);
+                sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `user_id` = ?, `gender` = ?, `orientation` = ?, `bio` = ?, `popularity` = ?, `birthdate` = ?;';
+                sql = mysql.format(sql, [decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.popularity, profile.birthdate, decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.popularity, profile.birthdate]);
+                console.log("SQL", sql);
+                result = await db.conn.queryAsync(sql);
+                console.log("ID", result[0]);
+                return "Update done";
+        } catch (err) {
+            throw err.message;
+        }
+        
     }
 }

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Checkbox, Card, Input, Label, Form, Button, TextArea } from 'semantic-ui-react';
 import * as styles  from './Styles';
+import ip from 'ip';
+import TopMenu from '../../components/Menu/TopMenu';
 
 class Profile extends Component{
 
@@ -12,23 +14,30 @@ class Profile extends Component{
         first_name: "",
         last_name: "",
         email: "",
+        old_password: "",
+        password1: "",
+        password2: "",
         share_location: false,
         gender: "",
         orientation: "",
         bio: "",
         birthdate: "",
         current_location: "",
-        last_visit: ""
+        last_visit: "",
+        latitude: "",
+        longitude: ""
     }
     
-    handleChange = (e, data) => {
+    handleChange = async (e, data) => {
         if (data.name == "share_location") {
             const { name, checked } = data;    
             this.setState({ [name]: checked });
             const geolocation = navigator.geolocation;
-            geolocation.getCurrentPosition((position) => {
+            await geolocation.getCurrentPosition((position) => {
                 console.log(position);
+                console.log(ip.address());
             });
+            console.log(ip.address());
         } else {
             const { name, value } = e.target;
             this.setState({ [name]: value });
@@ -49,7 +58,7 @@ class Profile extends Component{
                         }
                     `;
 
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
 
         axios.post(`/api`,
             {
@@ -75,17 +84,58 @@ class Profile extends Component{
             });
     }
 
+    handleUpdate = async (e) => {
+        e.preventDefault();
+        console.log('in handle register');
+        const query = `
+                        mutation updateUser($token: String, $user: AddUserInput!, $profile: AddProfileInput!) {
+                            updateUser(token: $token, user: $user, profile: $profile)
+                        }
+                    `;
 
+        const user = {
+            user_name: this.state.login,
+            first_name: this.state.first_name,
+            last_name: this.state.last_name,
+            email: this.state.email,
+            password: this.state.password1
+        }
 
+        const profile = {
+            gender: this.state.gender,
+            orientation: this.state.orientation,
+            bio: this.state.bio,
+            popularity: 5000,
+            birthdate: this.state.birthdate,
+            old_password: this.state.old_password,
+            share_location: this.state.share_location
+        }
+
+        const result = await axios.post(`/api`, {   query: query,
+            variables: { 
+            token: sessionStorage.getItem("token"), 
+            user: user,
+            profile: profile
+            }
+});
+console.log("RES", result.data.errors);
+console.log('data', result.data.data);
+if (!result.data.errors)
+    console.log("TOAST", "update successfully");
+else
+console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].message);
+
+    }
 
     render () {
         console.log(localStorage.getItem("token"));
        return (
-            <div>
+            <div className="Profile_Container">
+                <TopMenu />
                 <Card style={styles.card} centered>
                     <Card.Content header={this.state.login} />
                     <Card.Content description={
-                         <Form>
+                         <Form onSubmit= {this.handleUpdate}>
                             <Form.Field>
                                 <label htmlFor="login">User name</label>
                                 <Input type="text" onChange={this.handleChange} name="login" value={ this.state.login } placeholder="User name" required></Input>
@@ -103,6 +153,18 @@ class Profile extends Component{
                                 <Input type="email" onChange={this.handleChange} name="email" value={ this.state.email } placeholder="Email" required></Input>
                             </Form.Field>
                             <Form.Field>
+                                <label htmlFor="old_password">Old password</label>
+                                <Input type="password" onChange={this.handleChange} name="old_password" value={ this.state.old_password } placeholder="Old password" required></Input>                   
+                            </Form.Field>
+                            <Form.Field>
+                                <label htmlFor="password1">New password</label>
+                                <Input type="password" onChange={this.handleChange} name="password1" value={ this.state.password1 } placeholder="New password" required></Input>                   
+                            </Form.Field>
+                            <Form.Field>
+                                <label htmlFor="password2">New password confirmation</label>
+                                <Input type="password" onChange={this.handleChange} name="password2" value={ this.state.password2 } placeholder="New password confirmation" required></Input>                   
+                            </Form.Field>
+                            <Form.Field>
                                 <label htmlFor="share_location">Share current location?</label>
                                 <Checkbox toggle onChange={this.handleChange} name="share_location" checked={this.state.location_check}/>
                             </Form.Field>
@@ -112,6 +174,16 @@ class Profile extends Component{
                                 <Input type="text" onChange={this.handleChange} name="current_location" value={ this.state.current_location } placeholder="Current location" required></Input>
                             </Form.Field>
                             }
+                            <Form.Field>
+                                <label htmlFor="Latitude">Latitude</label>
+                                <Input type="number" onChange={this.handleChange} name="latitude" value={ this.state.latitude } placeholder="Latitude" required></Input>                   
+                            </Form.Field>
+                            <Form.Field>
+                                <label htmlFor="Longitude">Longitude</label>
+                                <Input type="number" onChange={this.handleChange} name="longitude" value={ this.state.longitude } placeholder="Longitude" required></Input>                   
+                            </Form.Field>
+                            
+                            
                             <Form.Field>
                                 <label htmlFor="gender">Gender</label>
                                 <Input type="text" onChange={this.handleChange} name="gender" value={ this.state.gender } placeholder="Gender" required></Input>                   

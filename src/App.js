@@ -18,7 +18,7 @@ class App extends Component {
       </Switch>
     );
 
-    if (localStorage.getItem('token')) {
+    if (sessionStorage.getItem('token')) {
       routes = (
       <Switch>
         <Route path="/home" exact component={ Home }/>
