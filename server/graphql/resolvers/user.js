@@ -32,7 +32,11 @@ module.exports = {
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
                 console.log("decoded", decoded);
                 console.log("uuser to get from db", decoded.id);
-                let sql = "SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, profil.popularity from `user` LEFT JOIN `profil` on user.user_id = profil.user_id WHERE user.user_id = ?;"; 
+                let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, 
+                user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
+                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity from user 
+                LEFT JOIN profil on user.user_id = profil.user_id 
+                WHERE user.user_id = ?;`; 
                 sql = mysql.format(sql, decoded.user_id);
                 const result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
@@ -45,7 +49,10 @@ module.exports = {
     getUsers: async () => {
         try {
             console.log("in get users");
-            let sql = "SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, profil.popularity from `user` LEFT JOIN `profil` on user.user_id = profil.user_id;"; 
+            let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, 
+            user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
+            YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity 
+            from user LEFT JOIN profil on user.user_id = profil.user_id;`; 
             const result = await db.conn.queryAsync(sql);
                 console.log("ID", result);
                 return result;
@@ -66,12 +73,20 @@ module.exports = {
                 console.log("decoded", decoded);
                 console.log("USER", user);
                 console.log("PROFILE", profile);
-                var hash = bcrypt.hashSync(user.password, 10);
-                console.log(hash);
-                let sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
-                sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, 1, decoded.user_id]);
+                let sql = 'SELECT `password` FROM `user` WHERE `user_id` = ?;'; 
+                sql = mysql.format(sql, decoded.user_id);
                 console.log("SQL", sql);
                 let result = await db.conn.queryAsync(sql);
+                console.log("ID", result[0]);
+                if (!bcrypt.compareSync(user.password, result[0].password))
+                    throw new Error(errors.errorTypes.UNAUTHORIZED);
+                
+                var hash = bcrypt.hashSync(user.password, 10);
+                console.log(hash);
+                sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
+                sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, 1, decoded.user_id]);
+                console.log("SQL", sql);
+                result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
                 sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `user_id` = ?, `gender` = ?, `orientation` = ?, `bio` = ?, `popularity` = ?, `birthdate` = ?;';
                 sql = mysql.format(sql, [decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.popularity, profile.birthdate, decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.popularity, profile.birthdate]);
