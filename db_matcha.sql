@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 27, 2018 at 01:53 PM
+-- Generation Time: Sep 30, 2018 at 12:32 PM
 -- Server version: 5.7.23-0ubuntu0.18.04.1
 -- PHP Version: 7.2.10-0ubuntu0.18.04.1
 
@@ -154,6 +154,14 @@ CREATE TABLE `profil` (
   `birthdate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `profil`
+--
+
+INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES
+(1, 'fdgf', 'dfgh', 'gdhjyyyy', 5000, '2018-09-10'),
+(26, 'fdgf', 'dfgh', 'gdhj', 5000, '2018-09-10');
+
 -- --------------------------------------------------------
 
 --
@@ -183,15 +191,23 @@ CREATE TABLE `user` (
   `reset_token` varchar(255) NOT NULL,
   `last_visit` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `role` int(11) NOT NULL
+  `role` int(11) NOT NULL,
+  `share_location` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`) VALUES
-(1, 'aaaa', 'aaaa@fdg.fr', 'esgrdhg', 'sfdg', '$2b$10$uVvBCeQNOmF6rl7ODXuxzOAX1ys91xCRmRzJ1fWwhYk.KdFAKcBCq', 'wafesdhj', 'fdsgh', '2018-09-26 15:52:35', '2018-09-26 15:52:35', 1);
+INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES
+(1, 'aaaa', 'aaaa@fdg.fr', 'esgrdhg', 'sfdg', 'test', 'wafesdhj', 'fdsgh', '2018-09-26 15:52:35', '2018-09-26 15:52:35', 1, 1),
+(26, 'dfsg', 'ee', 'ee', 'ee', 'ee', 'sadas', 'asdad', '2018-09-27 19:06:32', '2018-09-27 19:06:32', 1, 0),
+(31, 'leo', 'leo@leo.com', 'leo', 'leo', 'leo', 'sadas', 'asdad', '2018-09-28 17:40:07', '2018-09-28 17:40:07', 1, 0),
+(40, 'sdfg', 'honorhim@hotmail.fr', 'leo', 'LEO TARO', 'adsfdg', 'sadas', 'asdad', '2018-09-28 17:43:13', '2018-09-28 17:43:13', 1, 0),
+(43, 'leoh', 'el@de.fr', 'lerw', 'leo', 'erth', 'sadas', 'asdad', '2018-09-28 17:45:07', '2018-09-28 17:45:07', 1, 0),
+(68, 'leosfd', 'fujimoto.leotaro@hotmail.fr', 'ewf', 'w', 'sdf', 'sadas', 'asdad', '2018-09-28 18:11:04', '2018-09-28 18:11:04', 1, 0),
+(69, 'hello', 'honorhim@hotmail.fr', 'wqefwg', 'leo', '$2b$10$//Wtt5MbYIYxgunYSedgDOB5TCVgXTfhXdop3n1pndR13MwsH8DsO', 'sadas', 'asdad', '2018-09-28 18:25:55', '2018-09-28 18:25:55', 1, 0),
+(70, 'llll', 'lfujimot@student.42.fr', 'lll', 'lll', '$2b$10$L2ScRfKiPwshnwFzlhDuUO/pytGAJbpQfpYxB37HImJCRziYpJUs6', 'sadas', 'asdad', '2018-09-28 18:26:29', '2018-09-28 18:26:29', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -215,6 +231,7 @@ CREATE TABLE `visit` (
 --
 ALTER TABLE `address`
   ADD PRIMARY KEY (`address_id`),
+  ADD UNIQUE KEY `user_id_2` (`user_id`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -279,6 +296,7 @@ ALTER TABLE `picture`
 -- Indexes for table `profil`
 --
 ALTER TABLE `profil`
+  ADD UNIQUE KEY `user_id` (`user_id`),
   ADD KEY `fk_profil_user` (`user_id`);
 
 --
@@ -292,7 +310,8 @@ ALTER TABLE `reported`
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `login` (`login`);
 
 --
 -- Indexes for table `visit`
@@ -335,7 +354,7 @@ ALTER TABLE `picture`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 --
 -- AUTO_INCREMENT for table `visit`
 --
