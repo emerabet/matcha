@@ -8,6 +8,7 @@ import Profile from './containers/Profile/Profile';
 
 import Search from './components/Search/Search';
 import Listview from './components/Listview/Listview';
+import AdvancedSearch from './containers/AdvancedSearch/AdvancedSearch';
 
 class App extends Component {
 
@@ -18,7 +19,7 @@ class App extends Component {
         <Route path="/login" exact component={ Login }/>
         <Route path="/register" exact component={ Register }/>
 
-        <Route path="/search" exact component={ Search }/>
+        <Route path="/search" exact component={ AdvancedSearch }/>
         <Route path="/list" exact component={ Listview }/>
         <Redirect from="/" to="/login"/>
       </Switch>
