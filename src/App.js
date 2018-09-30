@@ -6,6 +6,9 @@ import Home from './containers/Home/Home';
 import Register from './components/Register/Register';
 import Profile from './containers/Profile/Profile';
 
+import Search from './components/Search/Search';
+import Listview from './components/Listview/Listview';
+
 class App extends Component {
 
   render() {
@@ -14,6 +17,9 @@ class App extends Component {
        <Switch>
         <Route path="/login" exact component={ Login }/>
         <Route path="/register" exact component={ Register }/>
+
+        <Route path="/search" exact component={ Search }/>
+        <Route path="/list" exact component={ Listview }/>
         <Redirect from="/" to="/login"/>
       </Switch>
     );
