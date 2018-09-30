@@ -10,6 +10,7 @@ exports.registerSchema = buildSchema(`
     }       
 
     type User {
+        user_id, Int
         login: String
         first_name: String
         last_name: String
