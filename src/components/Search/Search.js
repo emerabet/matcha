@@ -6,15 +6,58 @@ import 'rc-slider/assets/index.css';
 
 class Search extends Component {
 
+    state = {
+        age: {min: 18, max: 100},
+        popularity: { min: 0, max: 5},
+        tag: []
+    }
+
+    componentDidMount() {
+        console.log("Component Search Did Mount");
+    }
+
     getTags = () => {
-        console.log("sdfsdfds");
-        return [
-            { key: 'angular', text: 'Angular', value: 'angular' },
-            { key: 'css', text: 'CSS', value: 'css' },
-            { key: 'design', text: 'Graphic Design', value: 'design' },
-            { key: 'ember', text: 'Ember', value: 'ember' },
-            { key: 'html', text: 'HTML', value: 'html' }
-        ]
+        return this.props.tags.map((itm, index) => {
+            return { key: index, text: itm.tag, value: itm.tag };
+        });
+    }
+
+    handleChangeAge = async (values) => {
+
+        const minA = values[0];
+        const maxA = values[1];
+
+        await this.setState({ 
+            popularity: { ...this.state.popularity },
+            age: { min: minA, max: maxA },
+            tag: [ ...this.state.tag ] 
+        });
+
+        this.props.handleFilter(this.state);
+
+        //  const newUsers = this.state.users.filter(user => user.age >= min && user.age <= max );
+        
+        //  console.log(newUsers);
+
+        //this.setState( { users: newUsers });
+    }
+
+    handleChangePopularity = async (values) => {
+
+        const minA = values[0];
+        const maxA = values[1];
+
+        await this.setState({ 
+            popularity: { min: minA, max: maxA },
+            age: { ...this.state.age },
+            tag: [ ...this.state.tag ] 
+        });
+
+        this.props.handleFilter(this.state);
+    }
+
+    handleChangeTag = async (e, data) => {
+        console.log(data);
     }
 
     render () {
@@ -22,26 +65,20 @@ class Search extends Component {
             <Form>
                 <Form.Field>
                     <label>Age</label>
-                    <Range min={ 0 } max={ 20 } defaultValue={[3, 10]} />
+                    <Range onChange = { this.handleChangeAge } min={ 18 } max={ 100 } defaultValue={[26, 38]} />
                 </Form.Field>
                 <Form.Field>
                     <label>Popularity</label>
-                    <Range min={ 0 } max={ 20 } defaultValue={[3, 10]} />
+                    <Range onChange = { this.handleChangePopularity } min={ 0 } max={ 100 } defaultValue={[60, 85]} />
                 </Form.Field>
                 <Form.Field>
                     <label>Tag</label>
-                    <Dropdown placeholder='Tags' fluid multiple selection options={this.getTags()} />
+                    <Dropdown onChange = { this.handleChangeTag } placeholder='Tags' fluid multiple search selection options={ this.getTags() } />
                 </Form.Field>
                 <Button fluid>Search</Button>
             </Form>
         );
     }
 }
-
-/*const mapStateToProps = state => {
-    return {
-        users: state.users
-    }
-};*/
 
 export default connect(null, null)(Search);

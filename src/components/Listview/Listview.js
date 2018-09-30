@@ -3,10 +3,6 @@ import { Card } from 'semantic-ui-react'
 
 class Listview extends Component {
 
-    handleClick = () => {
-        console.log(this.props);
-    }
-
     FillUsers = (users) => {
 
         const array = users.map(user => {
@@ -22,8 +18,7 @@ class Listview extends Component {
         console.log("render listview:", this.props.users);
         return (
             <div>
-                { this.FillUsers(this.props.users) };
-                <button onClick= { this.handleClick } type="submit">Test</button>
+                { this.FillUsers(this.props.users) }
             </div>
         );
     }

@@ -7,6 +7,7 @@ const express_graphql = require('express-graphql');
 const schemas = require('./graphql/schemas');
 const route = require('./routes/route');
 const resolversUser = require('./graphql/resolvers/user');
+const resolverTags = require('./graphql/resolvers/tag');
 const errors = require('./graphql/errors');
 
 app.use(cors());
@@ -14,7 +15,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 const root = {
-    ...resolversUser
+    ...resolversUser,
+    ...resolverTags
 }
 
 app.use('/api', express_graphql({

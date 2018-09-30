@@ -9,7 +9,8 @@ class AdvancedSearch extends Component {
 
     state = {
         users: null,
-        filteredUsers: null
+        filteredUsers: null,
+        tags: null
     }
 
     async componentDidMount () {
@@ -21,23 +22,35 @@ class AdvancedSearch extends Component {
                                 first_name,
                                 last_name,
                                 email,
-                                age
+                                age,
+                                popularity
                             }
                         }
                     `;
 
         const results = await axios.post(`/api`, { query: query });
-        await this.setState({ users : results.data.data.getUsers, filteredUsers : results.data.data.getUsers });
+        const res = await axios.post('/api', { query: `query getTags { getTags { tag } }`});
+        await this.setState({ 
+            users : results.data.data.getUsers, 
+            filteredUsers : results.data.data.getUsers,
+            tags: res.data.data.getTags
+        });
     }
 
     handleFilter = (filters) => {
-        console.log("On filtre: ", filters);
+        const filtered = this.state.users.filter((itm) => {
+            if ((itm.age >= filters.age.min && itm.age <= filters.age.max)
+            && (itm.popularity >= filters.popularity.min && itm.popularity <= filters.popularity.max))
+                return true;
+        });
+
+        this.setState({ filteredUsers: filtered });
     }
 
     render() {
         return (
             <div>
-                { this.state.users && <Search handleFilter={ this.handleFilter }/> }
+                { this.state.users && <Search tags={ this.state.tags } handleFilter={ this.handleFilter }/> }
                 <Divider horizontal>Results</Divider>
                 { this.state.users && <Listview users={ this.state.filteredUsers }/> }
             </div>

@@ -29,6 +29,10 @@ exports.registerSchema = buildSchema(`
         popularity: Int
     }
 
+    type Tag {
+        tag: String
+    }
+
     input AddProfileInput {
         gender: String
         orientation: String
@@ -48,6 +52,7 @@ exports.registerSchema = buildSchema(`
 
     type Query {
         getUser(token: String): User,
-        getUsers: [User]
+        getUsers: [User],
+        getTags: [Tag]
     }
 `);
