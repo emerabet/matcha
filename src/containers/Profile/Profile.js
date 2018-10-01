@@ -148,7 +148,8 @@ class Profile extends Component{
                 //=> '46.5.21.123'
             });
         } else {
-            const geolocation = navigator.geolocation;
+            const geolocation = await navigator.geolocation;
+            console.log("GEOLOC");
             await geolocation.getCurrentPosition((position) => {
                 console.log(position);
                 console.log(ip.address());
@@ -308,11 +309,11 @@ class Profile extends Component{
                             </Form.Field>
                             <Form.Field>
                                 <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password1">New password (must contains at least 8 characters including a lower letter, a capital letter and a number)</label>
-                                <Input type="password" onChange={this.handleChange} name="password1" value={ this.state.password1 } placeholder="New password" required></Input>                   
+                                <Input type="password" onChange={this.handleChange} name="password1" value={ this.state.password1 } placeholder="New password"></Input>                   
                             </Form.Field>
                             <Form.Field>
                                 <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password2">New password confirmation</label>
-                                <Input type="password" onChange={this.handleChange} name="password2" value={ this.state.password2 } placeholder="New password confirmation" required></Input>                   
+                                <Input type="password" onChange={this.handleChange} name="password2" value={ this.state.password2 } placeholder="New password confirmation"></Input>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="share_location">Share current location?</label>
@@ -364,7 +365,7 @@ class Profile extends Component{
                                 <Input type="date" onChange={this.handleChange} name="birthdate" value={ this.state.birthdate } placeholder="Birthdate" required></Input>                   
                             </Form.Field>
                             
-                            <Button type='submit' disabled = {!(passOK && emailOK && oldPassOK)}>Update profile information</Button>
+                            <Button type='submit' disabled = {!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && emailOK && oldPassOK)}>Update profile information</Button>
                        </Form>
                     } />
                     <Card.Content extra>
