@@ -7,8 +7,8 @@ import 'rc-slider/assets/index.css';
 class Search extends Component {
 
     state = {
-        age: {min: 18, max: 100},
-        popularity: { min: 0, max: 5},
+        age: { min: 26, max: 38 },
+        popularity: { min: 60, max: 85 },
         tag: []
     }
 
@@ -28,18 +28,10 @@ class Search extends Component {
         const maxA = values[1];
 
         await this.setState({ 
-            popularity: { ...this.state.popularity },
-            age: { min: minA, max: maxA },
-            tag: [ ...this.state.tag ] 
+            age: { min: minA, max: maxA }
         });
 
         this.props.handleFilter(this.state);
-
-        //  const newUsers = this.state.users.filter(user => user.age >= min && user.age <= max );
-        
-        //  console.log(newUsers);
-
-        //this.setState( { users: newUsers });
     }
 
     handleChangePopularity = async (values) => {
@@ -48,16 +40,19 @@ class Search extends Component {
         const maxA = values[1];
 
         await this.setState({ 
-            popularity: { min: minA, max: maxA },
-            age: { ...this.state.age },
-            tag: [ ...this.state.tag ] 
+            popularity: { min: minA, max: maxA }
         });
 
         this.props.handleFilter(this.state);
     }
 
     handleChangeTag = async (e, data) => {
-        console.log(data);
+        const tag = data.value.slice();
+        await this.setState({ 
+            tag: tag
+        });
+
+        this.props.handleFilter(this.state);
     }
 
     render () {

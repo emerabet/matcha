@@ -15,20 +15,23 @@ class AdvancedSearch extends Component {
 
     async componentDidMount () {
         const query = `
-                        query getUsers {
-                            getUsers{
+                        query getUsers($extended: Boolean) {
+                            getUsers(extended:$extended){
                                 user_id,
                                 login,
                                 first_name,
                                 last_name,
                                 email,
                                 age,
-                                popularity
+                                popularity,
+                                tags { 
+                                    tag
+                                }
                             }
                         }
                     `;
 
-        const results = await axios.post(`/api`, { query: query });
+        const results = await axios.post(`/api`, { query: query, variables: { extended: true } });
         const res = await axios.post('/api', { query: `query getTags { getTags { tag } }`});
         await this.setState({ 
             users : results.data.data.getUsers, 
@@ -40,8 +43,12 @@ class AdvancedSearch extends Component {
     handleFilter = (filters) => {
         const filtered = this.state.users.filter((itm) => {
             if ((itm.age >= filters.age.min && itm.age <= filters.age.max)
-            && (itm.popularity >= filters.popularity.min && itm.popularity <= filters.popularity.max))
-                return true;
+            && (itm.popularity >= filters.popularity.min && itm.popularity <= filters.popularity.max)
+            && (filters.tag.every((value) => {
+                return itm.tags.some((v) => v.tag == value);
+            })))
+            
+            return true;
         });
 
         this.setState({ filteredUsers: filtered });
