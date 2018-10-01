@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const errors = require('../errors');
 const bcrypt = require('bcrypt');
 const config = require('../../config');
+const axios = require('axios');
 
 const queriesTag = require('../resolvers/tag');
 
@@ -115,11 +116,15 @@ module.exports = {
                 console.log("ID", result[0]);
                 if (!bcrypt.compareSync(user.old_password, result[0].password))
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
-                
-                var hash = bcrypt.hashSync(user.password, 10);
-                console.log("NEW PASSWORD", hash);
-                sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
-                sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, profile.share_location, decoded.user_id]);
+                if(user.password !== "") {
+                    var hash = bcrypt.hashSync(user.password, 10);
+                    console.log("NEW PASSWORD", hash);
+                    sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
+                    sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, profile.share_location, decoded.user_id]);
+                } else {
+                    sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
+                    sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, profile.share_location, decoded.user_id]);
+                }
                 console.log("SQL", sql);
                 result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
@@ -148,6 +153,18 @@ module.exports = {
                 if (sql !== "") {
                     result = await db.conn.queryAsync(sql);
                     console.log("ID", result[0]);
+                }
+
+                console.log(address);
+                if (address.latitude === "" || address.longitude === "") {
+                    const add = await axios.get(`http://api.ipstack.com/${address.ip}?access_key=a823fdd32ddeb63456e4e7f70f808812`);
+                    console.log("LOCATION", add.data);
+                    sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
+                    sql = mysql.format(sql, [decoded.user_id, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
+                    console.log("SQL", sql);
+                    result = await db.conn.queryAsync(sql);
+                    console.log("ID", result[0]);
+                
                 }
 
                 return "Update done";

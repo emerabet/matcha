@@ -48,8 +48,9 @@ exports.registerSchema = buildSchema(`
     }
 
     input AddAddressInput {
-        latitude: Float
-        longitude: Float
+        latitude: String
+        longitude: String
+        ip: String
     }
         
     type Mutation {
