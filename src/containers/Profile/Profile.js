@@ -4,9 +4,10 @@ import { Checkbox, Card, Input, Select, Form, Button, TextArea } from 'semantic-
 import * as styles  from './Styles';
 import ip from 'ip';
 import TopMenu from '../../components/Menu/TopMenu';
-import ChipInput from 'material-ui-chip-input';
 import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
+import publicIp from 'public-ip';
+import Chips from 'react-chips';
 
 class Profile extends Component{
 
@@ -18,22 +19,28 @@ class Profile extends Component{
         old_password: "",
         password1: "",
         password2: "",
-        share_location: false,
+        share_location: 0,
         gender: "",
         orientation: "",
         bio: "",
         birthdate: "",
         current_location: "",
         last_visit: "",
-        latitude: "",
-        longitude: "",
-        tags: ["aaa", "bbbb"]
+        latitude: 0,
+        longitude: 0,
+        tags: [],
+        new_tags: [],
+        delete_tags: [],
+        all_tags: [],
+        popularity: "",
+        tag : ""
     }
     
     handleChange = async (e, data) => {
         if (data.name === "share_location") {
-            const { name, checked } = data;    
-            this.setState({ [name]: checked });
+            const { name, checked } = data;
+            
+            this.setState({ [name]: checked ? 1 : 0 });
             const geolocation = navigator.geolocation;
             await geolocation.getCurrentPosition((position) => {
                 console.log(position);
@@ -49,10 +56,21 @@ class Profile extends Component{
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        const query_tags = `query getTags{
+                                getTags{
+                                   tag
+                                }                   
+                            }`;
+        
+        const res = await axios.post(`/api`,
+        {
+            query: query_tags
+        });
+        
         const query = `
-                        query getUser ($token: String) {
-                            getUser(token: $token){
+                        query getUser ($token: String!, $extended: Boolean) {
+                            getUser(token: $token, extended: $extended){
                                 user_id,
                                 login,
                                 first_name,
@@ -67,24 +85,27 @@ class Profile extends Component{
                                 orientation,
                                 bio,
                                 birthdate,
-                                popularity
+                                popularity,
+                                tags {tag}
                             }
                         }
                     `;
 
         const token = sessionStorage.getItem("token");
+        console.log(token);
 
         axios.post(`/api`,
             {
                 query: query,
                 variables: {
-                    token: token
+                    token: token,
+                    extended: true
                 }
             })
             .then( response => {
                 console.log('response', response);
                 if (!response.data.errors) {
-                    // format birtdate to fit the form format
+                    // formating birthdate to fit the form format
                     const bday = new Date(response.data.data.getUser.birthdate / 1);
                     let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
                     this.setState({...this.state,
@@ -98,8 +119,15 @@ class Profile extends Component{
                         orientation: response.data.data.getUser.orientation,
                         bio: response.data.data.getUser.bio,
                         birthdate: bday_string,
-                        popularity: response.data.data.getUser.popularity
+                        popularity: response.data.data.getUser.popularity,
+                        tags: response.data.data.getUser.tags.map(elem => {
+                            return elem.tag;
+                        }),
+                        all_tags: res.data.data.getTags.map((element) => {
+                            return element.tag;
+                        })
                 });
+                    
                 }
                 else
                     console.log("TOAST", response.data.errors[0].statusCode, response.data.errors[0].message);
@@ -109,10 +137,27 @@ class Profile extends Component{
 
     handleUpdate = async (e) => {
         e.preventDefault();
+        if (this.state.share_location === 0) {
+            publicIp.v4().then(ip => {
+                console.log("V4", ip);
+                axios.get(`http://api.ipstack.com/${ip}?access_key=a823fdd32ddeb63456e4e7f70f808812`)
+                .then((result) => {
+                    console.log("LOCATION", result.data);
+                    this.setState({latitude: result.data.latitude, longitude: result.data.longitude});
+                });
+                //=> '46.5.21.123'
+            });
+        } else {
+            const geolocation = navigator.geolocation;
+            await geolocation.getCurrentPosition((position) => {
+                console.log(position);
+                console.log(ip.address());
+            });
+        }
         console.log('in handle register');
         const query = `
-                        mutation updateUser($token: String, $user: AddUserInput!, $profile: AddProfileInput!) {
-                            updateUser(token: $token, user: $user, profile: $profile)
+                        mutation updateUser($token: String!, $user: AddUserInput!, $profile: AddProfileInput!, $address: AddAddressInput!) {
+                            updateUser(token: $token, user: $user, profile: $profile, address: $address)
                         }
                     `;
 
@@ -133,14 +178,21 @@ class Profile extends Component{
             birthdate: this.state.birthdate,
             old_password: this.state.old_password,
             share_location: this.state.share_location,
-            tags: this.state.tags
+            new_tags: this.state.new_tags,
+            delete_tags: this.state.delete_tags
+        }
+
+        const address = {
+            latitude: this.state.latitude,
+            longitude: this.state.longitude
         }
 
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
             token: sessionStorage.getItem("token"), 
             user: user,
-            profile: profile
+            profile: profile,
+            address: address
             }
         });
         console.log("RES", result.data.errors);
@@ -167,6 +219,45 @@ class Profile extends Component{
         this.setState({tags: chips});
     }
 
+    handleUpdateInput = (searchText) => {
+        this.setState({
+          searchText: searchText,
+        });
+      };
+    
+
+    
+      /*onKeyPress = (e, data) => {
+          console.log(e.key);
+          console.log(e.value);
+          if (e.key === 'Enter') {
+                console.log(this.state.tag);
+                this.handleAddChip(this.state.tag);
+                this.setState({tag: ""});
+            //  console.log(data.value);
+          }
+       //   console.log(data);
+      }
+*/
+      onTagChange = async tags => {
+          const old_tags = this.state.tags;
+          console.log("TAGS", tags);
+          console.log("FILTER", tags.filter(elem => {
+            return old_tags.indexOf(elem) === -1;
+        }));
+        await this.setState({ new_tags: tags.filter(elem => {
+                return old_tags.indexOf(elem) === -1;
+            }) 
+        });
+        await this.setState({ delete_tags: old_tags.filter(elem => {
+            return tags.indexOf(elem) === -1;
+        }) 
+    });
+
+        console.log("NEW TAGS", this.state.new_tags);
+        console.log("DELETE TAGS", this.state.delete_tags);
+      }
+
     render () {
         const gender_options = [
             { key: 'male', text: 'Male', value: 'male' },
@@ -185,13 +276,14 @@ class Profile extends Component{
         const passOK = (this.state.password1 === this.state.password2) && passwordRegex.test(this.state.password1);
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const emailOK = emailRegex.test(String(this.state.email).toLowerCase()) && this.state.email !== "";
+        const oldPassOK = this.state.old_password !== "";
 
        return (
             <div className="Profile_Container">
                 <ToastContainer />
                 <TopMenu />
                 <Card style={styles.card} centered>
-                    <Card.Content header={this.state.login} />
+                    <Card.Content header={`${this.state.login} (${ this.state.popularity } pts)`} />
                     <Card.Content description={
                          <Form onSubmit= {this.handleUpdate}>
                             <Form.Field>
@@ -211,8 +303,8 @@ class Profile extends Component{
                                 <Input type="email" onChange={this.handleChange} name="email" value={ this.state.email } placeholder="Email" required></Input>
                             </Form.Field>
                             <Form.Field>
-                                <label htmlFor="old_password">Old password</label>
-                                <Input type="password" onChange={this.handleChange} name="old_password" value={ this.state.old_password } placeholder="Old password" required></Input>                   
+                                <label style={oldPassOK ? styles.ok : styles.nok} htmlFor="old_password">Current password (your must enter your current password to update your profile)</label>
+                                <Input type="password" onChange={this.handleChange} name="old_password" value={ this.state.old_password } placeholder="Current password" required></Input>                   
                             </Form.Field>
                             <Form.Field>
                                 <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password1">New password (must contains at least 8 characters including a lower letter, a capital letter and a number)</label>
@@ -224,7 +316,7 @@ class Profile extends Component{
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="share_location">Share current location?</label>
-                                <Checkbox toggle onChange={this.handleChange} name="share_location" checked={this.state.share_location}/>
+                                <Checkbox toggle onChange={this.handleChange} name="share_location" checked={this.state.share_location === 1 ? true : false}/>
                             </Form.Field>
                             {this.state.share_location &&
                             <Form.Field>
@@ -255,12 +347,16 @@ class Profile extends Component{
                                 <TextArea type="textArea" onChange={this.handleChange} name="bio" value={ this.state.bio } placeholder="Bio" required></TextArea>                   
                             </Form.Field>
                             <Form.Field>
-                                <label htmlFor="interest">Interest</label>
-                                <ChipInput 
-                                    fullWidthInput
-                                    value={this.state.tags}
-                                    onAdd={this.handleAddChip}
-                                    onDelete={this.handleDeleteChip}
+                                <label htmlFor="interest">Interest (Please press tab to add an interest)</label>
+                                
+                                <Chips
+                                    value={[...this.state.tags.filter(elem => {
+                                        return this.state.delete_tags.indexOf(elem) === -1;
+                                    }), ...this.state.new_tags]}
+                                    
+                                    onChange={this.onTagChange}
+                                    suggestions={this.state.all_tags}
+                            
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -268,7 +364,7 @@ class Profile extends Component{
                                 <Input type="date" onChange={this.handleChange} name="birthdate" value={ this.state.birthdate } placeholder="Birthdate" required></Input>                   
                             </Form.Field>
                             
-                            <Button type='submit'>Update profile information</Button>
+                            <Button type='submit' disabled = {!(passOK && emailOK && oldPassOK)}>Update profile information</Button>
                        </Form>
                     } />
                     <Card.Content extra>

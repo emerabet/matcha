@@ -46,10 +46,15 @@ exports.registerSchema = buildSchema(`
         new_tags: [String]
         delete_tags: [String]
     }
+
+    input AddAddressInput {
+        latitude: Float
+        longitude: Float
+    }
         
     type Mutation {
-        addUser(user: AddUserInput): Int,
-        updateUser(token: String, user: AddUserInput, profile: AddProfileInput): String
+        addUser(user: AddUserInput!): Int,
+        updateUser(token: String!, user: AddUserInput!, profile: AddProfileInput!, address: AddAddressInput!): String
     }
 
 
