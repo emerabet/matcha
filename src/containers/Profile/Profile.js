@@ -327,21 +327,21 @@ class Profile extends Component{
                             }
                             <Form.Field>
                                 <label htmlFor="Latitude">Latitude</label>
-                                <Input type="number" onChange={this.handleChange} name="latitude" value={ this.state.latitude } placeholder="Latitude" required></Input>                   
+                                <Input type="text" onChange={this.handleChange} name="latitude" value={ this.state.latitude } placeholder="Latitude" required></Input>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="Longitude">Longitude</label>
-                                <Input type="number" onChange={this.handleChange} name="longitude" value={ this.state.longitude } placeholder="Longitude" required></Input>                   
+                                <Input type="text" onChange={this.handleChange} name="longitude" value={ this.state.longitude } placeholder="Longitude" required></Input>                   
                             </Form.Field>
                             
                             
                             <Form.Field>
                                 <label htmlFor="gender">Gender</label>
-                                <Select compact options={gender_options} defaultValue='Please choose a gender' onChange={this.handleChange} name="gender" value={ this.state.gender } required></Select>                   
+                                <Select compact options={gender_options} onChange={this.handleChange} name="gender" value={ this.state.gender } required></Select>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="Orientation">Orientation</label>
-                                <Select compact options={orientation_options} defaultValue='Please choose an orientation' onChange={this.handleChange} name="orientation" value={ this.state.orientation } required></Select>                   
+                                <Select compact options={orientation_options} onChange={this.handleChange} name="orientation" value={ this.state.orientation } required></Select>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="bio">Bio</label>
