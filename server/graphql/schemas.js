@@ -43,7 +43,8 @@ exports.registerSchema = buildSchema(`
         birthdate: String
         old_password: String
         share_location: Int
-        tags: [String]
+        new_tags: [String]
+        delete_tags: [String]
     }
         
     type Mutation {

@@ -44,7 +44,7 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
 
-            const userId = decoded.id;
+            const userId = decoded.user_id;
             console.log("decoded", decoded);
             console.log("user to get from db", userId);
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, 
@@ -54,6 +54,7 @@ module.exports = {
                         LEFT JOIN profil on user.user_id = profil.user_id 
                         WHERE user.user_id = ?;`; 
             sql = mysql.format(sql, userId);
+            console.log(sql);
             const users = await db.conn.queryAsync(sql);
 
             if (extended === true) {
@@ -117,7 +118,7 @@ module.exports = {
                 var hash = bcrypt.hashSync(user.password, 10);
                 console.log("NEW PASSWORD", hash);
                 sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
-                sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, 1, decoded.user_id]);
+                sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, profile.share_location, decoded.user_id]);
                 console.log("SQL", sql);
                 result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
@@ -128,14 +129,25 @@ module.exports = {
                 console.log("ID", result[0]);
                 
                 sql = "";
-                for (let i in profile.tags) {
+                for (let i in profile.new_tags) {
                     sql += 'INSERT INTO `interest` (`user_id`, `tag`) VALUES (?,?); ';
-                    sql = mysql.format(sql, [decoded.user_id, profile.tags[i]]);
+                    sql = mysql.format(sql, [decoded.user_id, profile.new_tags[i]]);
                 }
                 console.log("SQL", sql);
-                result = await db.conn.queryAsync(sql);
-                console.log("ID", result[0]);
-                
+                if (sql !== "") {
+                    result = await db.conn.queryAsync(sql);
+                    console.log("ID", result[0]);
+                }
+                sql = "";
+                for (let i in profile.delete_tags) {
+                    sql += 'DELETE FROM `interest` WHERE `user_id` = ? AND `tag` = ?; ';
+                    sql = mysql.format(sql, [decoded.user_id, profile.delete_tags[i]]);
+                }
+                console.log("SQL", sql);
+                if (sql !== "") {
+                    result = await db.conn.queryAsync(sql);
+                    console.log("ID", result[0]);
+                }
 
                 return "Update done";
         } catch (err) {
