@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import publicIp from 'public-ip';
 import Chips from 'react-chips';
 
+let geolocation;
+
 class Profile extends Component{
 
     state = {
@@ -33,7 +35,8 @@ class Profile extends Component{
         delete_tags: [],
         all_tags: [],
         popularity: "",
-        tag : ""
+        tag : "",
+        ip: "0"
     }
     
     handleChange = async (e, data) => {
@@ -41,7 +44,7 @@ class Profile extends Component{
             const { name, checked } = data;
             
             this.setState({ [name]: checked ? 1 : 0 });
-            const geolocation = navigator.geolocation;
+            geolocation = navigator.geolocation;
             await geolocation.getCurrentPosition((position) => {
                 console.log(position);
                 console.log(ip.address());
@@ -137,22 +140,27 @@ class Profile extends Component{
 
     handleUpdate = async (e) => {
         e.preventDefault();
-        if (this.state.share_location === 0) {
-            publicIp.v4().then(ip => {
-                console.log("V4", ip);
+        const ip = await publicIp.v4();
+        console.log("V4", ip);
+            
+                //this.setState({ip: ip});
+                /*
                 axios.get(`http://api.ipstack.com/${ip}?access_key=a823fdd32ddeb63456e4e7f70f808812`)
                 .then((result) => {
                     console.log("LOCATION", result.data);
                     this.setState({latitude: result.data.latitude, longitude: result.data.longitude});
-                });
+                });*/
                 //=> '46.5.21.123'
-            });
-        } else {
-            const geolocation = await navigator.geolocation;
+            
+        let latitude = "";
+        let longitude = "";
+        if (this.state.share_location === 1) {
+            geolocation = await navigator.geolocation;
             console.log("GEOLOC");
             await geolocation.getCurrentPosition((position) => {
                 console.log(position);
-                console.log(ip.address());
+                latitude = position.coords.latitude;
+                longitude = position.coords.longitude;    
             });
         }
         console.log('in handle register');
@@ -184,8 +192,9 @@ class Profile extends Component{
         }
 
         const address = {
-            latitude: this.state.latitude,
-            longitude: this.state.longitude
+            latitude: latitude,
+            longitude: longitude,
+            ip: ip
         }
 
         const result = await axios.post(`/api`, {   query: query,
@@ -332,6 +341,10 @@ class Profile extends Component{
                             <Form.Field>
                                 <label htmlFor="Longitude">Longitude</label>
                                 <Input type="text" onChange={this.handleChange} name="longitude" value={ this.state.longitude } placeholder="Longitude" required></Input>                   
+                            </Form.Field>
+                            <Form.Field>
+                                <label htmlFor="Ip">Ip</label>
+                                <Input type="text" onChange={this.handleChange} name="ip" value={ this.state.ip } placeholder="Ip" required></Input>                   
                             </Form.Field>
                             
                             
