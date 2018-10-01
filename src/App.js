@@ -6,8 +6,9 @@ import Home from './containers/Home/Home';
 import Register from './components/Register/Register';
 import Profile from './containers/Profile/Profile';
 
-import Search from './components/Search/Search';
-import Listview from './components/Listview/Listview';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import AdvancedSearch from './containers/AdvancedSearch/AdvancedSearch';
 
 class App extends Component {
@@ -20,7 +21,6 @@ class App extends Component {
         <Route path="/register" exact component={ Register }/>
 
         <Route path="/search" exact component={ AdvancedSearch }/>
-        <Route path="/list" exact component={ Listview }/>
         <Redirect from="/" to="/login"/>
       </Switch>
     );
@@ -37,7 +37,8 @@ class App extends Component {
 
     return (
       <div id="wrapRoute">
-      { routes }
+        { routes }
+        <ToastContainer />
       </div>
     );
   }
