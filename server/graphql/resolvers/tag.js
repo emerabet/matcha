@@ -13,5 +13,30 @@ module.exports = {
             console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
+    },
+
+    getAllTags: async () => {
+        try {
+            let sql = "SELECT interest.user_id as owner_id, tag FROM interest ORDER BY user_id;";
+            const result = await db.conn.queryAsync(sql);
+            console.log(result);
+            return result;
+        } catch (err) {
+            console.log("ERR", err);
+            throw (errors.errorTypes.BAD_REQUEST);
+        }
+    },
+
+    getTagByUser: async (id) => {
+        try {
+            let sql = "SELECT tag FROM interest WHERE interest.user_id = ? ORDER BY tag;";
+            sql = mysql.format(sql, [id]);
+            const result = await db.conn.queryAsync(sql);
+            console.log(result);
+            return result;
+        } catch (err) {
+            console.log("ERR", err);
+            throw (errors.errorTypes.BAD_REQUEST);
+        }
     }
 }

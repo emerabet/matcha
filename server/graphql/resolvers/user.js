@@ -5,6 +5,18 @@ const errors = require('../errors');
 const bcrypt = require('bcrypt');
 const config = require('../../config');
 
+const queriesTag = require('../resolvers/tag');
+
+/* Incorpore les elements du tableau child dans la propiete de chaque element du tableau parent, lorsque la comparaison parentCmp childCMp est vraie. */
+const mergeResults = (parent, child, property, { parentCmp, childCmp }) => {
+    parent.forEach(element => {
+        element[property] = child.filter((itm) => {
+            if (element[parentCmp] === itm[childCmp])
+                return true;
+        });
+    });
+}
+
 module.exports = {
     addUser: async ({ user }) => {
         console.log("user to add in db", user);
@@ -22,40 +34,61 @@ module.exports = {
     },
 
 
-    getUser: async ({ token }) => {
+    getUser: async ({ token, extended }) => {
         try {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             console.log("token", token);
             const decoded = await jwt.verify(token, "config.secret");
+
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-                console.log("decoded", decoded);
-                console.log("uuser to get from db", decoded.id);
-                let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, 
-                user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
-                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity from user 
-                LEFT JOIN profil on user.user_id = profil.user_id 
-                WHERE user.user_id = ?;`; 
-                sql = mysql.format(sql, decoded.user_id);
-                const result = await db.conn.queryAsync(sql);
-                console.log("ID", result[0]);
-                return result[0];
+
+            const userId = decoded.id;
+            console.log("decoded", decoded);
+            console.log("user to get from db", userId);
+            let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, 
+                                user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
+                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity 
+                        FROM user 
+                        LEFT JOIN profil on user.user_id = profil.user_id 
+                        WHERE user.user_id = ?;`; 
+            sql = mysql.format(sql, userId);
+            const users = await db.conn.queryAsync(sql);
+
+            if (extended === true) {
+                const tags = await queriesTag.getTagByUser(userId);
+                users[0].tags = tags;
+            }
+
+            console.log("ID", users[0]);
+            return users[0];
         } catch (err) {
             throw err.message;
         }
     },
 
-    getUsers: async () => {
+    getUsers: async ({ extended }) => {
         try {
             console.log("in get users");
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, 
-            user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
-            YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity 
-            from user LEFT JOIN profil on user.user_id = profil.user_id;`; 
-            const result = await db.conn.queryAsync(sql);
-                console.log("ID", result);
-                return result;
+                                user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
+                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity 
+                        FROM user 
+                        LEFT JOIN profil on user.user_id = profil.user_id;`; 
+            const users = await db.conn.queryAsync(sql);
+
+            if (extended === true) {
+                const tags = await queriesTag.getAllTags();
+
+                mergeResults(users, tags, "tags", { parentCmp: "user_id", childCmp: "owner_id" });
+            }
+
+
+
+
+            console.log("ID", users[1].tags);
+            return users;
         } catch (err) {
             throw err.message;
         }

@@ -26,10 +26,12 @@ exports.registerSchema = buildSchema(`
         orientation: String
         bio: String
         birthdate: String
-        popularity: Int
+        popularity: Int,
+        tags: [Tag]
     }
 
     type Tag {
+        owner_id: Int
         tag: String
     }
 
@@ -51,8 +53,9 @@ exports.registerSchema = buildSchema(`
 
 
     type Query {
-        getUser(token: String): User,
-        getUsers: [User],
-        getTags: [Tag]
+        getUser(token: String!, extended: Boolean): User,
+        getUsers(extended: Boolean): [User],
+        getTags: [Tag],
+        getAllTags: [Tag]
     }
 `);
