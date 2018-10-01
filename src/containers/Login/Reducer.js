@@ -10,9 +10,10 @@ const reducer = (state = initialState, action) => {
     switch(action.type) {
         case actions.LOGIN:
             console.log("from reducer", action);
-            console.log("token", action.data);
+            console.log("token", action.data.token);
+            console.log("user", action.data.user);
             nextState = { ...state,
-                        token: action.data };
+                        token: action.data.token };
             break ;
         case actions.LOGIN_FAIL:
             nextState = { ...state,

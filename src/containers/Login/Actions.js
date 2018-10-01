@@ -6,11 +6,11 @@ export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const login =(userName, password) => {
     return async dispatch => {
         try {
-            const token = await axios.post('/connect', { login: userName, password: password });
+            const res = await axios.post('/connect', { login: userName, password: password });
             console.log("actions login");
-            console.log('token', token.data.token);
-            sessionStorage.setItem('token', token.data.token);
-            dispatch({ type: LOGIN, data: token.data.token });
+            console.log('data login', res.data);
+            sessionStorage.setItem('token', res.data.token);
+            dispatch({ type: LOGIN, data: res.data });
         } catch (err) {
             dispatch({
                 type: LOGIN_FAIL,
