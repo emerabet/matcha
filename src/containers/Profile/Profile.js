@@ -138,31 +138,7 @@ class Profile extends Component{
             });
     }
 
-    handleUpdate = async (e) => {
-        e.preventDefault();
-        const ip = await publicIp.v4();
-        console.log("V4", ip);
-            
-                //this.setState({ip: ip});
-                /*
-                axios.get(`http://api.ipstack.com/${ip}?access_key=a823fdd32ddeb63456e4e7f70f808812`)
-                .then((result) => {
-                    console.log("LOCATION", result.data);
-                    this.setState({latitude: result.data.latitude, longitude: result.data.longitude});
-                });*/
-                //=> '46.5.21.123'
-            
-        let latitude = "";
-        let longitude = "";
-        if (this.state.share_location === 1) {
-            geolocation = await navigator.geolocation;
-            console.log("GEOLOC");
-            await geolocation.getCurrentPosition((position) => {
-                console.log(position);
-                latitude = position.coords.latitude;
-                longitude = position.coords.longitude;    
-            });
-        }
+    updateUserInfo = async (ip, latitude = 0, longitude = 0) => {
         console.log('in handle register');
         const query = `
                         mutation updateUser($token: String!, $user: AddUserInput!, $profile: AddProfileInput!, $address: AddAddressInput!) {
@@ -211,7 +187,33 @@ class Profile extends Component{
             toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
         else
             toast("Error updating your profile information, please check that the password you put is correct !", {type: toast.TYPE.ERROR});
+    }
 
+    handleUpdate = async (e) => {
+        e.preventDefault();
+        const ip = await publicIp.v4();
+        console.log("V4", ip);
+            
+                //this.setState({ip: ip});
+                /*
+                axios.get(`http://api.ipstack.com/${ip}?access_key=a823fdd32ddeb63456e4e7f70f808812`)
+                .then((result) => {
+                    console.log("LOCATION", result.data);
+                    this.setState({latitude: result.data.latitude, longitude: result.data.longitude});
+                });*/
+                //=> '46.5.21.123'
+            
+        if (this.state.share_location === 1) {
+            geolocation = navigator.geolocation;
+            console.log("GEOLOC");
+            geolocation.getCurrentPosition((position) => {
+                console.log("geoloc pos", position);
+                this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
+            });
+        } else {
+            this.updateUserInfo(ip);
+        }
+        
     }
 
     handleAddChip = (chip) => {

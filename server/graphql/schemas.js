@@ -20,8 +20,8 @@ exports.registerSchema = buildSchema(`
         insertId: Int
         share_location: Int
         last_visit: String
-        latitude: Int
-        longitude: Int
+        latitude: Float
+        longitude: Float
         gender: String
         orientation: String
         bio: String
@@ -48,8 +48,8 @@ exports.registerSchema = buildSchema(`
     }
 
     input AddAddressInput {
-        latitude: String
-        longitude: String
+        latitude: Float
+        longitude: Float
         ip: String
     }
         

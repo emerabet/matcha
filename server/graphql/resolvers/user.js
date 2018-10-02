@@ -5,6 +5,18 @@ const errors = require('../errors');
 const bcrypt = require('bcrypt');
 const config = require('../../config');
 const axios = require('axios');
+const NodeGeocoder = require('node-geocoder');
+
+const options = {
+    provider: 'google',
+   
+    // Optional depending on the providers
+    httpAdapter: 'https', // Default
+    apiKey: config.GOOGLE_KEY, // for Mapquest, OpenCage, Google Premier
+    formatter: null         // 'gpx', 'string', ...
+  };
+
+const geocoder = NodeGeocoder(options);
 
 const queriesTag = require('../resolvers/tag');
 
@@ -156,15 +168,19 @@ module.exports = {
                 }
 
                 console.log(address);
-                if (address.latitude === "" || address.longitude === "") {
-                    const add = await axios.get(`http://api.ipstack.com/${address.ip}?access_key=a823fdd32ddeb63456e4e7f70f808812`);
+                console.log("ICI");
+                if (address.latitude == 0 || address.longitude == 0) {
+                    const add = await axios.get(`http://api.ipstack.com/${address.ip}?access_key=${config.IPSTACK_KEY}`);
                     console.log("LOCATION", add.data);
                     sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
                     sql = mysql.format(sql, [decoded.user_id, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
                     console.log("SQL", sql);
                     result = await db.conn.queryAsync(sql);
                     console.log("ID", result[0]);
-                
+                } else {
+                    geocoder.reverse({lat: address.latitude, lon: address.longitude}, function(err, res) {
+                        console.log("GOOGLE", res);
+                      });
                 }
 
                 return "Update done";
