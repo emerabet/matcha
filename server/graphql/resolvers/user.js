@@ -197,5 +197,25 @@ module.exports = {
             throw err.message;
         }
         
+    },
+
+    getLogin: async ({ login }) => {
+        let sql = 'SELECT `user_id` from `user` WHERE `login` = ?';
+        sql = mysql.format(sql, login);
+        const result = await db.conn.queryAsync(sql);
+        if (result[0])
+            return true;
+        else
+            return false;
+    },
+
+    getEmail: async ({ email }) => {
+        let sql = 'SELECT `user_id` from `user` WHERE `email` = ?';
+        sql = mysql.format(sql, email);
+        const result = await db.conn.queryAsync(sql);
+        if (result[0])
+            return true;
+        else
+            return false;
     }
 }
