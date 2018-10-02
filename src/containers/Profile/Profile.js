@@ -9,15 +9,18 @@ import 'react-toastify/dist/ReactToastify.css';
 import publicIp from 'public-ip';
 import Chips from 'react-chips';
 import './Profile.css';
+import { handleBlur } from '../../Tools/Form';
 
 let geolocation;
 
 class Profile extends Component{
 
     state = {
+        oldLogin: "",
         login: "",
         first_name: "",
         last_name: "",
+        oldEmail: "",
         email: "",
         old_password: "",
         password1: "",
@@ -37,7 +40,9 @@ class Profile extends Component{
         all_tags: [],
         popularity: "",
         tag : "",
-        ip: "0"
+        ip: "0",
+        userNameAlreadyTaken: false,
+        emailAlreadyTaken: false
     }
     
     handleChange = async (e, data) => {
@@ -101,9 +106,11 @@ class Profile extends Component{
                     const bday = new Date(response.data.data.getUser.birthdate / 1);
                     let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
                     this.setState({...this.state,
+                        oldLogin: response.data.data.getUser.login,
                         login: response.data.data.getUser.login,
                         first_name: response.data.data.getUser.first_name,
                         last_name :response.data.data.getUser.last_name,
+                        oldEmail: response.data.data.getUser.email,
                         email: response.data.data.getUser.email,
                         share_location: response.data.data.getUser.share_location,
                         last_visit: response.data.data.getUser.last_visit,
@@ -220,6 +227,11 @@ class Profile extends Component{
         });
     }
 
+    handleBlur = async (e, data) => {
+        console.log("blur");
+        this.setState(await handleBlur(e, data));
+    }
+
     render () {
         const gender_options = [
             { key: 'male', text: 'Male', value: 'male' },
@@ -249,8 +261,8 @@ class Profile extends Component{
                     <Card.Content description={
                          <Form onSubmit= {this.handleUpdate}>
                             <Form.Field>
-                                <label htmlFor="login">User name</label>
-                                <Input type="text" onChange={this.handleChange} name="login" value={ this.state.login } placeholder="User name" required></Input>
+                                <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor="login">User name {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
+                                <Input type="text" onChange={this.handleChange} onBlur={(this.state.oldLogin !== this.state.login) ? this.handleBlur : null} name="login" value={ this.state.login } placeholder="User name" required></Input>
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="first_name">First name</label>

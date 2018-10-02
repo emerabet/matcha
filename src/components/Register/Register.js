@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Card, Input, Form, Button } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import publicIp from 'public-ip';
+import { handleBlur } from '../../Tools/Form';
 
 class Register extends Component{
 
@@ -61,40 +62,7 @@ class Register extends Component{
     }
 
     handleBlur = async (e, data) => {
-        let query, result;
-        console.log("NAME", e.target.name);
-        switch (e.target.name) {
-            case 'email':
-                console.log("EMAIL");
-                query = `
-                query getEmail($email: String!) {
-                    getEmail(email: $email)
-                }
-                `;
-                result = await axios.post(`/api`, {   query: query,
-                    variables: { email: e.target.value }
-                });
-                console.log('data', result.data.data.getEmail);
-                this.setState({emailAlreadyTaken: result.data.data.getEmail});
-                break ;
-            case 'userName':
-                console.log("USER");
-                query = `
-                query getLogin($login: String!) {
-                    getLogin(login: $login)
-                }
-                `;
-                result = await axios.post(`/api`, {   query: query,
-                    variables: { login: e.target.value }
-                });
-                console.log('data', result.data.data.getLogin);
-                this.setState({userNameAlreadyTaken: result.data.data.getLogin});
-                console.log("USERNAME");
-                break ;
-            default:
-                console.log("DEFAULT");
-        }
-        console.log(e.target.name, e.target.value);
+        this.setState(await handleBlur(e, data));
     }
 
     render () {
