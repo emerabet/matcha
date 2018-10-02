@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 30, 2018 at 12:32 PM
+-- Generation Time: Oct 02, 2018 at 03:11 PM
 -- Server version: 5.7.23-0ubuntu0.18.04.1
 -- PHP Version: 7.2.10-0ubuntu0.18.04.1
 
@@ -34,9 +34,16 @@ CREATE TABLE `address` (
   `latitude` double NOT NULL,
   `longitude` double NOT NULL,
   `zipcode` varchar(20) NOT NULL,
-  `address` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
   `country` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `address`
+--
+
+INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES
+(1, 72, 48.8835, 2.3219, '75017', 'Paris', 'France');
 
 -- --------------------------------------------------------
 
@@ -72,6 +79,22 @@ CREATE TABLE `interest` (
   `user_id` int(11) NOT NULL,
   `tag` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `interest`
+--
+
+INSERT INTO `interest` (`user_id`, `tag`) VALUES
+(1, 'aaaaaa'),
+(1, 'erwreghgrn'),
+(1, 'hello'),
+(1, 'htiohp'),
+(1, 'wewe wewew'),
+(1, 'yo'),
+(26, 'bobo'),
+(26, 'dodo'),
+(71, 'qwerf'),
+(72, 'dfd');
 
 -- --------------------------------------------------------
 
@@ -159,8 +182,10 @@ CREATE TABLE `profil` (
 --
 
 INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES
-(1, 'fdgf', 'dfgh', 'gdhjyyyy', 5000, '2018-09-10'),
-(26, 'fdgf', 'dfgh', 'gdhj', 5000, '2018-09-10');
+(1, 'male', 'female', 'hello', 5000, '2018-10-30'),
+(26, 'fdgf', 'dfgh', 'gdhj', 5000, '2018-09-10'),
+(71, 'male', 'female', 'hello', 5000, '1970-01-02'),
+(72, 'male', 'other', 'Hello', 5000, '1970-01-03');
 
 -- --------------------------------------------------------
 
@@ -200,14 +225,16 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES
-(1, 'aaaa', 'aaaa@fdg.fr', 'esgrdhg', 'sfdg', 'test', 'wafesdhj', 'fdsgh', '2018-09-26 15:52:35', '2018-09-26 15:52:35', 1, 1),
+(1, 'aaaa', 'aaaa@fdg.fr', 'esgrdhg', 'sfdg', '$2b$10$xWk9YyhZIprSPh7i8ws2qORkyg7/grHWE07OW1gb0CP5nnYl/T3B2', 'wafesdhj', 'fdsgh', '2018-09-26 15:52:35', '2018-09-26 15:52:35', 1, 1),
 (26, 'dfsg', 'ee', 'ee', 'ee', 'ee', 'sadas', 'asdad', '2018-09-27 19:06:32', '2018-09-27 19:06:32', 1, 0),
 (31, 'leo', 'leo@leo.com', 'leo', 'leo', 'leo', 'sadas', 'asdad', '2018-09-28 17:40:07', '2018-09-28 17:40:07', 1, 0),
 (40, 'sdfg', 'honorhim@hotmail.fr', 'leo', 'LEO TARO', 'adsfdg', 'sadas', 'asdad', '2018-09-28 17:43:13', '2018-09-28 17:43:13', 1, 0),
 (43, 'leoh', 'el@de.fr', 'lerw', 'leo', 'erth', 'sadas', 'asdad', '2018-09-28 17:45:07', '2018-09-28 17:45:07', 1, 0),
 (68, 'leosfd', 'fujimoto.leotaro@hotmail.fr', 'ewf', 'w', 'sdf', 'sadas', 'asdad', '2018-09-28 18:11:04', '2018-09-28 18:11:04', 1, 0),
 (69, 'hello', 'honorhim@hotmail.fr', 'wqefwg', 'leo', '$2b$10$//Wtt5MbYIYxgunYSedgDOB5TCVgXTfhXdop3n1pndR13MwsH8DsO', 'sadas', 'asdad', '2018-09-28 18:25:55', '2018-09-28 18:25:55', 1, 0),
-(70, 'llll', 'lfujimot@student.42.fr', 'lll', 'lll', '$2b$10$L2ScRfKiPwshnwFzlhDuUO/pytGAJbpQfpYxB37HImJCRziYpJUs6', 'sadas', 'asdad', '2018-09-28 18:26:29', '2018-09-28 18:26:29', 1, 0);
+(70, 'llll', 'lfujimot@student.42.fr', 'lll', 'lll', '$2b$10$L2ScRfKiPwshnwFzlhDuUO/pytGAJbpQfpYxB37HImJCRziYpJUs6', 'sadas', 'asdad', '2018-09-28 18:26:29', '2018-09-28 18:26:29', 1, 0),
+(71, 'a', 'a@a.fr', 'a', 'a', '$2b$10$SsqisUoxeSXuQVjZyVXaT.SOjKbHjyVA4QYJ2QknB.FeeO5/Af5EG', 'sadas', 'asdad', '2018-10-01 17:37:27', '2018-10-01 17:37:27', 1, 0),
+(72, 'q', 'q@q.fr', 'q', 'q', '$2b$10$zdrfRJ8o3uK1nZlKkRnrUOQZquKt.mVrp8db60jh18321Ng7z02LC', 'sadas', 'asdad', '2018-10-01 17:39:54', '2018-10-01 17:39:54', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -329,7 +356,7 @@ ALTER TABLE `visit`
 -- AUTO_INCREMENT for table `address`
 --
 ALTER TABLE `address`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `chat`
 --
@@ -354,7 +381,7 @@ ALTER TABLE `picture`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 --
 -- AUTO_INCREMENT for table `visit`
 --
