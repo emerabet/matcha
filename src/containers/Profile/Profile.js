@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Checkbox, Card, Input, Select, Form, Button, TextArea } from 'semantic-ui-react';
+import { Checkbox, Card, Input, Select, Form, Button, TextArea, Image } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import ip from 'ip';
 import TopMenu from '../../components/Menu/TopMenu';
@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import publicIp from 'public-ip';
 import Chips from 'react-chips';
+import './Profile.css';
 
 let geolocation;
 
@@ -40,23 +41,12 @@ class Profile extends Component{
     }
     
     handleChange = async (e, data) => {
-        if (data.name === "share_location") {
-            const { name, checked } = data;
-            
-            this.setState({ [name]: checked ? 1 : 0 });
-            geolocation = navigator.geolocation;
-            await geolocation.getCurrentPosition((position) => {
-                console.log(position);
-                console.log(ip.address());
-            });
-            console.log(ip.address());
-        } else if (data.name === "gender" || data.name === "orientation") {
-            const { name, value } = data;    
-            this.setState({ [name]: value });
-        }else {
-            const { name, value } = e.target;
-            this.setState({ [name]: value });
-        }
+        if (data.name === "share_location")
+            this.setState({ [data.name]: data.checked ? 1 : 0 });
+        else if (data.name === "gender" || data.name === "orientation") 
+            this.setState({ [data.name]: data.value });
+        else 
+            this.setState({ [e.target.name]: e.target.value });
     }
 
     async componentDidMount() {
@@ -65,7 +55,7 @@ class Profile extends Component{
                                    tag
                                 }                   
                             }`;
-        
+        // getting the list of all tags from the api
         const res = await axios.post(`/api`,
         {
             query: query_tags
@@ -95,7 +85,6 @@ class Profile extends Component{
                     `;
 
         const token = sessionStorage.getItem("token");
-        console.log(token);
 
         axios.post(`/api`,
             {
@@ -133,13 +122,12 @@ class Profile extends Component{
                     
                 }
                 else
-                    console.log("TOAST", response.data.errors[0].statusCode, response.data.errors[0].message);
+                    toast("Error while getting your profile. Please try to unlog and the relog !", {type: toast.TYPE.ERROR});
                 return response.data.data;
             });
     }
 
     updateUserInfo = async (ip, latitude = 0, longitude = 0) => {
-        console.log('in handle register');
         const query = `
                         mutation updateUser($token: String!, $user: AddUserInput!, $profile: AddProfileInput!, $address: AddAddressInput!) {
                             updateUser(token: $token, user: $user, profile: $profile, address: $address)
@@ -181,8 +169,7 @@ class Profile extends Component{
             address: address
             }
         });
-        console.log("RES", result.data.errors);
-        console.log('data', result.data.data);
+
         if (!result.data.errors)
             toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
         else
@@ -194,38 +181,22 @@ class Profile extends Component{
         const ip = await publicIp.v4();
         console.log("V4", ip);
             
-                //this.setState({ip: ip});
-                /*
-                axios.get(`http://api.ipstack.com/${ip}?access_key=a823fdd32ddeb63456e4e7f70f808812`)
-                .then((result) => {
-                    console.log("LOCATION", result.data);
-                    this.setState({latitude: result.data.latitude, longitude: result.data.longitude});
-                });*/
-                //=> '46.5.21.123'
-            
         if (this.state.share_location === 1) {
             geolocation = navigator.geolocation;
-            console.log("GEOLOC");
             geolocation.getCurrentPosition((position) => {
-                console.log("geoloc pos", position);
                 this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
             });
-        } else {
+        } else
             this.updateUserInfo(ip);
-        }
-        
     }
 
     handleAddChip = (chip) => {
-        console.log("CHIP", chip);
         const chips = [...this.state.tags, chip];
         this.setState({tags: chips});
     }
 
     handleDeleteChip = (chip, index) => {
-        console.log("INDEX", index);
         const chips = this.state.tags.filter((element) => {
-            console.log(element);
             return element !== chip;
         });
         this.setState({tags: chips});
@@ -237,38 +208,17 @@ class Profile extends Component{
         });
       };
     
-
-    
-      /*onKeyPress = (e, data) => {
-          console.log(e.key);
-          console.log(e.value);
-          if (e.key === 'Enter') {
-                console.log(this.state.tag);
-                this.handleAddChip(this.state.tag);
-                this.setState({tag: ""});
-            //  console.log(data.value);
-          }
-       //   console.log(data);
-      }
-*/
-      onTagChange = async tags => {
-          const old_tags = this.state.tags;
-          console.log("TAGS", tags);
-          console.log("FILTER", tags.filter(elem => {
-            return old_tags.indexOf(elem) === -1;
-        }));
+    onTagChange = async tags => {
+        const old_tags = this.state.tags;
         await this.setState({ new_tags: tags.filter(elem => {
                 return old_tags.indexOf(elem) === -1;
             }) 
         });
         await this.setState({ delete_tags: old_tags.filter(elem => {
             return tags.indexOf(elem) === -1;
-        }) 
-    });
-
-        console.log("NEW TAGS", this.state.new_tags);
-        console.log("DELETE TAGS", this.state.delete_tags);
-      }
+            }) 
+        });
+    }
 
     render () {
         const gender_options = [
@@ -295,7 +245,7 @@ class Profile extends Component{
                 <ToastContainer />
                 <TopMenu />
                 <Card style={styles.card} centered>
-                    <Card.Content header={`${this.state.login} (${ this.state.popularity } pts)`} />
+                    <Card.Content header={ <div><Image src='/images/wireframe/square-image.png' size='medium' rounded /> <label className="login">{` ${this.state.login} (${ this.state.popularity } pts)`}</label> </div>} />
                     <Card.Content description={
                          <Form onSubmit= {this.handleUpdate}>
                             <Form.Field>

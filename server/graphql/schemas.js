@@ -54,7 +54,7 @@ exports.registerSchema = buildSchema(`
     }
         
     type Mutation {
-        addUser(user: AddUserInput!): Int,
+        addUser(user: AddUserInput!, address: AddAddressInput!): Int,
         updateUser(token: String!, user: AddUserInput!, profile: AddProfileInput!, address: AddAddressInput!): String
     }
 

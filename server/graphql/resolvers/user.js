@@ -31,7 +31,8 @@ const mergeResults = (parent, child, property, { parentCmp, childCmp }) => {
 }
 
 module.exports = {
-    addUser: async ({ user }) => {
+    addUser: async ({ user, address }) => {
+        console.log("ADDRESS", address);
         console.log("user to add in db", user);
         var hash = bcrypt.hashSync(user.password, 10);
         let sql = "INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES (NULL, ?, ?, ?, ?, ?, 'sadas', 'asdad', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1', '0');"; 
@@ -39,6 +40,14 @@ module.exports = {
             sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash]);
             const result = await db.conn.queryAsync(sql);
             console.log("ID", result.insertId);
+            
+            const add = await axios.get(`http://api.ipstack.com/${address.ip}?access_key=${config.IPSTACK_KEY}`);
+            console.log("LOCATION", add.data);
+            sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
+            sql = mysql.format(sql, [result.insertId, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
+            console.log("SQL", sql);
+            const res = await db.conn.queryAsync(sql);
+            console.log("ID", res[0]);
             return result.insertId;
         } catch (err) {
             console.log("ERR", err);

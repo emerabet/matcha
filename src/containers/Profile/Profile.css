@@ -24,6 +24,11 @@
     display: inline-block;
 }
 
+.login {
+    font-weight: bold;
+    font-size: 20px;
+}
+
 .Profile > input {
     width: 100%;
     padding: 12px 20px;

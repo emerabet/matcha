@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 02, 2018 at 04:59 PM
+-- Generation Time: Oct 02, 2018 at 05:49 PM
 -- Server version: 5.7.23-0ubuntu0.18.04.1
 -- PHP Version: 7.2.10-0ubuntu0.18.04.1
 
@@ -743,7 +743,8 @@ INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcod
 (800, 509, -15.758728, 160.13543, '22837', 'Rhiannaport', 'Trinidad and Tobago'),
 (801, 362, 43.864497, 118.147915, '16809', 'Wehnermouth', 'Brunei Darussalam'),
 (802, 457, -32.335156, 172.638957, '07138-6576', 'Lake Gretaland', 'Paraguay'),
-(803, 696, -31.441156, 98.687389, '29548', 'Lake Kristianstad', 'Gambia');
+(803, 696, -31.441156, 98.687389, '29548', 'Lake Kristianstad', 'Gambia'),
+(804, 777, 48.8835, 2.3219, '75017', 'Paris', 'France');
 
 -- --------------------------------------------------------
 
@@ -1429,10 +1430,8 @@ INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `pas
 (1, 'aaaa', 'aaaa@fdg.fr', 'esgrdhg', 'sfdg', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'wafesdhj', 'fdsgh', '2018-09-26 15:52:35', '2018-09-26 15:52:35', 1, 1),
 (26, 'dfsg', 'ee', 'ee', 'ee', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-09-27 19:06:32', '2018-09-27 19:06:32', 1, 0),
 (31, 'leo', 'leo@leo.com', 'leo', 'leo', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-09-28 17:40:07', '2018-09-28 17:40:07', 1, 0),
-(40, 'sdfg', 'honorhim@hotmail.fr', 'leo', 'LEO TARO', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-09-28 17:43:13', '2018-09-28 17:43:13', 1, 0),
 (43, 'leoh', 'el@de.fr', 'lerw', 'leo', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-09-28 17:45:07', '2018-09-28 17:45:07', 1, 0),
 (68, 'leosfd', 'fujimoto.leotaro@hotmail.fr', 'ewf', 'w', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-09-28 18:11:04', '2018-09-28 18:11:04', 1, 0),
-(69, 'hello', 'honorhim@hotmail.fr', 'wqefwg', 'leo', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-09-28 18:25:55', '2018-09-28 18:25:55', 1, 0),
 (70, 'llll', 'lfujimot@student.42.fr', 'lll', 'lll', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-09-28 18:26:29', '2018-09-28 18:26:29', 1, 0),
 (71, 'a', 'a@a.fr', 'a', 'a', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-10-01 17:37:27', '2018-10-01 17:37:27', 1, 0),
 (72, 'q', 'q@q.fr', 'q', 'q', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-10-01 17:39:54', '2018-10-01 17:39:54', 1, 1),
@@ -1612,9 +1611,9 @@ INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `pas
 (246, 'maryam.parker', 'evandervort@example.net', 'Lemke', 'Neal', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'd1fe80c5914905d2b1fb0df5363694da974dcc99', 'eb0edc7b644dfb02c2021d7b8a1f73959fe55a0a', '1974-10-27 00:00:00', '1976-07-03 08:35:48', 6, 0),
 (247, 'bmiller', 'baylee.rice@example.org', 'Hahn', 'Amparo', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '503f03b2b0785b892877d89fc35abd2682dad0bc', 'b849aaafdc638fbb8a8fa7e9209075c672c09328', '1995-06-04 00:00:00', '1998-04-20 22:43:38', 6, 1),
 (248, 'urban.becker', 'ruecker.vilma@example.org', 'Runolfsdottir', 'Irwin', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'c3ba74483d528ba1d008bdff914f76811b744d38', 'dc941889c8bc89f50555d127067cb7b0ee278063', '1986-12-28 00:00:00', '1971-04-29 06:35:44', 7, 0),
-(249, 'qrath', 'bernier.hollis@example.com', 'Kozey', 'Margaret', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '654c9446465318c23def2b5e17ee345384c3aa6a', 'd2409229d40b36957df299ceffaf85df96952151', '2000-07-29 00:00:00', '1985-05-26 03:25:06', 6, 1);
+(249, 'qrath', 'bernier.hollis@example.com', 'Kozey', 'Margaret', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '654c9446465318c23def2b5e17ee345384c3aa6a', 'd2409229d40b36957df299ceffaf85df96952151', '2000-07-29 00:00:00', '1985-05-26 03:25:06', 6, 1),
+(250, 'bogan.hanna', 'garnet.hartmann@example.org', 'Schaefer', 'Kailey', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '77b474d6c7764e57e1e879bb757897be3f9a9fdc', '0463d2de4449242ac1061d8743a543817afe8776', '2018-06-09 00:00:00', '2001-03-22 16:20:25', 7, 0);
 INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES
-(250, 'bogan.hanna', 'garnet.hartmann@example.org', 'Schaefer', 'Kailey', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '77b474d6c7764e57e1e879bb757897be3f9a9fdc', '0463d2de4449242ac1061d8743a543817afe8776', '2018-06-09 00:00:00', '2001-03-22 16:20:25', 7, 0),
 (251, 'macy.konopelski', 'owiza@example.org', 'Littel', 'Ludwig', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '2c6f4b1919380919ef4ac2a44ec88d1fcfaee865', 'd6e202d2bdc253af4ebbad9cbea75787fdbb40b8', '1981-06-10 00:00:00', '2009-06-13 03:30:08', 7, 0),
 (252, 'emiliano.o\'reilly', 'fdicki@example.com', 'Bechtelar', 'Margarette', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '68f27ba41370147a9e731523fbf9aff08d4313d8', '31462d133ee0e8de6af5833f2f2901958f9f64e9', '1979-11-12 00:00:00', '1974-12-25 15:45:33', 3, 1),
 (253, 'evangeline13', 'eo\'keefe@example.net', 'Koepp', 'Tyler', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '65c0dd7e8b816f15ea7b39ce0e616859dbb17299', '33e99e7bbaa11e664b6b0d5f4092cfdd93769a10', '1989-01-22 00:00:00', '1994-03-12 19:37:25', 3, 1),
@@ -1796,9 +1795,9 @@ INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `pas
 (429, 'kuhn.alberta', 'wehner.abner@example.net', 'Mann', 'Alejandra', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'f2e45d7b3cf5a612a9b9ad98c271b7113dcf592f', '060b61ec83697343966ef097b810443d6f9c5687', '2012-04-06 00:00:00', '1984-11-08 16:16:56', 1, 0),
 (430, 'chadrick.medhurst', 'sierra.heller@example.org', 'Douglas', 'Maci', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '8f419a92e34935a5551364c5e15bae548262a9db', '84ccde4422db5ed2c79b423cadf1ba7482ce3728', '1993-01-12 00:00:00', '1995-05-21 12:27:18', 3, 1),
 (431, 'purdy.stella', 'mozelle.kautzer@example.org', 'Cummerata', 'Terry', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'b6c044f28937b0862fcd38797ffb9015aedd62c5', '5ff56c711233d97ce5d42ee90c2e6009bdd552e8', '2017-12-26 00:00:00', '2009-12-20 04:04:06', 8, 1),
-(432, 'vada56', 'forest68@example.com', 'Hirthe', 'Jacinthe', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '36fbc405b2aeca6c541a62b3a092cf77009ba176', '10a3d6f2d87b51767510a3e20e72c67f18073cda', '2001-09-20 00:00:00', '1983-09-08 19:39:44', 1, 0);
+(432, 'vada56', 'forest68@example.com', 'Hirthe', 'Jacinthe', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '36fbc405b2aeca6c541a62b3a092cf77009ba176', '10a3d6f2d87b51767510a3e20e72c67f18073cda', '2001-09-20 00:00:00', '1983-09-08 19:39:44', 1, 0),
+(433, 'purdy.alexander', 'ymiller@example.net', 'Deckow', 'Jerome', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '67590188b81dd4246c5fe15cfbca409e0cf5981e', '02ce0dd0003a26615661ac3978a4b3aada9314fc', '2003-11-30 00:00:00', '2002-05-14 08:43:30', 7, 0);
 INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES
-(433, 'purdy.alexander', 'ymiller@example.net', 'Deckow', 'Jerome', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '67590188b81dd4246c5fe15cfbca409e0cf5981e', '02ce0dd0003a26615661ac3978a4b3aada9314fc', '2003-11-30 00:00:00', '2002-05-14 08:43:30', 7, 0),
 (434, 'katrine06', 'pjohns@example.org', 'Gottlieb', 'Alexander', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'ea7175eebc6ac60b1e84de5c8090f9e1c60e6475', 'c0bf45eeeb5e19daa4f3574b02af6b7a96a53b1c', '2015-03-07 00:00:00', '2011-02-27 00:43:09', 8, 0),
 (435, 'hugh77', 'jwhite@example.com', 'Torphy', 'Mylene', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '1e172df122490a3a2bee34961b29b5a083ee00be', 'e28519f8ea8bd9189435ccb90c060b75747a3136', '1976-11-06 00:00:00', '1987-04-07 06:57:09', 4, 1),
 (436, 'daniel.jamar', 'qemard@example.org', 'Wiegand', 'Tanya', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'fa0321d8ecd9b11cd97163c2543f9958a84f2f62', '0eaea6b8e5734ed7e65188730f6d19fe8a17ee5c', '2015-10-13 00:00:00', '2000-10-24 18:23:17', 9, 0),
@@ -1980,9 +1979,9 @@ INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `pas
 (612, 'odessa87', 'beier.nora@example.org', 'Fisher', 'Rogers', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '04c3092bdb8750193dcce263af3daedbcd1792c7', '1df027ccc084f54a4e3353ba3f76c62718cfc453', '1973-09-26 00:00:00', '1978-03-07 22:43:44', 2, 0),
 (613, 'mpredovic', 'deshaun10@example.net', 'Streich', 'Morgan', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'd387b23fb133ed57352929dcdbfee483f7379fa9', '49d171e6e00eb003eeeff674c25a3443eea3d944', '1985-03-18 00:00:00', '2004-05-30 01:12:53', 3, 0),
 (614, 'sylvia.langworth', 'mpredovic@example.com', 'Cummings', 'Dejuan', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '4913e2f5110a65c32d26161caae3a697ac7fcc83', 'd8f4f769a1a6006054d7cff6a0d8779f881d3cb5', '2009-05-18 00:00:00', '2005-02-08 19:51:45', 4, 1),
-(615, 'devon66', 'elinore15@example.com', 'Lind', 'Marcel', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'fdc1f00940c2bc093f6586ae00ea2e16da95425c', '03b4f24539a7adb345b2d3719899ea7ccb47dd19', '2007-10-25 00:00:00', '2018-05-15 05:28:13', 5, 0);
+(615, 'devon66', 'elinore15@example.com', 'Lind', 'Marcel', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'fdc1f00940c2bc093f6586ae00ea2e16da95425c', '03b4f24539a7adb345b2d3719899ea7ccb47dd19', '2007-10-25 00:00:00', '2018-05-15 05:28:13', 5, 0),
+(616, 'chasity.block', 'ewald28@example.net', 'Schinner', 'Vincent', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '39e2ba15c3c3b05ddad0166f99ec45af1b683dab', '5660b88723b52e5108a4670de0652ec59a91fdf6', '2000-06-30 00:00:00', '1982-10-02 07:05:10', 3, 1);
 INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES
-(616, 'chasity.block', 'ewald28@example.net', 'Schinner', 'Vincent', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '39e2ba15c3c3b05ddad0166f99ec45af1b683dab', '5660b88723b52e5108a4670de0652ec59a91fdf6', '2000-06-30 00:00:00', '1982-10-02 07:05:10', 3, 1),
 (617, 'carli26', 'jacquelyn00@example.net', 'Jacobs', 'Pearline', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '1ec8bbb3444f594290d4932ea6c0318bcb4c4691', 'aeadf25280db9d935612fa53e44dddd55175eedf', '2017-05-06 00:00:00', '2014-01-31 16:27:20', 3, 0),
 (618, 'vandervort.brooks', 'ogleichner@example.org', 'Beatty', 'Marcos', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'e84e87ebc5afe965266813f0eb07d7eed15ff045', '49a163fb64241dc0d83dbf615818a104921d2929', '1971-04-22 00:00:00', '1972-02-13 10:13:42', 2, 0),
 (619, 'imurazik', 'grimes.darien@example.com', 'Spinka', 'Samantha', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'd8d81b38803d1a94a4c79c221df312ae750d5dda', '2c7587295fc3697eaff61afc51ff99a2de8a3012', '1971-01-31 00:00:00', '1981-10-12 18:07:29', 3, 0),
@@ -2139,7 +2138,11 @@ INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `pas
 (770, 'lisette16', 'tstamm@example.org', 'Johnson', 'Birdie', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '8ce63346d6d5a6fb4cda0f4c417a667f77d21daf', 'c2072d7e89c743d3d9dec9c8a46189cab9558e74', '1978-06-09 00:00:00', '2012-04-27 18:04:54', 9, 1),
 (771, 'malcolm.d\'amore', 'evans10@example.com', 'Block', 'Lorenza', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', '768e0a80a5872b3e55f9564bcc0be7332e97a8aa', '3f5afcdbcc815c4dffed573dee688202d74d0c7a', '2008-05-10 00:00:00', '2001-02-03 18:04:03', 5, 1),
 (772, 'vwilkinson', 'hagenes.rae@example.org', 'Bradtke', 'Devyn', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'fe89f15c6a2ee310174db59bc5e16be04cde385f', '86a0221b2c3560af2f1a721adc7f70a8cbc59e9d', '1986-05-06 00:00:00', '1987-10-24 14:12:01', 8, 0),
-(773, 'eric', 'eric@eric.com', 'm', 'eric', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-10-02 16:21:22', '2018-10-02 16:21:22', 1, 0);
+(773, 'eric', 'eric@eric.com', 'm', 'eric', '$2b$10$kROjlxYDdBDTEfNn1yfQgO3wfYqPEAdFr7hlt48QMRAFqnoX/qdzi', 'sadas', 'asdad', '2018-10-02 16:21:22', '2018-10-02 16:21:22', 1, 0),
+(774, 'wfegewtyrhj', 'waefhtrjy@wewrtetyhryj.fgt', 'erwkyu', 'ewthr', '$2b$10$8USb2stccSNJICS.kKZ2zei2XDO8FFFTfwLBc220w7DZr7COH9aU2', 'sadas', 'asdad', '2018-10-02 17:36:01', '2018-10-02 17:36:01', 1, 0),
+(775, 'wqer3wt5y46u', 'rwetyujkjj@weqrgth.reg', '5t6yu7oiliuyt5', '45y6u7ioi', '$2b$10$fC47kUEah8cCUpYemq85..qbnvp2lAvMPAFzaPMBkY30D4Zngx4Kq', 'sadas', 'asdad', '2018-10-02 17:37:41', '2018-10-02 17:37:41', 1, 0),
+(776, 'qwretyruj', 'wqert@werght.fr', 'wqeeretyj', 'ewq3reytj', '$2b$10$r5EBzIRvVR6D3CGsChGkDeRxn/zQlhv6SSThmFsIl2Nuc.ZrukW0K', 'sadas', 'asdad', '2018-10-02 17:40:03', '2018-10-02 17:40:03', 1, 0),
+(777, 'yooo', 'yooo@yo.yo', 'yooo', 'yooo', '$2b$10$86CyZnT80DxOHTlQbPGVwelQnX1sigP4YKr68HSSS/Q0Lzn9bt0Ku', 'sadas', 'asdad', '2018-10-02 17:43:13', '2018-10-02 17:43:13', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -2243,7 +2246,8 @@ ALTER TABLE `reported`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `login` (`login`);
+  ADD UNIQUE KEY `login` (`login`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `visit`
@@ -2261,7 +2265,7 @@ ALTER TABLE `visit`
 -- AUTO_INCREMENT for table `address`
 --
 ALTER TABLE `address`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=804;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=805;
 --
 -- AUTO_INCREMENT for table `chat`
 --
@@ -2286,7 +2290,7 @@ ALTER TABLE `picture`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=774;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=778;
 --
 -- AUTO_INCREMENT for table `visit`
 --
