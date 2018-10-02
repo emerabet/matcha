@@ -4,6 +4,8 @@ import Listview from './../../components/Listview/Listview';
 import { Divider } from 'semantic-ui-react';
 import axios from 'axios';
 
+import { buffer, point, polygon, pointsWithinPolygon, points } from '@turf/turf';
+
 
 class AdvancedSearch extends Component {
 
@@ -31,13 +33,30 @@ class AdvancedSearch extends Component {
                         }
                     `;
 
-        const results = await axios.post(`/api`, { query: query, variables: { extended: true } });
-        const res = await axios.post('/api', { query: `query getTags { getTags { tag } }`});
+        const users = await axios.post(`/api`, { query: query, variables: { extended: true } });
+        const tags = await axios.post('/api', { query: `query getTags { getTags { tag } }`});
         await this.setState({ 
-            users : results.data.data.getUsers, 
-            filteredUsers : results.data.data.getUsers,
-            tags: res.data.data.getTags
+            users : users.data.data.getUsers, 
+            filteredUsers : users.data.data.getUsers,
+            tags: tags.data.data.getTags
         });
+        this.withinArea(this.state.users, 200);
+    }
+
+    withinArea = (users, distance = 5) => {
+        const pt = point([+48.8966021, +2.3189172]);
+        const buffered = buffer(pt, distance, {units: 'kilometers'});
+/*
+        var searchWithin = polygon(buffered);
+        var ptsWithin = pointsWithinPolygon([pt], searchWithin.geometry.coordinates);
+*/
+        var pts = points([[48.8966021, 2.3189172]]);
+        var searchWithin = polygon(buffered.geometry.coordinates);
+        var ptsWithin = pointsWithinPolygon(pts, searchWithin);
+
+        console.log("   -----   BUFFER   -----   ");
+    //  console.log(buffered);
+        console.log(ptsWithin);
     }
 
     handleFilter = (filters) => {

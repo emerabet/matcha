@@ -30,6 +30,7 @@ class App extends Component {
       <Switch>
         <Route path="/home" exact component={ Home }/>
         <Route path="/profile" exact component={ Profile }/>
+        <Route path="/search" exact component={ AdvancedSearch }/>
         <Redirect from="/" to="/home"/>
       </Switch>
       )

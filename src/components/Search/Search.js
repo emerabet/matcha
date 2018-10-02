@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Range } from 'rc-slider';
+import Slider from 'rc-slider';
 import { Button, Form, Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
@@ -9,6 +10,7 @@ class Search extends Component {
     state = {
         age: { min: 26, max: 38 },
         popularity: { min: 60, max: 85 },
+        distance: 30,
         tag: []
     }
 
@@ -55,6 +57,13 @@ class Search extends Component {
         this.props.handleFilter(this.state);
     }
 
+    handleChangeDistance = async (value) => {
+        await this.setState({ 
+            distance: value
+        });
+        
+    }
+
     render () {
         return (
             <Form>
@@ -65,6 +74,10 @@ class Search extends Component {
                 <Form.Field>
                     <label>Popularity</label>
                     <Range onChange = { this.handleChangePopularity } min={ 0 } max={ 100 } defaultValue={[60, 85]} />
+                </Form.Field>
+                <Form.Field>
+                    <label>Distance</label>
+                    <Slider onChange = { this.handleChangeDistance } min={ 5 } max={ 100 } defaultValue={ 30 } />
                 </Form.Field>
                 <Form.Field>
                     <label>Tag</label>
