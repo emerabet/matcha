@@ -63,6 +63,8 @@ exports.registerSchema = buildSchema(`
         getUser(token: String!, extended: Boolean): User,
         getUsers(extended: Boolean): [User],
         getTags: [Tag],
-        getAllTags: [Tag]
+        getAllTags: [Tag],
+        getLogin(login: String!): Boolean,
+        getEmail(email: String!): Boolean
     }
 `);

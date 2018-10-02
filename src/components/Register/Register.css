@@ -1,11 +1,12 @@
-.Container {
+.Register_Container {
     width: 100%;
-    height: 100vh;
-    display: flex;
+    padding-top: 5vw;
+    padding-bottom: 5vw;
+    /*display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    flex-wrap: wrap;
+    flex-wrap: wrap;*/
     background-image: linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%);
 }
 
