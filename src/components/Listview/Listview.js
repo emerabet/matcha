@@ -3,7 +3,9 @@ import { Card } from 'semantic-ui-react'
 
 class Listview extends Component {
 
-    
+    state = {
+        totalPerPage: 20
+    }
 
     FillUsers = (users) => {
 
@@ -21,14 +23,10 @@ class Listview extends Component {
                          extra={extra}
                     />
         });
-        
-        console.log(array);
-       return (<Card.Group itemsPerRow={6} stackable> { array } </Card.Group>);
+       return (<Card.Group itemsPerRow={4} stackable> { array } </Card.Group>);
     };
 
     render () {
-
-        console.log("render listview:", this.props.users);
         console.log("count:", this.props.users.length);
         return (
             <div>

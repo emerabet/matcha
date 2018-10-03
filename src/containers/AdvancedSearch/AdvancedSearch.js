@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Search from './../../components/Search/Search';
 import Listview from './../../components/Listview/Listview';
-import { Divider } from 'semantic-ui-react';
+import { Divider, Icon, Pagination  } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
@@ -13,6 +13,10 @@ class AdvancedSearch extends Component {
     state = {
         users: null,
         filteredUsers: null,
+        pagedUsers: null,
+        itemsPerPage: 12,
+        activePage:1, 
+        nbPages: 60,
         tags: null,
         lastDistanceChecked: 50
     }
@@ -39,11 +43,20 @@ class AdvancedSearch extends Component {
 
         const users = await axios.post(`/api`, { query: query, variables: { extended: true } });
         const tags = await axios.post('/api', { query: `query getTags { getTags { tag } }`});
+
+        const nbPages = this.calculPagination(users.data.data.getUsers.length, this.state.itemsPerPage);
+        const paged = this.paginate(users.data.data.getUsers, this.state.itemsPerPage, this.state.activePage); 
+
         await this.setState({ 
             users : users.data.data.getUsers, 
             filteredUsers : users.data.data.getUsers,
-            tags: tags.data.data.getTags
-        });
+            pagedUsers: paged,
+            tags: tags.data.data.getTags,
+            nbPages: nbPages
+        }); 
+        console.log(users.data.data.getUsers);
+        console.log("------------");
+        console.log(this.state.users);
 
         this.withinArea(this.state.lastDistanceChecked);
     }
@@ -91,19 +104,59 @@ class AdvancedSearch extends Component {
             && (filters.tag.every((value) => {
                 return itm.tags.some((v) => v.tag == value);
             })))
-            
-            return true;
+                return true;
         });
 
-        this.setState({ filteredUsers: filtered });
+        console.log(filtered);
+        const nbPages = this.calculPagination(filtered.length, this.state.itemsPerPage);
+        const paged = this.paginate(filtered, this.state.itemsPerPage, 1); 
+
+        this.setState({ 
+            filteredUsers: filtered,
+            pagedUsers: paged,
+            nbPages: nbPages,
+            activePage: 1
+         });
+    }
+
+    calculPagination = (itemsTotal, itemsPerPage) => {
+        const count = itemsTotal;
+        const totalPages = Math.ceil(count / itemsPerPage);
+        return totalPages;
+    }
+
+    paginate = (array, itemsPerPage, activePage) => {
+        console.log("paginate");
+        const copy = JSON.parse(JSON.stringify(array));
+        return copy.slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage);
+    }
+
+    handlePageChange = (e, data) => {
+        console.log("pagechange");
+        const paged = this.paginate(this.state.filteredUsers, this.state.itemsPerPage, data.activePage);
+        this.setState({
+            pagedUsers: paged,
+            activePage: data.activePage
+        });
     }
 
     render() {
+        console.log("re-render");
         return (
             <div>
                 { this.state.users && <Search tags={ this.state.tags } handleFilter={ this.handleFilter }/> }
-                <Divider horizontal>Results</Divider>
-                { this.state.users && <Listview users={ this.state.filteredUsers }/> }
+                { this.state.users &&  <Divider horizontal>Results</Divider> }
+                { this.state.users && <Listview users={ this.state.pagedUsers }/> }
+                { this.state.users && <Pagination
+                    activePage={this.state.activePage}
+                    ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
+                    firstItem={{ content: <Icon name='angle double left' />, icon: true }}
+                    lastItem={{ content: <Icon name='angle double right' />, icon: true }}
+                    prevItem={{ content: <Icon name='angle left' />, icon: true }}
+                    nextItem={{ content: <Icon name='angle right' />, icon: true }}
+                    totalPages={this.state.nbPages} 
+                    onPageChange= {this.handlePageChange}
+                /> }
             </div>
         );
     }

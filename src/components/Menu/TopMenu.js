@@ -54,6 +54,14 @@ class TopMenu extends Component {
             <Icon name='wechat' />
             Chat
           </Menu.Item>
+
+          <Menu.Item
+            name='search'
+            active={this.state.activeItem === 'search'}
+            onClick={this.handleItemClick}
+          >
+            Search
+          </Menu.Item>
         </Menu>
 
 
