@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 02, 2018 at 05:49 PM
+-- Generation Time: Oct 03, 2018 at 02:57 PM
 -- Server version: 5.7.23-0ubuntu0.18.04.1
 -- PHP Version: 7.2.10-0ubuntu0.18.04.1
 
@@ -744,7 +744,9 @@ INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcod
 (801, 362, 43.864497, 118.147915, '16809', 'Wehnermouth', 'Brunei Darussalam'),
 (802, 457, -32.335156, 172.638957, '07138-6576', 'Lake Gretaland', 'Paraguay'),
 (803, 696, -31.441156, 98.687389, '29548', 'Lake Kristianstad', 'Gambia'),
-(804, 777, 48.8835, 2.3219, '75017', 'Paris', 'France');
+(804, 777, 48.8835, 2.3219, '75017', 'Paris', 'France'),
+(805, 778, 48.8835, 2.3219, '75017', 'Paris', 'France'),
+(806, 779, 48.8835, 2.3219, '75017', 'Paris', 'France');
 
 -- --------------------------------------------------------
 
@@ -960,7 +962,7 @@ CREATE TABLE `picture` (
   `picture_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `src` varchar(255) NOT NULL,
-  `prioriry` int(11) NOT NULL
+  `priority` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -2142,7 +2144,9 @@ INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `pas
 (774, 'wfegewtyrhj', 'waefhtrjy@wewrtetyhryj.fgt', 'erwkyu', 'ewthr', '$2b$10$8USb2stccSNJICS.kKZ2zei2XDO8FFFTfwLBc220w7DZr7COH9aU2', 'sadas', 'asdad', '2018-10-02 17:36:01', '2018-10-02 17:36:01', 1, 0),
 (775, 'wqer3wt5y46u', 'rwetyujkjj@weqrgth.reg', '5t6yu7oiliuyt5', '45y6u7ioi', '$2b$10$fC47kUEah8cCUpYemq85..qbnvp2lAvMPAFzaPMBkY30D4Zngx4Kq', 'sadas', 'asdad', '2018-10-02 17:37:41', '2018-10-02 17:37:41', 1, 0),
 (776, 'qwretyruj', 'wqert@werght.fr', 'wqeeretyj', 'ewq3reytj', '$2b$10$r5EBzIRvVR6D3CGsChGkDeRxn/zQlhv6SSThmFsIl2Nuc.ZrukW0K', 'sadas', 'asdad', '2018-10-02 17:40:03', '2018-10-02 17:40:03', 1, 0),
-(777, 'yooo', 'yooo@yo.yo', 'yooo', 'yooo', '$2b$10$86CyZnT80DxOHTlQbPGVwelQnX1sigP4YKr68HSSS/Q0Lzn9bt0Ku', 'sadas', 'asdad', '2018-10-02 17:43:13', '2018-10-02 17:43:13', 1, 0);
+(777, 'yooo', 'yooo@yo.yo', 'yooo', 'yooo', '$2b$10$86CyZnT80DxOHTlQbPGVwelQnX1sigP4YKr68HSSS/Q0Lzn9bt0Ku', 'sadas', 'asdad', '2018-10-02 17:43:13', '2018-10-02 17:43:13', 1, 0),
+(778, 'fffff', 'erwhy@qwerg.rfrgt', 'wrety', 'ewr', '$2b$10$uBkPfHxsapxA4DC5lik5J.WgbRJj7Cwus5q4vUJ6xx2t5kOLkYAVe', 'sadas', 'asdad', '2018-10-02 18:20:28', '2018-10-02 18:20:28', 1, 0),
+(779, 'dede', 'efgr@feghrt.fr', 'dede', 'deded', '$2b$10$uyre4pErC9oXbUIr26xh0.qbdwKHLyPgsf1lFfVnGjbSg8Jb/DOIu', 'sadas', 'asdad', '2018-10-02 18:22:17', '2018-10-02 18:22:17', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -2265,7 +2269,7 @@ ALTER TABLE `visit`
 -- AUTO_INCREMENT for table `address`
 --
 ALTER TABLE `address`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=805;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=807;
 --
 -- AUTO_INCREMENT for table `chat`
 --
@@ -2290,7 +2294,7 @@ ALTER TABLE `picture`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=778;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=780;
 --
 -- AUTO_INCREMENT for table `visit`
 --

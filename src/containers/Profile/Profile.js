@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Checkbox, Card, Input, Select, Form, Button, TextArea, Image } from 'semantic-ui-react';
+import { Checkbox, Card, Input, Select, Form, Button, TextArea, Image, Divider } from 'semantic-ui-react';
 import * as styles  from './Styles';
-import ip from 'ip';
 import TopMenu from '../../components/Menu/TopMenu';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -250,6 +249,21 @@ class Profile extends Component{
         }
     }
 
+    handleUpload = async (e) => {
+        console.log("file", e.target.value);
+        console.log("F", e.target.files[0]);
+
+        const data = new FormData();
+        data.append('file', e.target.files[0], sessionStorage.getItem('token'));
+        data.append('filename', "test.png");
+        data.append('token', sessionStorage.getItem("token"));
+        data.append('profile', 1);
+
+        const res = await axios.post('/upload_picture', data);
+        console.log("res", res);
+        console.log("UPLOADED");
+    }
+
     render () {
         const gender_options = [
             { key: 'male', text: 'Male', value: 'male' },
@@ -275,7 +289,21 @@ class Profile extends Component{
                 <ToastContainer />
                 <TopMenu />
                 <Card style={styles.card} centered>
-                    <Card.Content header={ <div><Image src='/pictures/smoke_by.png' size='medium' rounded /> <label className="login">{` ${this.state.oldLogin} (${ this.state.popularity } pts)`}</label> </div>} />
+                    <Card.Content header={ <div style={{display: "flex"}}>
+                        <div style={{width: "60px"}}>
+    <Image style={styles.picture} src='/pictures/smoke_by.png' size='tiny'  />
+    <Image style={styles.picture} src='/pictures/smoke_by.png' size='tiny'  />
+    <Image style={styles.picture} src='/pictures/smoke_by.png' size='tiny'  />
+    <Image style={styles.picture} src='/pictures/smoke_by.png' size='tiny'  />
+  </div>
+                                                        <div style={{marginLeft: "10px"}} >
+                                                        <input type="file" style={styles.hiddenInput} className="inputfile" onChange={this.handleUpload} id="embedpollfileinput" />
+                                                        <label style={{display: "flex", flexDirection: "column"}}htmlFor="embedpollfileinput" className="ui huge red left floated button">
+                                                            <Image style={{marginBottom: "5px"}} src='/pictures/smoke_by.png' size='medium' rounded />
+                                                            {` ${this.state.oldLogin} (${ this.state.popularity } pts)`}
+                                                        </label>
+                                                </div>
+                                            </div>} />
                     <Card.Content description={
                          <Form onSubmit= {this.handleUpdate}>
                             <Form.Field>

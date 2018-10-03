@@ -12,3 +12,15 @@ export const ok = {
 export const nok = {
     color: '#FF1744'
 }
+
+export const hiddenInput = {
+    width: '0.1px',
+    height: '0.1px',
+    opacity: '0',
+    overflow: 'hidden',
+    position: 'absolute',
+}
+
+export const picture = {
+    marginTop: "15px"
+}
