@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Image, Button, Icon } from 'semantic-ui-react';
+import { Grid, Image, Button, Icon, Segment } from 'semantic-ui-react';
 import axios from 'axios';
 
 
@@ -7,7 +7,9 @@ class Stalk extends Component {
 
     state = {
         isLiked: false,
-        user: null
+        user: null,
+        activeImage: null,
+        nbImage: 0
     }
 
     async componentDidMount() {
@@ -48,11 +50,12 @@ class Stalk extends Component {
         const user = await axios.post('/api', { query, variables: {
             token: token,
             extended: true, 
-            user_id2: 82
+            user_id2: 84
         }});
 
         this.setState({
-            user: user.data.data.getUser
+            user: user.data.data.getUser,
+            nbImage: user.data.data.getUser.pictures.length
         })
 
         console.log(this.state);
@@ -72,17 +75,35 @@ class Stalk extends Component {
     render() {
 
         let loaded = null;
+        let tags = [];
         
         if (this.state.user) {
+
+            tags = this.state.user.tags.map((item) => {
+                return item.tag;
+            });
+
             loaded = (<Grid stackable divided='vertically'>
                     <Grid.Row columns={2} divided>
                     <Grid.Column>
-                        <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+                        <Button.Group attached='top'>
+                            <Button><Icon name='angle left' /></Button>
+                            <Button><Icon name='angle right' /></Button>
+                        </Button.Group>
+                        <Segment attached>
+                            <Image src={this.state.user.pictures[1].src} />
+                        </Segment>
+                        <Button.Group attached='bottom'>
+                            <Button><Icon name='angle left' /></Button>
+                            <Button><Icon name='angle right' /></Button>
+                            <Button><Icon name='angle left' /></Button>
+                            <Button><Icon name='angle right' /></Button>
+                        </Button.Group>
                     </Grid.Column>
                     <Grid.Column>
                         <h5>Username: {this.state.user.login} ({this.state.user.age}))</h5>
-                        <h5>Localisation: France (Paris)</h5>
-                        <h5>Popularity: 80</h5>
+                        <h5>Localisation: {this.state.user.country} ({this.state.user.city})</h5>
+                        <h5>Popularity: {this.state.user.popularity}</h5>
                         <h5>Status: Online</h5>
                         <Button animated='vertical'>
                             <Button.Content hidden>Like</Button.Content>
@@ -101,10 +122,16 @@ class Stalk extends Component {
                     </Grid.Row>
 
                     <Grid.Row columns={1}>
-                    <Grid.Column>
-                        <h2>BIO</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, aliquam? Temporibus veritatis cupiditate, ipsum velit praesentium libero rem repellat natus tempora sint quaerat tenetur alias id architecto. Molestias, saepe sed.</p>
-                    </Grid.Column>
+                        <Grid.Column>
+                            <h2>BIO</h2>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, aliquam? Temporibus veritatis cupiditate, ipsum velit praesentium libero rem repellat natus tempora sint quaerat tenetur alias id architecto. Molestias, saepe sed.</p>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row columns={1}>
+                        <Grid.Column>
+                            <h2>TAGS</h2>
+                            <p>{ tags.join(', ')}</p>
+                        </Grid.Column>
                     </Grid.Row>
                 </Grid>);
         }
