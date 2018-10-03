@@ -11,9 +11,10 @@ exports.login = async (req, res) => {
     try {
         let sql =   `SELECT user.user_id, user.password, user.login, user.email, user.last_name, user.first_name, 
                             user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
-                            YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity 
+                            YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
                     FROM user 
                     LEFT JOIN profil on user.user_id = profil.user_id 
+                    LEFT JOIN address on user.user_id = address.user_id
                     WHERE login= ?`;
         sql = mysql.format(sql, req.body.login);
         
@@ -30,8 +31,10 @@ exports.login = async (req, res) => {
                 lastName: rows[0].last_name,
                 firstName: rows[0].first_name,
                 gender: rows[0].gender,
-                orientation: rows[0].orientation
-            }
+                orientation: rows[0].orientation,
+                latitude: rows[0].latitude,
+                longitude: rows[0].longitude
+            };
             res.status(200).send({ auth: true, token: token, user: user });
         } else {
             res.status(403).send({ auth: false, token: null });

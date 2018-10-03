@@ -71,9 +71,10 @@ module.exports = {
             console.log("user to get from db", userId);
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, 
                                 user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
-                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity 
+                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
                         FROM user 
                         LEFT JOIN profil on user.user_id = profil.user_id 
+                        LEFT JOIN address on user.user_id = address.user_id
                         WHERE user.user_id = ?;`; 
             sql = mysql.format(sql, userId);
             console.log(sql);
@@ -96,8 +97,9 @@ module.exports = {
             console.log("in get users");
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, 
                                 user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
-                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity 
+                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
                         FROM user 
+                        LEFT JOIN address on user.user_id = address.user_id
                         LEFT JOIN profil on user.user_id = profil.user_id;`; 
             const users = await db.conn.queryAsync(sql);
 
