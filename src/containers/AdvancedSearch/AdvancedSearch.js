@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Search from './../../components/Search/Search';
 import Listview from './../../components/Listview/Listview';
 import { Divider } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 import axios from 'axios';
 
 import { buffer, point, polygon, pointsWithinPolygon, points } from '@turf/turf';
@@ -12,7 +13,8 @@ class AdvancedSearch extends Component {
     state = {
         users: null,
         filteredUsers: null,
-        tags: null
+        tags: null,
+        lastDistanceChecked: 50
     }
 
     async componentDidMount () {
@@ -26,6 +28,8 @@ class AdvancedSearch extends Component {
                                 email,
                                 age,
                                 popularity,
+                                latitude,
+                                longitude,
                                 tags { 
                                     tag
                                 }
@@ -40,29 +44,50 @@ class AdvancedSearch extends Component {
             filteredUsers : users.data.data.getUsers,
             tags: tags.data.data.getTags
         });
-        this.withinArea(this.state.users, 200);
+
+        this.withinArea(this.state.lastDistanceChecked);
     }
 
-    withinArea = (users, distance = 5) => {
-        const pt = point([+48.8966021, +2.3189172]);
-        const buffered = buffer(pt, distance, {units: 'kilometers'});
-/*
-        var searchWithin = polygon(buffered);
-        var ptsWithin = pointsWithinPolygon([pt], searchWithin.geometry.coordinates);
-*/
-        var pts = points([[48.8966021, 2.3189172]]);
-        var searchWithin = polygon(buffered.geometry.coordinates);
-        var ptsWithin = pointsWithinPolygon(pts, searchWithin);
+    withinArea = async (distance = 5) => {
+        if (!this.props.user || !this.props.user.latitude || !this.props.user.longitude)
+            return ;
 
-        console.log("   -----   BUFFER   -----   ");
-    //  console.log(buffered);
-        console.log(ptsWithin);
+        const pt = point([this.props.user.latitude, this.props.user.longitude]);
+        const buffered = buffer(pt, distance, {units: 'kilometers'});
+
+        /* Copie en profondeur du tableau d'objets */
+        const newUsers = JSON.parse(JSON.stringify(this.state.users));
+
+        newUsers.forEach(element => {
+            if (element.latitude && element.longitude) {
+                const pts = points([[element.latitude, element.longitude]]);
+                const searchWithin = polygon(buffered.geometry.coordinates);
+                const ptsWithin = pointsWithinPolygon(pts, searchWithin);
+
+                if (ptsWithin.features.length > 0) {
+                    element.inArea = true;
+                }
+            } else {
+                element.inArea = false;
+            }
+        });
+
+        await this.setState({
+                                users: newUsers,
+                                lastDistanceChecked: distance
+                    });
     }
 
     handleFilter = (filters) => {
+
+        if (filters.distance !== this.state.lastDistanceChecked) {
+            this.withinArea(filters.distance);
+        }
+
         const filtered = this.state.users.filter((itm) => {
             if ((itm.age >= filters.age.min && itm.age <= filters.age.max)
             && (itm.popularity >= filters.popularity.min && itm.popularity <= filters.popularity.max)
+            && (itm.inArea === true)
             && (filters.tag.every((value) => {
                 return itm.tags.some((v) => v.tag == value);
             })))
@@ -84,4 +109,10 @@ class AdvancedSearch extends Component {
     }
 }
 
-export default AdvancedSearch;
+const mapStateToProps = state => {
+    return {
+        user: state.login.user
+    }
+}
+
+export default connect(mapStateToProps, null)(AdvancedSearch);

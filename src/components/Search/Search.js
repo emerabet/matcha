@@ -16,6 +16,8 @@ class Search extends Component {
 
     componentDidMount() {
         console.log("Component Search Did Mount");
+
+        console.log(this.props);
     }
 
     getTags = () => {
@@ -61,7 +63,8 @@ class Search extends Component {
         await this.setState({ 
             distance: value
         });
-        
+
+        this.props.handleFilter(this.state);       
     }
 
     render () {
@@ -89,4 +92,11 @@ class Search extends Component {
     }
 }
 
-export default connect(null, null)(Search);
+const mapStateToProps = state => {
+    return {
+        token: state.login.token,
+        user: state.login.user
+    }
+};
+
+export default connect(mapStateToProps, null)(Search);

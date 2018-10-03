@@ -13,7 +13,8 @@ const reducer = (state = initialState, action) => {
             console.log("token", action.data.token);
             console.log("user", action.data.user);
             nextState = { ...state,
-                        token: action.data.token };
+                        token: action.data.token,
+                        user: action.data.user };
             break ;
         case actions.LOGIN_FAIL:
             nextState = { ...state,
