@@ -275,7 +275,7 @@ class Profile extends Component{
                 <ToastContainer />
                 <TopMenu />
                 <Card style={styles.card} centered>
-                    <Card.Content header={ <div><Image src='/images/wireframe/square-image.png' size='medium' rounded /> <label className="login">{` ${this.state.oldLogin} (${ this.state.popularity } pts)`}</label> </div>} />
+                    <Card.Content header={ <div><Image src='/pictures/smoke_by.png' size='medium' rounded /> <label className="login">{` ${this.state.oldLogin} (${ this.state.popularity } pts)`}</label> </div>} />
                     <Card.Content description={
                          <Form onSubmit= {this.handleUpdate}>
                             <Form.Field>
