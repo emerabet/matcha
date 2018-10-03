@@ -27,12 +27,20 @@ exports.registerSchema = buildSchema(`
         bio: String
         birthdate: String
         popularity: Int,
-        tags: [Tag]
+        tags: [Tag],
+        pictures: [Picture]
     }
 
     type Tag {
         owner_id: Int
         tag: String
+    }
+
+    type Picture {
+        picture_id: Int
+        user_id: Int
+        src: String
+        priority: Int
     }
 
     input AddProfileInput {
@@ -55,7 +63,8 @@ exports.registerSchema = buildSchema(`
         
     type Mutation {
         addUser(user: AddUserInput!, address: AddAddressInput!): Int,
-        updateUser(token: String!, user: AddUserInput!, profile: AddProfileInput!, address: AddAddressInput!): String
+        updateUser(token: String!, user: AddUserInput!, profile: AddProfileInput!, address: AddAddressInput!): String,
+        addPicture(token: String!, picture_id: Int!, url: String!, type: String!): [Picture]
     }
 
 
@@ -65,6 +74,7 @@ exports.registerSchema = buildSchema(`
         getTags: [Tag],
         getAllTags: [Tag],
         getLogin(login: String!): Boolean,
-        getEmail(email: String!): Boolean
+        getEmail(email: String!): Boolean,
+        getPicture(token: String!) : [Picture]
     }
 `);

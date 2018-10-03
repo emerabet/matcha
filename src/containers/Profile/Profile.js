@@ -41,7 +41,8 @@ class Profile extends Component{
         tag : "",
         ip: "0",
         userNameAlreadyTaken: false,
-        emailAlreadyTaken: false
+        emailAlreadyTaken: false,
+        pictures: []
     }
     
     handleChange = async (e, data) => {
@@ -83,7 +84,8 @@ class Profile extends Component{
                                 bio,
                                 birthdate,
                                 popularity,
-                                tags {tag}
+                                tags {tag},
+                                pictures {picture_id, user_id, src, priority}
                             }
                         }
                     `;
@@ -101,6 +103,7 @@ class Profile extends Component{
             .then( response => {
                 console.log('response', response);
                 if (!response.data.errors) {
+                    console.log(response.data.data.getUser.pictures);
                     // formating birthdate to fit the form format
                     const bday = new Date(response.data.data.getUser.birthdate / 1);
                     let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
@@ -123,7 +126,8 @@ class Profile extends Component{
                         }),
                         all_tags: res.data.data.getTags.map((element) => {
                             return element.tag;
-                        })
+                        }),
+                        pictures: response.data.data.getUser.pictures
                 });
                     
                 }
@@ -250,18 +254,22 @@ class Profile extends Component{
     }
 
     handleUpload = async (e) => {
+        console.log("name", e.target.name);
         console.log("file", e.target.value);
         console.log("F", e.target.files[0]);
 
         const data = new FormData();
-        data.append('file', e.target.files[0], sessionStorage.getItem('token'));
+        
         data.append('filename', "test.png");
         data.append('token', sessionStorage.getItem("token"));
-        data.append('profile', 1);
+        data.append('type', "regular");
+        data.append('picture_id', 245);
+        data.append('file', e.target.files[0], sessionStorage.getItem('token'));
 
         const res = await axios.post('/upload_picture', data);
         console.log("res", res);
         console.log("UPLOADED");
+        this.setState({pictures: res.data.pictures});
     }
 
     render () {
@@ -291,13 +299,19 @@ class Profile extends Component{
                 <Card style={styles.card} centered>
                     <Card.Content header={ <div style={{display: "flex"}}>
                         <div style={{width: "60px"}}>
-    <Image style={styles.picture} src='/pictures/smoke_by.png' size='tiny'  />
-    <Image style={styles.picture} src='/pictures/smoke_by.png' size='tiny'  />
-    <Image style={styles.picture} src='/pictures/smoke_by.png' size='tiny'  />
-    <Image style={styles.picture} src='/pictures/smoke_by.png' size='tiny'  />
+                            {
+                                this.state.pictures.map((pic) => {
+                                    console.log("foreach", pic);
+                                    if (pic.priority === 0){
+                                        console.log("test");
+                                        return <Image style={styles.picture} src={pic.src} size='tiny'  />
+                                    }
+                                    })
+                            }
+
   </div>
                                                         <div style={{marginLeft: "10px"}} >
-                                                        <input type="file" style={styles.hiddenInput} className="inputfile" onChange={this.handleUpload} id="embedpollfileinput" />
+                                                        <input type="file" style={styles.hiddenInput} name="profile_picture" className="inputfile" onChange={this.handleUpload} id="embedpollfileinput" />
                                                         <label style={{display: "flex", flexDirection: "column"}}htmlFor="embedpollfileinput" className="ui huge red left floated button">
                                                             <Image style={{marginBottom: "5px"}} src='/pictures/smoke_by.png' size='medium' rounded />
                                                             {` ${this.state.oldLogin} (${ this.state.popularity } pts)`}

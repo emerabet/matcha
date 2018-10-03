@@ -19,6 +19,7 @@ const options = {
 const geocoder = NodeGeocoder(options);
 
 const queriesTag = require('../resolvers/tag');
+const queriesPicture = require('../resolvers/picture');
 
 /* Incorpore les elements du tableau child dans la propiete de chaque element du tableau parent, lorsque la comparaison parentCmp childCMp est vraie. */
 const mergeResults = (parent, child, property, { parentCmp, childCmp }) => {
@@ -61,7 +62,7 @@ module.exports = {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             console.log("token", token);
-            const decoded = await jwt.verify(token, "config.secret");
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
 
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
@@ -83,8 +84,15 @@ module.exports = {
             if (extended === true) {
                 const tags = await queriesTag.getTagByUser(userId);
                 users[0].tags = tags;
+                console.log("TAGS", tags);
             }
 
+            
+
+            const pictures = await queriesPicture.getPicture({token: token});
+            console.log("PICTURES...", pictures);
+            users[0].pictures = pictures;
+            
             console.log("ID", users[0]);
             return users[0];
         } catch (err) {

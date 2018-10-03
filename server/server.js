@@ -8,6 +8,7 @@ const schemas = require('./graphql/schemas');
 const route = require('./routes/route');
 const resolversUser = require('./graphql/resolvers/user');
 const resolverTags = require('./graphql/resolvers/tag');
+const resolverPicture = require('./graphql/resolvers/picture');
 const errors = require('./graphql/errors');
 const path = require('path');
 let rootDir = __dirname; 
@@ -22,7 +23,8 @@ app.use(bodyParser.json());
 
 const root = {
     ...resolversUser,
-    ...resolverTags
+    ...resolverTags,
+    ...resolverPicture
 }
 
 app.use('/api', express_graphql({
