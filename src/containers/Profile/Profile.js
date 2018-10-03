@@ -229,7 +229,25 @@ class Profile extends Component{
 
     handleBlur = async (e, data) => {
         console.log("blur");
-        this.setState(await handleBlur(e, data));
+        switch (e.target.name) {
+            case 'login':
+                if (this.state.oldLogin !== this.state.login) {
+                    this.setState(await handleBlur(e, data));        
+                } else {
+                    console.log("ok");
+                    this.setState({userNameAlreadyTaken: false});
+                }
+                break ;
+            case 'email':
+                if (this.state.oldEmail !== this.state.email) {
+                    this.setState(await handleBlur(e, data));        
+                } else {
+                    this.setState({emailAlreadyTaken: false});
+                }
+                break ;
+            default:
+                break ;
+        }
     }
 
     render () {
@@ -257,12 +275,12 @@ class Profile extends Component{
                 <ToastContainer />
                 <TopMenu />
                 <Card style={styles.card} centered>
-                    <Card.Content header={ <div><Image src='/images/wireframe/square-image.png' size='medium' rounded /> <label className="login">{` ${this.state.login} (${ this.state.popularity } pts)`}</label> </div>} />
+                    <Card.Content header={ <div><Image src='/images/wireframe/square-image.png' size='medium' rounded /> <label className="login">{` ${this.state.oldLogin} (${ this.state.popularity } pts)`}</label> </div>} />
                     <Card.Content description={
                          <Form onSubmit= {this.handleUpdate}>
                             <Form.Field>
                                 <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor="login">User name {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
-                                <Input type="text" onChange={this.handleChange} onBlur={(this.state.oldLogin !== this.state.login) ? this.handleBlur : null} name="login" value={ this.state.login } placeholder="User name" required></Input>
+                                <Input type="text" onChange={this.handleChange} onBlur={this.handleBlur} name="login" value={ this.state.login } placeholder="User name" required></Input>
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="first_name">First name</label>
@@ -273,8 +291,8 @@ class Profile extends Component{
                                 <Input type="text" onChange={this.handleChange} name="last_name" value={ this.state.last_name } placeholder="Last name" required></Input>                   
                             </Form.Field>
                             <Form.Field>
-                                <label style={emailOK ? styles.ok : styles.nok} htmlFor="email">Email</label>
-                                <Input type="email" onChange={this.handleChange} name="email" value={ this.state.email } placeholder="Email" required></Input>
+                                <label style={!this.state.emailAlreadyTaken && emailOK ? styles.ok : styles.nok} htmlFor="email">Email {this.emailAlreadyTaken && `(An account has already been created with this email)`}</label>
+                                <Input type="email" onChange={this.handleChange} onBlur={this.handleBlur} name="email" value={ this.state.email } placeholder="Email" required></Input>
                             </Form.Field>
                             <Form.Field>
                                 <label style={oldPassOK ? styles.ok : styles.nok} htmlFor="old_password">Current password (your must enter your current password to update your profile)</label>
@@ -342,7 +360,7 @@ class Profile extends Component{
                                 <Input type="date" onChange={this.handleChange} name="birthdate" value={ this.state.birthdate } placeholder="Birthdate" required></Input>                   
                             </Form.Field>
                             
-                            <Button type='submit' disabled = {!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && emailOK && oldPassOK)}>Update profile information</Button>
+                            <Button type='submit' disabled = {!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && !this.state.userNameAlreadyTaken && !this.emailAlreadyTaken && emailOK && oldPassOK)}>Update profile information</Button>
                        </Form>
                     } />
                     <Card.Content extra>
