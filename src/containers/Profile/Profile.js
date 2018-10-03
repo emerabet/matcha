@@ -42,7 +42,9 @@ class Profile extends Component{
         ip: "0",
         userNameAlreadyTaken: false,
         emailAlreadyTaken: false,
-        pictures: []
+        pictures: [],
+        picture_id_clicked: 0,
+        picture_src_clicked: ""
     }
     
     handleChange = async (e, data) => {
@@ -253,17 +255,23 @@ class Profile extends Component{
         }
     }
 
+    handleClickedPhoto = async (e) => {
+        console.log(e.target.id);
+        this.setState({picture_id_clicked: e.target.id, picture_src_clicked: this.state.pictures.filter(pic => pic.src)[0].src});
+    }
+
     handleUpload = async (e) => {
         console.log("name", e.target.name);
         console.log("file", e.target.value);
         console.log("F", e.target.files[0]);
+        console.log("KEY", e.target.key);
 
         const data = new FormData();
-        
         data.append('filename', "test.png");
         data.append('token', sessionStorage.getItem("token"));
-        data.append('type', "regular");
-        data.append('picture_id', 245);
+        data.append('type', e.target.name);
+        data.append('picture_id', this.state.picture_id_clicked);
+        data.append('src', this.state.picture_src_clicked);
         data.append('file', e.target.files[0], sessionStorage.getItem('token'));
 
         const res = await axios.post('/upload_picture', data);
@@ -304,10 +312,27 @@ class Profile extends Component{
                                     console.log("foreach", pic);
                                     if (pic.priority === 0){
                                         console.log("test");
-                                        return <Image style={styles.picture} src={pic.src} size='tiny'  />
+                                        //return <Image key={pic.picture_id} name="side_picture" style={styles.picture} src={pic.src} size='tiny'  />
+                                        return (
+                                            <div key={`div${pic.picture_id}`}>
+                                                <input key={`input${pic.picture_id}`} type="file" style={styles.hiddenInput} name="side_picture" className="inputfile" onChange={this.handleUpload} id={`embedpollfileinput${pic.picture_id}`} />
+                                                    <label key={`label{pic.picture_id}`} htmlFor={`embedpollfileinput${pic.picture_id}`}>
+                                                        <Image key={pic.picture_id} id={pic.picture_id} onClick={this.handleClickedPhoto} name="side_picture" style={styles.picture} src={pic.src} size='tiny' rounded />
+                                                    </label>
+                                            </div>
+                                        );
                                     }
                                     })
                             }
+                            {this.state.pictures.reduce(function (n, pic) {
+                                    return n + (pic.priority === 0);
+                                }, 0) < 4 && <div>
+                                <input type="file" style={styles.hiddenInput} name="side_picture" className="inputfile" onChange={this.handleUpload} id="empty_picture" />
+                                    <label htmlFor="empty_picture">
+                                        <Image id={0} name="side_picture" style={styles.picture} src="/pictures/upload.png" size='tiny' rounded />
+                                    </label>
+                            </div>}
+                            
 
   </div>
                                                         <div style={{marginLeft: "10px"}} >

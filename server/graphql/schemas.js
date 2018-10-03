@@ -64,12 +64,13 @@ exports.registerSchema = buildSchema(`
     type Mutation {
         addUser(user: AddUserInput!, address: AddAddressInput!): Int,
         updateUser(token: String!, user: AddUserInput!, profile: AddProfileInput!, address: AddAddressInput!): String,
-        addPicture(token: String!, picture_id: Int!, url: String!, type: String!): [Picture]
+        addPicture(token: String!, picture_id: Int!, url: String!, type: String!): [Picture],
+        deletePicture(token: String!, picture_id: Int!): String
     }
 
 
     type Query {
-        getUser(token: String!, extended: Boolean): User,
+        getUser(token: String!, extended: Boolean, user_id2: Int): User,
         getUsers(extended: Boolean): [User],
         getTags: [Tag],
         getAllTags: [Tag],

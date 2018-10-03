@@ -57,7 +57,7 @@ module.exports = {
     },
 
 
-    getUser: async ({ token, extended }) => {
+    getUser: async ({ token, extended, user_id2 = 0 }) => {
         try {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
@@ -67,7 +67,7 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
 
-            const userId = decoded.user_id;
+            const userId = user_id2 === 0 ? decoded.user_id: user_id2;
             console.log("decoded", decoded);
             console.log("user to get from db", userId);
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, 
