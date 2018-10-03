@@ -124,7 +124,7 @@ module.exports = {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             console.log("token", token);
-            const decoded = await jwt.verify(token, "config.secret");
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
                 console.log("decoded", decoded);
