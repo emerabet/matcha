@@ -9,6 +9,12 @@ const route = require('./routes/route');
 const resolversUser = require('./graphql/resolvers/user');
 const resolverTags = require('./graphql/resolvers/tag');
 const errors = require('./graphql/errors');
+const path = require('path');
+let rootDir = __dirname; 
+let i = rootDir.lastIndexOf('/');
+if (i !== -1)
+    rootDir = rootDir.substr(0, i);
+global.appRoot = path.resolve(rootDir);
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));

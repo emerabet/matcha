@@ -11,7 +11,7 @@ import axios from 'axios';
 import thunk from 'redux-thunk';
 import 'semantic-ui-css/semantic.min.css';
 
-axios.defaults.baseURL = 'http://localhost:4000';
+axios.defaults.baseURL = 'http://10.18.201.85:4000';
 
 const rootReducer = combineReducers({
     login: loginReducer,
