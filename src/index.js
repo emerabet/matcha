@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import axios from 'axios';
 import thunk from 'redux-thunk';
 import 'semantic-ui-css/semantic.min.css';
+import Reload from './HOC/Reload';
 
 axios.defaults.baseURL = 'http://10.18.201.85:4000';
 
@@ -31,9 +32,11 @@ const store = createStore(
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
-            <App className="App"/>
-        </BrowserRouter>
+        <Reload>
+            <BrowserRouter>
+                <App className="App"/>
+            </BrowserRouter>
+        </Reload>
     </Provider>
     , document.getElementById('root')
 );

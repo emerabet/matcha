@@ -126,6 +126,10 @@ class Profile extends Component{
                     //const bday = new Date(this.props.user.birthdate / 1);
                     //let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
                     //const bday_string = this.props.user.birthdate.substr(0, 10);
+                    if (this.props.user === undefined) {
+                        console.log("NO PROPS");
+                    }
+                    
                     const bday = this.props.user.birthdate.substr(0, 10);
                     const tags = await response.data.data.getUser.tags.map(elem => {
                         return elem.tag;
@@ -136,6 +140,9 @@ class Profile extends Component{
                     const profile_picture = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png';
                     const profile_picture_id = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0;
                     console.log("GENDER", this.props.user.gender, response.data.data.getUser.gender);
+                    if (this.props.user === undefined) {
+                        console.log("NO PROPS");
+                    }
                     this.setState({...this.state,
                         oldLogin: this.props.user.login,
                         login: this.props.user.login,
@@ -143,7 +150,7 @@ class Profile extends Component{
                         last_name: this.props.user.lastName,
                         oldEmail: this.props.user.email,
                         email: this.props.user.email,
-                        share_location: this.props.user.share_location,
+                        share_location: Number.parseInt(this.props.user.share_location, 10),
                         last_visit: this.props.user.last_visit,
                         gender: this.props.user.gender,
                         orientation: this.props.user.orientation,

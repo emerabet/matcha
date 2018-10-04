@@ -40,7 +40,6 @@ exports.login = async (req, res) => {
                 popularity: rows[0].popularity,
                 latitude: rows[0].latitude,
                 longitude: rows[0].longitude
-
             };
             res.status(200).send({ auth: true, token: token, user: user });
         } else {
