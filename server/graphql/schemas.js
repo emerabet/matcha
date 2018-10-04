@@ -67,8 +67,8 @@ exports.registerSchema = buildSchema(`
     type Mutation {
         addUser(user: AddUserInput!, address: AddAddressInput!): Int,
         updateUser(token: String!, user: AddUserInput!, profile: AddProfileInput!, address: AddAddressInput!): String,
-        addPicture(token: String!, picture_id: Int!, url: String!, type: String!): [Picture],
-        deletePicture(token: String!, picture_id: Int!): String
+        addPicture(token: String!, picture_id: Int!, url: String!, type: String!, delete_url: String): [Picture],
+        deletePicture(token: String!, picture_id: Int!, picture_src: String!): [Picture]
     }
 
 

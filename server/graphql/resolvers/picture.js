@@ -3,9 +3,10 @@ const db = require('../../db/connection');
 const errors = require('../errors');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
+const fs = require('fs');
 
 module.exports = {
-    addPicture: async ({token, picture_id, url, type}) => {
+    addPicture: async ({token, picture_id, url, type, delete_url = 0}) => {
         console.log("TOKEN", token);
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
@@ -26,8 +27,8 @@ module.exports = {
                 if (result[0].nb < 4) {*/
                     console.log("PRIORITYYYY", priority);
                     console.log("PICTURE ID", picture_id);
-                if (picture_id !== 0)
-                    module.exports.deletePicture({token: token, picture_id: picture_id});
+                if (Number.parseInt(picture_id, 10) !== 0)
+                    module.exports.deletePicture({token: token, picture_id: picture_id, picture_src: delete_url});
                     sql = "INSERT INTO `picture` (`picture_id`, `user_id`, `src`, `priority`) VALUES (NULL,?,?,?)";
                     sql = mysql.format(sql, [user_id, url, priority]);
                     result = await db.conn.queryAsync(sql); 
@@ -58,17 +59,27 @@ module.exports = {
         }
     },
 
-    deletePicture: async ({token, picture_id}) => {
+    deletePicture: async ({token, picture_id, picture_src}) => {
+        console.log("DELETING", picture_src);
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const user_id = decoded.user_id;
+            console.log("ROOT", appRoot, picture_src);
+            if (await fs.existsSync(`${appRoot}/public${picture_src}`)){
+                await fs.unlink(`${appRoot}/public${picture_src}`, (err) => {
+                    if (err) throw err;
+                    console.log('successfully deleted /tmp/hello');
+                  });
+            }
+            
             let sql = "DELETE FROM `picture` WHERE `user_id` = ? AND `picture_id` = ?";
             sql = mysql.format(sql, [user_id, picture_id]);
             const result = await db.conn.queryAsync(sql);
             console.log("deleted", result);
             console.log("deleting");
+            return module.exports.getPicture({token: token});
         } catch (err) {
             console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);

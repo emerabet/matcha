@@ -47,6 +47,33 @@ class SidePicture extends Component {
                     );
         }*/
     }
+
+    handleDelete = async (e) => {
+        const query = `
+                        mutation deletePicture($token: String!, $picture_id: Int!, $picture_src: String!) {
+                            deletePicture(token: $token, picture_id: $picture_id, picture_src: $picture_src) {
+                                
+                                    picture_id,
+                                    user_id,
+                                    src,
+                                    priority
+                                
+                            }
+                        }
+                    `;
+
+        const result = await axios.post(`/api`, {   query: query,
+            variables: { 
+            token: sessionStorage.getItem("token"), 
+            picture_id: this.props.pic.picture_id,
+            picture_src: this.props.pic.src
+            }
+        });
+
+        console.log("RESDDD", result);
+        console.log(result.data.data.deletePicture);
+        this.props.handleRefresh(result.data.data.deletePicture);
+    }
  
     render () {
         return (
@@ -61,7 +88,7 @@ class SidePicture extends Component {
                                         <label style={{width: "350px"}}  className="ui huge gray right floated button" htmlFor="upload_other_picture">
                                             Upload an other picture
                                         </label>
-                                        <label style={{width: "350px"}} className="ui huge red right floated button" htmlFor="delete_picture">
+                                        <label style={{width: "350px"}} onClick={this.handleDelete} className="ui huge red right floated button" htmlFor="delete_picture">
                                             Delete this picture
                                         </label>
                                     </Modal.Description>

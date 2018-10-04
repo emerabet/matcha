@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
             const url = `${appRoot}/public/pictures/${decoded.user_id}/${file_name}`;
             console.log("body token", req.body.token);
             const src = `/pictures/${decoded.user_id}/${file_name}`;
-            const r = await queriesPicture.addPicture({token: req.body.token, picture_id: req.body.picture_id, url: src, type: req.body.type});
+            const r = await queriesPicture.addPicture({token: req.body.token, picture_id: req.body.picture_id, url: src, type: req.body.type, delete_url: req.body.src});
             console.log("ADDPICTURE", r.insertId);
             req.body.insertId = r.insertId;
        /* if (!result.data.errors)
