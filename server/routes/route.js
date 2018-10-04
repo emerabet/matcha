@@ -10,11 +10,11 @@ const queriesPicture = require('../graphql/resolvers/picture');
 
 const storage = multer.diskStorage({
     destination: './public/pictures',
-    filename(req, file, cb) {
+    async filename(req, file, cb) {
         console.log("BODY", req.body);
-        jwt.verify(req.body.token, config.SECRET_KEY, (err, decoded) => {
-            if (!fs.existsSync(`${appRoot}/public/pictures/${decoded.user_id}/`)){
-                fs.mkdirSync(`${appRoot}/public/pictures/${decoded.user_id}/`);
+        await jwt.verify(req.body.token, config.SECRET_KEY, async (err, decoded) => {
+            if (await !fs.existsSync(`${appRoot}/public/pictures/${decoded.user_id}/`)){
+                await fs.mkdirSync(`${appRoot}/public/pictures/${decoded.user_id}/`);
             }
             let type = file.mimetype;
             let i = type.lastIndexOf('/') + 1;
@@ -25,8 +25,9 @@ const storage = multer.diskStorage({
             const url = `${appRoot}/public/pictures/${decoded.user_id}/${file_name}`;
             console.log("body token", req.body.token);
             const src = `/pictures/${decoded.user_id}/${file_name}`;
-            queriesPicture.addPicture({token: req.body.token, picture_id: req.body.picture_id, url: src, type: req.body.type});
-
+            const r = await queriesPicture.addPicture({token: req.body.token, picture_id: req.body.picture_id, url: src, type: req.body.type});
+            console.log("ADDPICTURE", r.insertId);
+            req.body.insertId = r.insertId;
        /* if (!result.data.errors)
             toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
         else

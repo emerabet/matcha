@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Checkbox, Card, Input, Select, Form, Button, TextArea, Image, Divider } from 'semantic-ui-react';
+import { Checkbox, Card, Input, Select, Form, Button, TextArea, Image, Modal, Header } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import TopMenu from '../../components/Menu/TopMenu';
 import { ToastContainer, toast } from 'react-toastify';
@@ -9,6 +9,8 @@ import publicIp from 'public-ip';
 import Chips from 'react-chips';
 import './Profile.css';
 import { handleBlur } from '../../Tools/Form';
+import SidePicture from '../../components/SidePicture/SidePicture';
+import ProfilePicture from '../../components/ProfilePicture/ProfilePicture';
 
 let geolocation;
 
@@ -43,8 +45,8 @@ class Profile extends Component{
         userNameAlreadyTaken: false,
         emailAlreadyTaken: false,
         pictures: [],
-        picture_id_clicked: 0,
-        picture_src_clicked: ""
+        profile_picture: "/pictures/smoke_by.png",
+        profile_picture_id: 0
     }
     
     handleChange = async (e, data) => {
@@ -54,6 +56,17 @@ class Profile extends Component{
             this.setState({ [data.name]: data.value });
         else 
             this.setState({ [e.target.name]: e.target.value });
+    }
+
+    haveProfilePicture = (pictures, get = 0) => {
+        if (pictures.length > 0) {
+            const profilePic = pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1);
+            if (profilePic.length > 0)
+                return get === 0 ? true : profilePic[0];
+            else
+                return false;
+        } else
+            return false;
     }
 
     async componentDidMount() {
@@ -109,6 +122,9 @@ class Profile extends Component{
                     // formating birthdate to fit the form format
                     const bday = new Date(response.data.data.getUser.birthdate / 1);
                     let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
+                    
+                    
+                    
                     this.setState({...this.state,
                         oldLogin: response.data.data.getUser.login,
                         login: response.data.data.getUser.login,
@@ -129,7 +145,9 @@ class Profile extends Component{
                         all_tags: res.data.data.getTags.map((element) => {
                             return element.tag;
                         }),
-                        pictures: response.data.data.getUser.pictures
+                        pictures: response.data.data.getUser.pictures,
+                        profile_picture: this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png',
+                        profile_picture_id: this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0
                 });
                     
                 }
@@ -257,7 +275,9 @@ class Profile extends Component{
 
     handleClickedPhoto = async (e) => {
         console.log(e.target.id);
-        this.setState({picture_id_clicked: e.target.id, picture_src_clicked: this.state.pictures.filter(pic => pic.src)[0].src});
+        //console.log("priority", this.state.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].src);
+        //console.log("CLICKED", this.state.pictures.filter(pic => pic.picture_id === Number.parseInt(e.target.id, 10)));
+        //this.setState({picture_id_clicked: e.target.id, picture_src_clicked: this.state.pictures.filter(pic => pic.picture_id === Number.parseInt(e.target.id, 10))[0].src});
     }
 
     handleUpload = async (e) => {
@@ -270,14 +290,39 @@ class Profile extends Component{
         data.append('filename', "test.png");
         data.append('token', sessionStorage.getItem("token"));
         data.append('type', e.target.name);
-        data.append('picture_id', this.state.picture_id_clicked);
-        data.append('src', this.state.picture_src_clicked);
+      //  data.append('picture_id', this.state.picture_id_clicked);
+       // data.append('src', this.state.picture_src_clicked);
         data.append('file', e.target.files[0], sessionStorage.getItem('token'));
 
         const res = await axios.post('/upload_picture', data);
         console.log("res", res);
         console.log("UPLOADED");
-        this.setState({pictures: res.data.pictures});
+        console.log("SIZE", res.data.pictures.length);
+        if (res.data.pictures.length > 0){
+            if (res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1).length > 0) {
+                this.setState({pictures: res.data.pictures, profile_picture: res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].src,
+                    profile_picture_id: res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].picture_id}
+                    );
+            }
+            else {
+                this.setState({pictures: res.data.pictures, profile_picture: "/pictures/smoke_by.png",
+                    profile_picture_id: 0}
+                    );
+            }
+        } else {
+            this.setState({pictures: [], profile_picture: "/pictures/smoke_by.png",
+                    profile_picture_id: 0}
+                    );
+        }
+    }
+
+    handleRefresh = (pictures) => {
+        this.setState(
+            {pictures: pictures,
+            profile_picture: this.haveProfilePicture(pictures) ? this.haveProfilePicture(pictures, 1).src : '/pictures/smoke_by.png',
+            profile_picture_id: this.haveProfilePicture(pictures) ? this.haveProfilePicture(pictures, 1).picture_id : 0
+            }
+        );
     }
 
     render () {
@@ -309,17 +354,9 @@ class Profile extends Component{
                         <div style={{width: "60px"}}>
                             {
                                 this.state.pictures.map((pic) => {
-                                    console.log("foreach", pic);
                                     if (pic.priority === 0){
-                                        console.log("test");
-                                        //return <Image key={pic.picture_id} name="side_picture" style={styles.picture} src={pic.src} size='tiny'  />
                                         return (
-                                            <div key={`div${pic.picture_id}`}>
-                                                <input key={`input${pic.picture_id}`} type="file" style={styles.hiddenInput} name="side_picture" className="inputfile" onChange={this.handleUpload} id={`embedpollfileinput${pic.picture_id}`} />
-                                                    <label key={`label{pic.picture_id}`} htmlFor={`embedpollfileinput${pic.picture_id}`}>
-                                                        <Image key={pic.picture_id} id={pic.picture_id} onClick={this.handleClickedPhoto} name="side_picture" style={styles.picture} src={pic.src} size='tiny' rounded />
-                                                    </label>
-                                            </div>
+                                            <SidePicture pic={pic} key={pic.picture_id} handleRefresh={this.handleRefresh} />
                                         );
                                     }
                                     })
@@ -329,19 +366,14 @@ class Profile extends Component{
                                 }, 0) < 4 && <div>
                                 <input type="file" style={styles.hiddenInput} name="side_picture" className="inputfile" onChange={this.handleUpload} id="empty_picture" />
                                     <label htmlFor="empty_picture">
-                                        <Image id={0} name="side_picture" style={styles.picture} src="/pictures/upload.png" size='tiny' rounded />
+                                        <Image id={0} name="empty_picture" style={styles.picture} src="/pictures/upload.png" size='tiny' rounded />
                                     </label>
                             </div>}
                             
 
   </div>
-                                                        <div style={{marginLeft: "10px"}} >
-                                                        <input type="file" style={styles.hiddenInput} name="profile_picture" className="inputfile" onChange={this.handleUpload} id="embedpollfileinput" />
-                                                        <label style={{display: "flex", flexDirection: "column"}}htmlFor="embedpollfileinput" className="ui huge red left floated button">
-                                                            <Image style={{marginBottom: "5px"}} src='/pictures/smoke_by.png' size='medium' rounded />
-                                                            {` ${this.state.oldLogin} (${ this.state.popularity } pts)`}
-                                                        </label>
-                                                </div>
+                                                        <ProfilePicture picture_src={this.state.profile_picture} picture_id={this.state.profile_picture_id} old_login={this.state.oldLogin} popularity={this.state.popularity} handleRefresh={this.handleRefresh} />
+                                                        
                                             </div>} />
                     <Card.Content description={
                          <Form onSubmit= {this.handleUpdate}>
