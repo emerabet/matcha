@@ -22,6 +22,9 @@ exports.registerSchema = buildSchema(`
         last_visit: String
         latitude: Float
         longitude: Float
+        country: String
+        city: String
+        zipcode: String
         gender: String
         orientation: String
         bio: String
