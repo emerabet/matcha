@@ -17,6 +17,11 @@ class TopMenu extends Component {
       }
     }
 
+    handleLogOut = (e, data) => {
+      sessionStorage.removeItem('token');
+      this.props.history.push('/login');
+    }
+
     render (){
       return (
       
@@ -60,8 +65,19 @@ class TopMenu extends Component {
             active={this.state.activeItem === 'search'}
             onClick={this.handleItemClick}
           >
+            <Icon name='search' />
             Search
           </Menu.Item>
+
+          <Menu.Item
+            name='log_out'
+            active={this.state.activeItem === 'log_out'}
+            onClick={this.handleLogOut}
+          >
+            <Icon name='log out' />
+            Log out
+          </Menu.Item>
+          
         </Menu>
 
 
