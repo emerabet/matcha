@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import axios from 'axios';
 import thunk from 'redux-thunk';
 import 'semantic-ui-css/semantic.min.css';
-import Reload from './HOC/Reload';
+import Reload from './Hoc/Reload';
 
 axios.defaults.baseURL = 'http://10.18.201.85:4000';
 
