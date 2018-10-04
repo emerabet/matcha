@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Checkbox, Card, Input, Select, Form, Button, TextArea, Image, Modal, Header } from 'semantic-ui-react';
+import { Checkbox, Card, Input, Select, Form, Button, TextArea, Image } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import TopMenu from '../../components/Menu/TopMenu';
 import { ToastContainer, toast } from 'react-toastify';
@@ -11,6 +11,8 @@ import './Profile.css';
 import { handleBlur } from '../../Tools/Form';
 import SidePicture from '../../components/SidePicture/SidePicture';
 import ProfilePicture from '../../components/ProfilePicture/ProfilePicture';
+import { connect } from 'react-redux';
+import * as actions from './Actions';
 
 let geolocation;
 
@@ -70,6 +72,7 @@ class Profile extends Component{
     }
 
     async componentDidMount() {
+        console.log("MOUNTING", this.props.user);
         const query_tags = `query getTags{
                                 getTags{
                                    tag
@@ -115,39 +118,43 @@ class Profile extends Component{
                     extended: true
                 }
             })
-            .then( response => {
+            .then( async response => {
                 console.log('response', response);
                 if (!response.data.errors) {
-                    console.log(response.data.data.getUser.pictures);
+                    console.log(response.data.data.getUser);
                     // formating birthdate to fit the form format
-                    const bday = new Date(response.data.data.getUser.birthdate / 1);
-                    let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
-                    
-                    
-                    
+                    //const bday = new Date(this.props.user.birthdate / 1);
+                    //let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
+                    //const bday_string = this.props.user.birthdate.substr(0, 10);
+                    const bday = this.props.user.birthdate.substr(0, 10);
+                    const tags = await response.data.data.getUser.tags.map(elem => {
+                        return elem.tag;
+                    })
+                    const all_tags = await res.data.data.getTags.map((element) => {
+                        return element.tag;
+                    })
+                    const profile_picture = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png';
+                    const profile_picture_id = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0;
+                    console.log("GENDER", this.props.user.gender, response.data.data.getUser.gender);
                     this.setState({...this.state,
-                        oldLogin: response.data.data.getUser.login,
-                        login: response.data.data.getUser.login,
-                        first_name: response.data.data.getUser.first_name,
-                        last_name :response.data.data.getUser.last_name,
-                        oldEmail: response.data.data.getUser.email,
-                        email: response.data.data.getUser.email,
-                        share_location: response.data.data.getUser.share_location,
-                        last_visit: response.data.data.getUser.last_visit,
-                        gender: response.data.data.getUser.gender,
-                        orientation: response.data.data.getUser.orientation,
-                        bio: response.data.data.getUser.bio,
-                        birthdate: bday_string,
-                        popularity: response.data.data.getUser.popularity,
-                        tags: response.data.data.getUser.tags.map(elem => {
-                            return elem.tag;
-                        }),
-                        all_tags: res.data.data.getTags.map((element) => {
-                            return element.tag;
-                        }),
+                        oldLogin: this.props.user.login,
+                        login: this.props.user.login,
+                        first_name: this.props.user.firstName,
+                        last_name: this.props.user.lastName,
+                        oldEmail: this.props.user.email,
+                        email: this.props.user.email,
+                        share_location: this.props.user.share_location,
+                        last_visit: this.props.user.last_visit,
+                        gender: this.props.user.gender,
+                        orientation: this.props.user.orientation,
+                        bio: this.props.user.bio,
+                        birthdate: bday,
+                        popularity: this.props.user.popularity,
+                        tags: tags,
+                        all_tags: all_tags,
                         pictures: response.data.data.getUser.pictures,
-                        profile_picture: this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png',
-                        profile_picture_id: this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0
+                        profile_picture: profile_picture,
+                        profile_picture_id: profile_picture_id
                 });
                     
                 }
@@ -200,6 +207,9 @@ class Profile extends Component{
             }
         });
 
+        // dispatch
+        console.log("DISPATCHING");
+        await this.props.onUpdateProfile(this.state);
         if (!result.data.errors)
             toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
         else
@@ -214,9 +224,11 @@ class Profile extends Component{
         if (this.state.share_location === 1) {
             geolocation = navigator.geolocation;
             geolocation.getCurrentPosition((position) => {
+                console.log("WILL UPDATE");
                 this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
             });
         } else
+        console.log("WILL UPDATE ONLY IP");
             this.updateUserInfo(ip);
     }
 
@@ -358,7 +370,8 @@ class Profile extends Component{
                                         return (
                                             <SidePicture pic={pic} key={pic.picture_id} handleRefresh={this.handleRefresh} />
                                         );
-                                    }
+                                    } else 
+                                        return (<div key="nokey"></div>);
                                     })
                             }
                             {this.state.pictures.reduce(function (n, pic) {
@@ -471,4 +484,16 @@ class Profile extends Component{
     }
 }
 
-export default Profile;
+const mapStateToProps = state => {
+    return {
+        user: state.login.user
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUpdateProfile: (profileState) => dispatch(actions.updateProfile(profileState))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

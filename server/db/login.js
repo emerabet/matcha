@@ -30,10 +30,17 @@ exports.login = async (req, res) => {
                 login: rows[0].login,
                 lastName: rows[0].last_name,
                 firstName: rows[0].first_name,
+                email: rows[0].email,
+                last_visit: rows[0].last_visit,
+                share_location: rows[0].share_location,
                 gender: rows[0].gender,
                 orientation: rows[0].orientation,
+                bio: rows[0].bio,
+                birthdate: rows[0].birthdate,
+                popularity: rows[0].popularity,
                 latitude: rows[0].latitude,
                 longitude: rows[0].longitude
+
             };
             res.status(200).send({ auth: true, token: token, user: user });
         } else {

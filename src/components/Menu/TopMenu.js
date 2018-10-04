@@ -13,6 +13,7 @@ class TopMenu extends Component {
       if (data.name) {
         this.setState(...this.state, { activeItem: data.name })
         console.log(data.name);
+        console.log("ACTIVE", this.state.activeItem);
         this.props.history.push(`/${data.name}`);
       }
     }

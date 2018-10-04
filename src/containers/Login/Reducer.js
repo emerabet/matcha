@@ -1,4 +1,5 @@
 import * as actions from './Actions';
+import * as profileActions from '../Profile/Actions';
 
 const initialState = {
     logged: false
@@ -20,9 +21,29 @@ const reducer = (state = initialState, action) => {
             nextState = { ...state,
                 token: null };     
             break ;
+        case profileActions.UPDATE_USER_PROFILE:
+       
+            const user_updated ={
+                login: action.data.login,
+                lastName: action.data.last_name,
+                firstName: action.data.first_name,
+                email: action.data.email,
+                last_visit: action.data.last_visit,
+                share_location: action.data.share_location,
+                gender: action.data.gender,
+                orientation: action.data.orientation,
+                bio: action.data.bio,
+                birthdate: action.data.birthdate,
+                popularity: action.data.popularity,
+                latitude: action.data.latitude,
+                longitude: action.data.longitude
+            }
+            console.log("TRYING TO UPDATE STORE WITH NEW PROFILE DATA");
+               nextState = {...state, user: user_updated}
+            break ;
         default: return state;
     }
-    console.log(nextState);
+    console.log("NEXT STATE", nextState);
     return nextState;
 }
 
