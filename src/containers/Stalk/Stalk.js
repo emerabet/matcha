@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Image, Button, Icon, Segment } from 'semantic-ui-react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 
 class Stalk extends Component {
@@ -8,11 +9,15 @@ class Stalk extends Component {
     state = {
         isLiked: false,
         user: null,
-        activeImage: null,
-        nbImage: 0
+        activeImage: 0,
+        src:''
     }
 
     async componentDidMount() {
+
+        const id = parseInt(this.props.match.params.id);
+        console.log(this.props.match.params.id);
+        console.log(this.props.user);
 
         // recuperer token
         const token = sessionStorage.getItem("token");
@@ -50,12 +55,13 @@ class Stalk extends Component {
         const user = await axios.post('/api', { query, variables: {
             token: token,
             extended: true, 
-            user_id2: 84
+            user_id2: id
         }});
 
         this.setState({
             user: user.data.data.getUser,
-            nbImage: user.data.data.getUser.pictures.length
+            nbImage: user.data.data.getUser.pictures.length,
+            src: this.getActivePicture(user.data.data.getUser)
         })
 
         console.log(this.state);
@@ -70,6 +76,33 @@ class Stalk extends Component {
         
         // Sinon charger le module de notifications
 
+    }
+
+    handleNextPhoto  = async (e, data) => {
+
+        if (!this.state.user || !this.state.user.pictures)
+            return ;
+
+        let newIndex = 0;
+
+        if (data.name == 'topleft') {
+            newIndex = (this.state.activeImage - 1);
+            if (newIndex < 0)
+                newIndex = this.state.user.pictures.length - 1;
+        } else {
+            newIndex = (this.state.activeImage + 1) % this.state.user.pictures.length;
+        }
+
+        this.setState({
+            activeImage:newIndex,
+            src: this.state.user.pictures[newIndex].src
+        });
+    }
+
+    getActivePicture = (user) => {
+        if (!user || !user.pictures)
+            return '/pictures/smoke_by.png';
+        return user.pictures[this.state.activeImage].src;
     }
 
     render() {
@@ -87,11 +120,11 @@ class Stalk extends Component {
                     <Grid.Row columns={2} divided>
                     <Grid.Column>
                         <Button.Group attached='top'>
-                            <Button><Icon name='angle left' /></Button>
-                            <Button><Icon name='angle right' /></Button>
+                            <Button name='topleft' onClick={this.handleNextPhoto} ><Icon name='angle left' /></Button>
+                            <Button name='topright' onClick={this.handleNextPhoto} ><Icon name='angle right' /></Button>
                         </Button.Group>
                         <Segment attached>
-                            <Image src={this.state.user.pictures[1].src} />
+                            <Image src={this.state.src} />
                         </Segment>
                         <Button.Group attached='bottom'>
                             <Button><Icon name='angle left' /></Button>
@@ -150,4 +183,10 @@ class Stalk extends Component {
 
 
 }
-export default Stalk;
+const mapStateToProps = state => {
+    return {
+        user: state.login.user
+    }
+}
+
+export default connect(mapStateToProps, null)(Stalk);

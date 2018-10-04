@@ -22,6 +22,10 @@ class AdvancedSearch extends Component {
     }
 
     async componentDidMount () {
+
+        console.log("test");
+        console.log(this.props);
+
         const query = `
                         query getUsers($extended: Boolean) {
                             getUsers(extended:$extended){
@@ -146,7 +150,7 @@ class AdvancedSearch extends Component {
             <div>
                 { this.state.users && <Search tags={ this.state.tags } handleFilter={ this.handleFilter }/> }
                 { this.state.users &&  <Divider horizontal>Results</Divider> }
-                { this.state.users && <Listview users={ this.state.pagedUsers }/> }
+                { this.state.users && <Listview users={ this.state.pagedUsers } history={this.props.history} /> }
                 { this.state.users && <Pagination
                     activePage={this.state.activePage}
                     ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
