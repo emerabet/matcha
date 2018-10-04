@@ -15,7 +15,7 @@ module.exports = {
             let sql = "";
             let result = "";
             let priority = 0;
-            if (type === 'regular')
+            if (type === 'side_picture' || type === 'empty_picture')
                 priority = 0;
             else
                 priority = 1;
@@ -24,12 +24,14 @@ module.exports = {
                 let result = await db.conn.queryAsync(sql);
                 console.log("INSERTED", result[0].nb);
                 if (result[0].nb < 4) {*/
-                    console.log("PRIORITY", priority);
+                    console.log("PRIORITYYYY", priority);
+                    console.log("PICTURE ID", picture_id);
                 if (picture_id !== 0)
                     module.exports.deletePicture({token: token, picture_id: picture_id});
                     sql = "INSERT INTO `picture` (`picture_id`, `user_id`, `src`, `priority`) VALUES (NULL,?,?,?)";
                     sql = mysql.format(sql, [user_id, url, priority]);
                     result = await db.conn.queryAsync(sql); 
+                    console.log("RES LAST INSERT", result);
                 /*}*/
                 return result;
         } catch (err) {
@@ -38,12 +40,12 @@ module.exports = {
         }
     },
 
-    getPicture: async ({token}) => {
+    getPicture: async ({token, user_id2 = 0}) => {
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            const user_id = decoded.user_id;
+            const user_id = user_id2 === 0 ? decoded.user_id: user_id2;
 
             let sql = "SELECT `picture_id`, `user_id`, `src`, `priority` FROM `picture` WHERE `user_id` = ?;";
             sql = mysql.format(sql, user_id);
