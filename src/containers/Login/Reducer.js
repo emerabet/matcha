@@ -1,6 +1,6 @@
 import * as actions from './Actions';
 import * as profileActions from '../Profile/Actions';
-import * as reloadActions from '../../HOC/Actions';
+import * as reloadActions from '../../Hoc/Actions';
 
 const initialState = {
     logged: false
