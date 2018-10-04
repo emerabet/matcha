@@ -32,8 +32,8 @@ app.use('/api', express_graphql({
     rootValue: root,
     graphiql: true,
     formatError: (err) => {
-        console.log(err);
-        return ({ message: err.message, statusCode: errors.errorCodes[err.message].statusCode})
+        //console.log(err);
+        return ({ message: err.message, statusCode: 403/*errors.errorCodes[err.message].statusCode*/})
     }
 }));
 

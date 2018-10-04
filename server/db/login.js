@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
 const config = require('../config');
+const errors = require('../graphql/errors');
 
 exports.login = async (req, res) => {
     console.log("Connected");
@@ -25,7 +26,7 @@ exports.login = async (req, res) => {
 
         console.log("compare", bcrypt.compareSync(req.body.password, rows[0].password));
         if (bcrypt.compareSync(req.body.password, rows[0].password)) {
-            const token = jwt.sign({ user_id: rows[0].user_id }, config.SECRET_KEY, { expiresIn: 86400 });
+            const token = jwt.sign({ user_id: rows[0].user_id }, config.SECRET_KEY, { expiresIn: 5 });
             const user = {
                 login: rows[0].login,
                 lastName: rows[0].last_name,
@@ -54,4 +55,25 @@ exports.login = async (req, res) => {
     //console.log("token", token);
     //res.status(200).send({ auth: true, token: token });
     
+}
+
+exports.checkToken = async (req, res) => {
+    console.log("GOT TOKEN", req.body.token);
+    if (req.body.token === undefined)
+        res.status(403).send({ message: "Authentification failed" });
+    try {
+        const decoded = await jwt.verify(req.body.token, config.SECRET_KEY);
+        if (decoded.err)
+        {    
+            console.log("CANNOT DECODE");
+            res.status(403).send({ message: "Authentification failed" });
+        }
+        else {
+            console.log("CAN DECODE");
+            res.status(200).send({ message: "Authentification success" });
+        }
+    } catch (err) {
+        console.log("TOKEN EXPIRED");
+        res.status(403).send({ message: "Authentification failed" });
+    }
 }
