@@ -76,6 +76,6 @@ exports.registerSchema = buildSchema(`
         getAllTags: [Tag],
         getLogin(login: String!): Boolean,
         getEmail(email: String!): Boolean,
-        getPicture(token: String!) : [Picture]
+        getPicture(token: String!, user_id2: Int) : [Picture]
     }
 `);
