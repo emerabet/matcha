@@ -1,5 +1,6 @@
 import * as actions from './Actions';
 import * as profileActions from '../Profile/Actions';
+import * as reloadActions from '../../HOC/Actions';
 
 const initialState = {
     logged: false
@@ -40,6 +41,10 @@ const reducer = (state = initialState, action) => {
             }
             console.log("TRYING TO UPDATE STORE WITH NEW PROFILE DATA");
                nextState = {...state, user: user_updated}
+            break ;
+        case reloadActions.RESTORE_STORE_FROM_SESSION_STORAGE:
+            console.log("RELOAD REDUCER");
+            nextState = {...state, user: action.data}
             break ;
         default: return state;
     }
