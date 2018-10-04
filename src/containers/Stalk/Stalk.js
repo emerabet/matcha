@@ -17,7 +17,8 @@ class Stalk extends Component {
 
         const id = parseInt(this.props.match.params.id);
         console.log(this.props.match.params.id);
-        console.log(this.props.user);
+        console.log("state to props : USER");
+        console.log(this.props.myuser);
 
         // recuperer token
         const token = sessionStorage.getItem("token");
@@ -80,7 +81,7 @@ class Stalk extends Component {
 
     handleNextPhoto  = async (e, data) => {
 
-        if (!this.state.user || !this.state.user.pictures)
+        if (!this.state.user || !this.state.user.pictures || this.state.user.pictures.length === 0)
             return ;
 
         let newIndex = 0;
@@ -100,8 +101,10 @@ class Stalk extends Component {
     }
 
     getActivePicture = (user) => {
-        if (!user || !user.pictures)
+        if (!user || !user.pictures || user.pictures.length === 0)
             return '/pictures/smoke_by.png';
+        console.log("kkkijiij");
+        console.log(user);
         return user.pictures[this.state.activeImage].src;
     }
 
@@ -184,8 +187,10 @@ class Stalk extends Component {
 
 }
 const mapStateToProps = state => {
+    console.log("map");
+    console.log(state);
     return {
-        user: state.login.user
+        myuser: state.login.user
     }
 }
 
