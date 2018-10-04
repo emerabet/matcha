@@ -9,16 +9,46 @@ class Reload extends Component {
 
     constructor(props){
         super(props);
-     /*   const res = await axios.post('/connect', { token: sessionStorage.getItem('token') });
+        console.log("dlksdlds");
+        this.check(props);
+            
+    }
+
+    check = async (props) => {
+
+        try {
+            const res = await axios.post('/check', { token: sessionStorage.getItem('token') });
+
+            console.log("FEF", res);
             console.log("actions login");
-            console.log('data login', res.data);*/
+            // console.log('data login', res.data);
             console.log("PROPS", props);
             if (this.props.user === undefined){
-            this.props.onRestoreStore();
-        } else {
-            console.log("NO NEED TO RESTORE");
+                this.props.onRestoreStore();
+            } else {
+                    console.log("NO NEED TO RESTORE");
+            }
+
+        } catch (err) {
+            console.log("EXPIRED TOKEN", err);
+            // destroy local storage
+            await sessionStorage.removeItem('token');
+            sessionStorage.removeItem('last_name');
+            sessionStorage.removeItem('first_name');
+            sessionStorage.removeItem('email');
+            sessionStorage.removeItem('last_visit');
+            sessionStorage.removeItem('share_location');
+            sessionStorage.removeItem('gender');
+            sessionStorage.removeItem('orientation');
+            sessionStorage.removeItem('bio');
+            sessionStorage.removeItem('birthdate');
+            sessionStorage.removeItem('popularity');
+            sessionStorage.removeItem('latitude');
+            sessionStorage.removeItem('longitude');
+            sessionStorage.removeItem('login');
         }
-    }
+
+    } 
 
     render(){
         return(

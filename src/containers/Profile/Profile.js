@@ -109,7 +109,7 @@ class Profile extends Component{
                     `;
 
         const token = sessionStorage.getItem("token");
-
+                        
         axios.post(`/api`,
             {
                 query: query,
@@ -143,6 +143,7 @@ class Profile extends Component{
                     if (this.props.user === undefined) {
                         console.log("NO PROPS");
                     }
+                    
                     this.setState({...this.state,
                         oldLogin: this.props.user.login,
                         login: this.props.user.login,
@@ -165,8 +166,10 @@ class Profile extends Component{
                 });
                     
                 }
-                else
+                else {
+                    console.log("pres du toast error"); 
                     toast("Error while getting your profile. Please try to unlog and the relog !", {type: toast.TYPE.ERROR});
+                }
                 return response.data.data;
             });
     }

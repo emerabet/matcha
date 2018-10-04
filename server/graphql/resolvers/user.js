@@ -62,8 +62,10 @@ module.exports = {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             console.log("token", token);
+            console.log("verif token");
             const decoded = await jwt.verify(token, config.SECRET_KEY);
 
+            console.log("ne doit pas pparaitre");
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
 
@@ -96,7 +98,8 @@ module.exports = {
             console.log("ID", users[0]);
             return users[0];
         } catch (err) {
-            throw err.message;
+            console.log("catch get user");
+            throw new Error(errors.errorTypes.UNAUTHORIZED);
         }
     },
 
