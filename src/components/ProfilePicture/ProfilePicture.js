@@ -16,11 +16,11 @@ class ProfilePicture extends Component {
 
         const data = new FormData();
         data.append('filename', "test.png");
-        data.append('token', sessionStorage.getItem("token"));
+        data.append('token', localStorage.getItem("token"));
         data.append('type', e.target.name);
         data.append('picture_id', this.props.picture_id);
         data.append('src', this.props.picture_src);
-        data.append('file', e.target.files[0], sessionStorage.getItem('token'));
+        data.append('file', e.target.files[0], localStorage.getItem('token'));
 
         const res = await axios.post('/upload_picture', data);
         console.log("res", res);
@@ -64,7 +64,7 @@ class ProfilePicture extends Component {
 
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
-            token: sessionStorage.getItem("token"), 
+            token: localStorage.getItem("token"), 
             picture_id: this.props.picture_id,
             picture_src: this.props.picture_src
             }

@@ -86,7 +86,7 @@ class Profile extends Component{
         // getting the list of all tags from the api
         let headers = {
             headers: {
-            authorization: sessionStorage.getItem("token")
+            authorization: localStorage.getItem("token")
             }
         }
         const res = await axios.post(`/api`,
@@ -118,12 +118,12 @@ class Profile extends Component{
                         }
                     `;
 
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         
         
         headers = {
             headers: {
-            authorization: sessionStorage.getItem("token")
+            authorization: localStorage.getItem("token")
             }
         }
         const response = await axios.post(`/api`,
@@ -219,7 +219,7 @@ class Profile extends Component{
 
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
-            token: sessionStorage.getItem("token"), 
+            token: localStorage.getItem("token"), 
             user: user,
             profile: profile,
             address: address
@@ -319,11 +319,11 @@ class Profile extends Component{
 
         const data = new FormData();
         data.append('filename', "test.png");
-        data.append('token', sessionStorage.getItem("token"));
+        data.append('token', localStorage.getItem("token"));
         data.append('type', e.target.name);
       //  data.append('picture_id', this.state.picture_id_clicked);
        // data.append('src', this.state.picture_src_clicked);
-        data.append('file', e.target.files[0], sessionStorage.getItem('token'));
+        data.append('file', e.target.files[0], localStorage.getItem('token'));
 
         const res = await axios.post('/upload_picture', data);
         console.log("res", res);

@@ -9,20 +9,20 @@ export const login =(userName, password) => {
             const res = await axios.post('/connect', { login: userName, password: password });
             console.log("actions login");
             console.log('data login', res.data);
-            sessionStorage.setItem('token', res.data.token);
-            sessionStorage.setItem('last_name', res.data.user.lastName);
-            sessionStorage.setItem('first_name', res.data.user.firstName);
-            sessionStorage.setItem('email', res.data.user.email);
-            sessionStorage.setItem('last_visit', res.data.user.last_visit);
-            sessionStorage.setItem('share_location', res.data.user.share_location);
-            sessionStorage.setItem('gender', res.data.user.gender);
-            sessionStorage.setItem('orientation', res.data.user.orientation);
-            sessionStorage.setItem('bio', res.data.user.bio);
-            sessionStorage.setItem('birthdate', res.data.user.birthdate);
-            sessionStorage.setItem('popularity', res.data.user.popularity);
-            sessionStorage.setItem('latitude', res.data.user.latitude);
-            sessionStorage.setItem('longitude', res.data.user.longitude);
-            sessionStorage.setItem('login', res.data.user.login);
+            localStorage.setItem('token', res.data.token);
+            localStorage.setItem('last_name', res.data.user.lastName);
+            localStorage.setItem('first_name', res.data.user.firstName);
+            localStorage.setItem('email', res.data.user.email);
+            localStorage.setItem('last_visit', res.data.user.last_visit);
+            localStorage.setItem('share_location', res.data.user.share_location);
+            localStorage.setItem('gender', res.data.user.gender);
+            localStorage.setItem('orientation', res.data.user.orientation);
+            localStorage.setItem('bio', res.data.user.bio);
+            localStorage.setItem('birthdate', res.data.user.birthdate);
+            localStorage.setItem('popularity', res.data.user.popularity);
+            localStorage.setItem('latitude', res.data.user.latitude);
+            localStorage.setItem('longitude', res.data.user.longitude);
+            localStorage.setItem('login', res.data.user.login);
             dispatch({ type: LOGIN, data: res.data });
         } catch (err) {
             dispatch({

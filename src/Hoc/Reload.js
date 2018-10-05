@@ -5,7 +5,7 @@ import axios from 'axios';
 //import * as headers from '../Tools/Header';
 export const headers = {
     headers: {
-    authorization: sessionStorage.getItem("token")
+    authorization: localStorage.getItem("token")
     }
 }
 class Reload extends Component {
@@ -36,7 +36,7 @@ class Reload extends Component {
 
         } catch (err) {
             console.log("EXPIRED TOKEN", err);
-            sessionStorage.clear();
+            localStorage.clear();
         }
 
     } 

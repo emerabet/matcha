@@ -21,7 +21,7 @@ class Stalk extends Component {
         console.log(this.props.myuser);
 
         // recuperer token
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         console.log(token);
 
         // recuperer profil utilisateur

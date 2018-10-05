@@ -19,7 +19,7 @@ class TopMenu extends Component {
     }
 
     handleLogOut = (e, data) => {
-      sessionStorage.clear();
+      localStorage.clear();
       this.props.history.push('/login');
     }
 

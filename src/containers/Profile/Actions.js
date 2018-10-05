@@ -8,21 +8,21 @@ export const updateProfile =(profileState) => {
             //const res = await axios.post('/connect', { login: userName, password: password });
             console.log("actions update");
             //console.log('data update', res.data);
-            //sessionStorage.setItem('token', res.data.token);
+            //localStorage.setItem('token', res.data.token);
             console.log("PROFILE STATE", profileState);
-            sessionStorage.setItem('last_name', profileState.last_name);
-            sessionStorage.setItem('first_name', profileState.first_name);
-            sessionStorage.setItem('email', profileState.email);
-            sessionStorage.setItem('last_visit', profileState.last_visit);
-            sessionStorage.setItem('share_location', profileState.share_location);
-            sessionStorage.setItem('gender', profileState.gender);
-            sessionStorage.setItem('orientation', profileState.orientation);
-            sessionStorage.setItem('bio', profileState.bio);
-            sessionStorage.setItem('birthdate', profileState.birthdate);
-            sessionStorage.setItem('popularity', profileState.popularity);
-            sessionStorage.setItem('latitude', profileState.latitude);
-            sessionStorage.setItem('longitude', profileState.longitude);
-            sessionStorage.setItem('login', profileState.login);
+            localStorage.setItem('last_name', profileState.last_name);
+            localStorage.setItem('first_name', profileState.first_name);
+            localStorage.setItem('email', profileState.email);
+            localStorage.setItem('last_visit', profileState.last_visit);
+            localStorage.setItem('share_location', profileState.share_location);
+            localStorage.setItem('gender', profileState.gender);
+            localStorage.setItem('orientation', profileState.orientation);
+            localStorage.setItem('bio', profileState.bio);
+            localStorage.setItem('birthdate', profileState.birthdate);
+            localStorage.setItem('popularity', profileState.popularity);
+            localStorage.setItem('latitude', profileState.latitude);
+            localStorage.setItem('longitude', profileState.longitude);
+            localStorage.setItem('login', profileState.login);
             dispatch({ type: UPDATE_USER_PROFILE, data: profileState });
         } catch (err) {
          /*   dispatch({
