@@ -9,21 +9,18 @@ class Stalk extends Component {
 
     state = {
         isLiked: false,
+        isBlacklist: false,
+        colorLike: 'grey',
+        colorBlacklist: 'grey',
         user: null,
         activeImage: 0,
-        src:''
+        src:'',
+        userViewed: null,
     }
 
     async componentDidMount() {
 
         const id = parseInt(this.props.match.params.id);
-        console.log(this.props.match.params.id);
-        console.log("state to props : USER");
-        console.log(this.props.myuser);
-
-        // recuperer token
-        const token = localStorage.getItem("token");
-        console.log(token);
 
         // recuperer profil utilisateur
         const query = `
@@ -47,6 +44,7 @@ class Stalk extends Component {
                                 bio,
                                 birthdate,
                                 popularity,
+                                isMyProfile,
                                 tags {
                                     tag
                                 },
@@ -55,30 +53,45 @@ class Stalk extends Component {
                         }
                     `;
         const user = await axios.post('/api', { query, variables: {
-            token: token,
             extended: true, 
             user_id2: id
         }}, headers.headers());
 
+        console.log("icisdof");
+        console.log(user);
+
         this.setState({
             user: user.data.data.getUser,
             nbImage: user.data.data.getUser.pictures.length,
-            src: this.getActivePicture(user.data.data.getUser)
+            src: this.getActivePicture(user.data.data.getUser),
+            userViewed: id
         })
 
         console.log(this.state);
 
+        // * verifier si y'a deja un match
 
-        // Vérifier si il s'agit d'une visite ou de son profil
-
-        // Si c'est une visite
-                // * verifier si y'a deja un match
-                // * marquer le profil comme visité
-                // * envoyer une socket de notification
+        // * marquer le profil comme visité
+        this.sendVisit(id);
         
-        // Sinon charger le module de notifications
+        // * envoyer une socket de notification
+        
+        // Sinon charger le module de notifications ???
 
     }
+
+
+    sendVisit = async (id) => {
+        const query = `mutation addVisit ($user_id_visited: Int!) {
+            addVisit(user_id_visited: $user_id_visited)
+        }`;
+        const res = await axios.post('/api', { query, variables: {
+            user_id_visited: id
+        }}, headers.headers());
+
+        console.log("VISITED: ", res.data.data.addVisit);
+    }
+
 
     handleNextPhoto  = async (e, data) => {
 
@@ -108,6 +121,42 @@ class Stalk extends Component {
         console.log(user);
         return user.pictures[this.state.activeImage].src;
     }
+
+
+    handleLike = async (e, data) => {
+
+        const idToLike = this.state.userViewed;
+
+        const query = `mutation likeUser ($user_id_to_like: Int!) {
+                            likeUser(user_id_to_like: $user_id_to_like)
+                        }`;
+        const res = await axios.post('/api', { query, variables: {
+            user_id_to_like: idToLike
+        }}, headers.headers());
+
+        this.setState({
+            isLiked: res.data.data.likeUser,
+            colorLike: res.data.data.likeUser === true ? 'red' : 'grey'
+        });
+    }
+
+    handleBlacklist = async (e, data) => {
+
+        const idToBlackList = this.state.userViewed;
+
+        const query = `mutation addToBlackList ($user_id_to_black_list: Int!) {
+                            addToBlackList(user_id_to_black_list: $user_id_to_black_list)
+                        }`;
+        const res = await axios.post('/api', { query, variables: {
+            user_id_to_black_list: idToBlackList
+        }}, headers.headers());
+
+        this.setState({
+            isBlacklist: res.data.data.addToBlackList,
+            colorBlacklist: res.data.data.addToBlackList === true ? 'black' : 'grey'
+        });
+    }
+
 
     render() {
 
@@ -142,14 +191,14 @@ class Stalk extends Component {
                         <h5>Localisation: {this.state.user.country} ({this.state.user.city})</h5>
                         <h5>Popularity: {this.state.user.popularity}</h5>
                         <h5>Status: Online</h5>
-                        <Button animated='vertical'>
+                        <Button color={this.state.colorLike} onClick={this.handleLike} animated='vertical'>
                             <Button.Content hidden>Like</Button.Content>
                             <Button.Content visible>
                                 <Icon name='like' />
                             </Button.Content>
                         </Button>
 
-                        <Button animated='vertical'>
+                        <Button color={this.state.colorBlacklist} onClick={this.handleBlacklist} animated='vertical'>
                             <Button.Content hidden>Black list</Button.Content>
                             <Button.Content visible>
                                 <Icon name='lock' />
@@ -161,7 +210,7 @@ class Stalk extends Component {
                     <Grid.Row columns={1}>
                         <Grid.Column>
                             <h2>BIO</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, aliquam? Temporibus veritatis cupiditate, ipsum velit praesentium libero rem repellat natus tempora sint quaerat tenetur alias id architecto. Molestias, saepe sed.</p>
+                            <p>{this.state.user.bio}</p>
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row columns={1}>
