@@ -249,7 +249,7 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            if (user_id_to_like != decoded.user_id) {
+            if (user_id_to_like !== decoded.user_id) {
                 let sql = 'SELECT COUNT(user_id_visitor) as nb from `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;'
                 sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
                 let result = await db.conn.queryAsync(sql);
@@ -311,7 +311,7 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            if (user_id_to_black_list != decoded.user_id) {
+            if (user_id_to_black_list !== decoded.user_id) {
                 let sql = 'SELECT COUNT(user_id_blocked) as nb from `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;'
                 sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                 let result = await db.conn.queryAsync(sql);
@@ -349,7 +349,7 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            if (user_id_to_report != decoded.user_id) {
+            if (user_id_to_report !== decoded.user_id) {
                 let sql = 'SELECT COUNT(user_id_reported) as nb from `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;'
                 sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
                 let result = await db.conn.queryAsync(sql);
@@ -388,7 +388,7 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            if (user_id_visited != decoded.user_id) {
+            if (user_id_visited !== decoded.user_id) {
                 let sql = 'INSERT INTO `visit` (`visit_id`, `user_id_visitor`, `user_id_visited`, `date`) VALUES(NULL,?,?,CURRENT_TIMESTAMP);';
                 sql = mysql.format(sql, [decoded.user_id, user_id_visited]);
                 const result = await db.conn.queryAsync(sql);
