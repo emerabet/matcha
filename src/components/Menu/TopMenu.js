@@ -28,7 +28,7 @@ class TopMenu extends Component {
       
         
 
-        <Menu icon='labeled'>
+        <Menu stackable icon='labeled' className='test' >
           <Menu.Item name='home' active={this.state.activeItem === 'home'} onClick={this.handleItemClick}>
             <Icon name='home' />
             Home
