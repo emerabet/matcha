@@ -246,43 +246,52 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            let sql = 'SELECT COUNT(user_id_visitor) as nb from `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;'
-            sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
-            let result = await db.conn.queryAsync(sql);
-            const flag_liked = result[0].nb;
+            if (user_id_to_like != decoded.user_id) {
+                let sql = 'SELECT COUNT(user_id_visitor) as nb from `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;'
+                sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
+                let result = await db.conn.queryAsync(sql);
+                const flag_liked = result[0].nb;
 
-            sql = 'SELECT COUNT(user_id_visitor) as nb from `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;'
-            sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
-            result = await db.conn.queryAsync(sql);
-            console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
-            if (result[0].nb === 0){
-                sql = 'INSERT INTO `liked` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+                sql = 'SELECT COUNT(user_id_visitor) as nb from `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;'
                 sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                 result = await db.conn.queryAsync(sql);
-                console.log("ADDING", result);
-                if (flag_liked > 0) {
-                    sql = 'INSERT INTO `matched` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+                console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+                if (result[0].nb === 0){
+                    sql = 'INSERT INTO `liked` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
-                    console.log("MATCHED", result);
-                }
-                return true;
-            } else {
-                sql = 'DELETE FROM `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
-                sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
-                result = await db.conn.queryAsync(sql);
-                console.log("DELETING", result);
-                if (flag_liked > 0) {
-                    sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
+                    console.log("ADDING", result);
+                    module.exports.addNotification({type: "like", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                    if (flag_liked > 0) {
+                        sql = 'INSERT INTO `matched` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+                        sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
+                        result = await db.conn.queryAsync(sql);
+                        console.log("MATCHED", result);
+                        module.exports.addNotification({type: "match", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                        module.exports.addNotification({type: "match", user_id_from: user_id_to_like, user_id_to: decoded.user_id});
+                    }
+                    return true;
+                } else {
+                    sql = 'DELETE FROM `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
-                    sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
-                    sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
-                    result = await db.conn.queryAsync(sql);
-                    console.log("MISMATCHED", result);
+                    module.exports.addNotification({type: "unlike", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                    console.log("DELETING", result);
+                    if (flag_liked > 0) {
+                        sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
+                        sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
+                        result = await db.conn.queryAsync(sql);
+                        module.exports.addNotification({type: "unmatch", user_id_from: user_id_to_like, user_id_to: decoded.user_id});
+                        sql = 'DELETE FROM `matched` WHERE `user_id_visited` = ? AND `user_id_visitor` = ?;';
+                        sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
+                        result = await db.conn.queryAsync(sql);
+                        module.exports.addNotification({type: "unmatch", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                        console.log("MISMATCHED", result);
+                    }
+                    return false;
                 }
-                return false;
             }
+            return false;
         } catch (err) {
             console.log("ERROR LIKED", err.message);
             throw err.message;
@@ -383,5 +392,16 @@ module.exports = {
             throw err.message;
         }
 
+    },
+
+    addNotification: async ({type, user_id_from, user_id_to}) => {
+        console.log("NOTIFICATION");
+        let sql = 'INSERT INTO `notification` (`notification_id`, `type`, `user_id_from`, `user_id_to`, `date`, `is_read`) VALUES(NULL,?,?,?,CURRENT_TIMESTAMP, 0);';
+        sql = mysql.format(sql, [type, user_id_from, user_id_to]);
+        const result = await db.conn.queryAsync(sql);
+        console.log("ADDING NOTIFICATION", result);
+        console.log("INSERTED ID", result.insertId);
+        if (result.insertId)
+            return result.insertId;
     }
 }
