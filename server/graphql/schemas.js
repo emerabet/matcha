@@ -68,7 +68,8 @@ exports.registerSchema = buildSchema(`
         addUser(user: AddUserInput!, address: AddAddressInput!): Int,
         updateUser(user: AddUserInput!, profile: AddProfileInput!, address: AddAddressInput!): String,
         addPicture(token: String!, picture_id: Int!, url: String!, type: String!, delete_url: String): [Picture],
-        deletePicture(picture_id: Int!, picture_src: String!): [Picture]
+        deletePicture(picture_id: Int!, picture_src: String!): [Picture],
+        likeUser(user_id_to_like: Int!): Boolean
     }
 
 

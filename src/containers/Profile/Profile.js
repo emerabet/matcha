@@ -14,7 +14,7 @@ import ProfilePicture from '../../components/ProfilePicture/ProfilePicture';
 import { connect } from 'react-redux';
 import * as actions from './Actions';
 
-//import * as headers from '../../Tools/Header';
+import * as headers from '../../Tools/Header';
 
 let geolocation;
 
@@ -76,23 +76,33 @@ class Profile extends Component{
     }
 
     async componentDidMount() {
+
+        const query_t = `mutation likeUser($user_id_to_like: Int!){
+            likeUser(user_id_to_like: $user_id_to_like)
+        }`;
+// getting the list of all tags from the api
+
+const r = await axios.post(`/api`,
+{
+query: query_t,
+variables: {
+    user_id_to_like: 26
+}
+}, headers.headers());
+console.log("WFIWEHFWOQFOWQ", r);
         console.log("MOUNTING", this.props.user);
-        console.log("HEADERS", headers);
+    //    console.log("HEADERS", headers);
         const query_tags = `query getTags{
                                 getTags{
                                    tag
                                 }                   
                             }`;
         // getting the list of all tags from the api
-        let headers = {
-            headers: {
-            authorization: localStorage.getItem("token")
-            }
-        }
+        
         const res = await axios.post(`/api`,
         {
             query: query_tags
-        }, headers);
+        }, headers.headers());
         
         const query = `
                         query getUser ($extended: Boolean) {
@@ -121,18 +131,14 @@ class Profile extends Component{
         const token = localStorage.getItem("token");
         
         
-        headers = {
-            headers: {
-            authorization: localStorage.getItem("token")
-            }
-        }
+        
         const response = await axios.post(`/api`,
             {
                 query: query,
                 variables: {
                     extended: true
                 }
-            }, headers);
+            }, headers.headers());
             
         console.log('response', response);
         if (response) {
@@ -217,11 +223,7 @@ class Profile extends Component{
             ip: ip
         }
 
-        const headers = {
-            headers: {
-            authorization: localStorage.getItem("token")
-            }
-        }
+        
 
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
@@ -229,7 +231,7 @@ class Profile extends Component{
             profile: profile,
             address: address
             }
-        }, headers);
+        }, headers.headers());
 
         // dispatch
         console.log("DISPATCHING");
@@ -331,12 +333,8 @@ class Profile extends Component{
       //  data.append('picture_id', this.state.picture_id_clicked);
        // data.append('src', this.state.picture_src_clicked);
         data.append('file', e.target.files[0], localStorage.getItem('token'));
-        let headers = {
-            headers: {
-            authorization: localStorage.getItem("token")
-            }
-        }
-        const res = await axios.post('/upload_picture', data, headers);
+        
+        const res = await axios.post('/upload_picture', data, headers.headers());
         console.log("res", res);
         console.log("UPLOADED");
         console.log("SIZE", res.data.pictures.length);

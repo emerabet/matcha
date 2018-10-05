@@ -235,5 +235,38 @@ module.exports = {
             return true;
         else
             return false;
+    },
+
+    likeUser: async ({user_id_to_like}, context) => {
+        const token = context.token;
+        try {
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            console.log("token", token);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            let sql = 'SELECT COUNT(user_id_visitor) as nb from `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;'
+            sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
+            let result = await db.conn.queryAsync(sql);
+            console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+            if (result[0].nb === 0){
+                sql = 'INSERT INTO `liked` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+                sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
+                result = await db.conn.queryAsync(sql);
+                console.log("ADDING", result);
+                return true;
+            } else {
+                sql = 'DELETE FROM `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
+                sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
+                result = await db.conn.queryAsync(sql);
+                console.log("DELETING", result);
+                return false;
+            }
+        } catch (err) {
+            console.log("ERROR LIKED", err.message);
+            throw err.message;
+        }
+
     }
 }

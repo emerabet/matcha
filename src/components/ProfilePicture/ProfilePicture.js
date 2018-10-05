@@ -5,6 +5,7 @@ import { Button, Form, Dropdown, Modal, Image, Header } from 'semantic-ui-react'
 import { connect } from 'react-redux';
 import * as styles  from './Styles';
 import axios from 'axios';
+import * as headers from '../../Tools/Header';
 
 class ProfilePicture extends Component {
     
@@ -21,12 +22,8 @@ class ProfilePicture extends Component {
         data.append('picture_id', this.props.picture_id);
         data.append('src', this.props.picture_src);
         data.append('file', e.target.files[0], localStorage.getItem('token'));
-        const headers = {
-            headers: {
-            authorization: localStorage.getItem("token")
-            }
-        }
-        const res = await axios.post('/upload_picture', data, headers);
+        
+        const res = await axios.post('/upload_picture', data, headers.headers());
         console.log("res", res);
         console.log("INSERT ID", res.insertId);
         console.log("UPLOADED");
@@ -48,12 +45,6 @@ class ProfilePicture extends Component {
                             }
                         }
                     `;
-        
-                    const headers = {
-                        headers: {
-                        authorization: localStorage.getItem("token")
-                        }
-                    }
 
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
@@ -61,7 +52,7 @@ class ProfilePicture extends Component {
             picture_id: this.props.picture_id,
             picture_src: this.props.picture_src
             }
-        }, headers);
+        }, headers.headers());
 
         console.log("RESDDD", result);
         console.log(result.data.data.deletePicture);
