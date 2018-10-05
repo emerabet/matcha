@@ -73,7 +73,7 @@ exports.registerSchema = buildSchema(`
 
 
     type Query {
-        getUser(token: String!, extended: Boolean, user_id2: Int): User,
+        getUser(extended: Boolean, user_id2: Int): User,
         getUsers(extended: Boolean): [User],
         getTags: [Tag],
         getAllTags: [Tag],

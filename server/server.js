@@ -38,28 +38,33 @@ const mdw = async (req, res, next) => {
             console.log("QQQQQQQQQQQ");
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
         }
-            console.log("token", req.headers.authorization);
+            console.log("token in middleware", req.headers.authorization);
             const decoded = await jwt.verify(req.headers.authorization, config.SECRET_KEY);
+            console.log("TEST");
             if (decoded.err){
                 console.log("UWHIUEFBHOWEBHFOEBOG");
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             }
+            console.log("TEST");
             next();
         } catch (err) {
         console.log("ERROR IN MIDDLEWARE", err);   
         res.status(403).send();    
-    }    
+    }
 }
 
-app.use('/api',mdw, express_graphql({
+app.use('/api', mdw, express_graphql( req =>( {
     schema: schemas.registerSchema,
     rootValue: root,
-    graphiql: true,
+    context: {
+        token: req.headers.authorization
+    },
+    graphiql: true,    
     formatError: (err) => {
         //console.log(err);
         return ({ message: err.message, statusCode: 403/*errors.errorCodes[err.message].statusCode*/})
     }
-}));
+})));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

@@ -95,8 +95,8 @@ class Profile extends Component{
         }, headers);
         
         const query = `
-                        query getUser ($token: String!, $extended: Boolean) {
-                            getUser(token: $token, extended: $extended){
+                        query getUser ($extended: Boolean) {
+                            getUser(extended: $extended){
                                 user_id,
                                 login,
                                 first_name,
@@ -126,69 +126,61 @@ class Profile extends Component{
             authorization: sessionStorage.getItem("token")
             }
         }
-        axios.post(`/api`,
+        const response = await axios.post(`/api`,
             {
                 query: query,
                 variables: {
-                    token: token,
                     extended: true
                 }
-            }, headers)
-            .then( async response => {
-                console.log('response', response);
-                if (response) {
-                    console.log(response.data.data.getUser);
-                    // formating birthdate to fit the form format
-                    //const bday = new Date(this.props.user.birthdate / 1);
-                    //let bday_string = `${bday.getFullYear()}-${(bday.getMonth() + 1) <10 ? '0' + (bday.getMonth() + 1) : (bday.getMonth() + 1)}-${(bday.getDate() + 1) <10 ? '0' + (bday.getDate() + 1) : (bday.getDate() + 1)}`;
-                    //const bday_string = this.props.user.birthdate.substr(0, 10);
-                    if (this.props.user === undefined) {
-                        console.log("NO PROPS");
-                    }
+            }, headers);
+            
+        console.log('response', response);
+        if (response) {
+            console.log(response.data.data.getUser);
+            if (this.props.user === undefined) {
+                console.log("NO PROPS");
+            }
                     
-                    const bday = this.props.user.birthdate.substr(0, 10);
-                    const tags = await response.data.data.getUser.tags.map(elem => {
-                        return elem.tag;
-                    })
-                    const all_tags = await res.data.data.getTags.map((element) => {
-                        return element.tag;
-                    })
-                    const profile_picture = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png';
-                    const profile_picture_id = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0;
-                    console.log("GENDER", this.props.user.gender, response.data.data.getUser.gender);
-                    if (this.props.user === undefined) {
-                        console.log("NO PROPS");
-                    }
+            const bday = this.props.user.birthdate.substr(0, 10);
+            const tags = await response.data.data.getUser.tags.map(elem => {
+                return elem.tag;
+            })
+            const all_tags = await res.data.data.getTags.map((element) => {
+                return element.tag;
+            })
+            const profile_picture = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png';
+            const profile_picture_id = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0;
+                console.log("GENDER", this.props.user.gender, response.data.data.getUser.gender);
+            if (this.props.user === undefined) {
+                console.log("NO PROPS");
+            }
                     
-                    this.setState({...this.state,
-                        oldLogin: this.props.user.login,
-                        login: this.props.user.login,
-                        first_name: this.props.user.firstName,
-                        last_name: this.props.user.lastName,
-                        oldEmail: this.props.user.email,
-                        email: this.props.user.email,
-                        share_location: Number.parseInt(this.props.user.share_location, 10),
-                        last_visit: this.props.user.last_visit,
-                        gender: this.props.user.gender,
-                        orientation: this.props.user.orientation,
-                        bio: this.props.user.bio,
-                        birthdate: bday,
-                        popularity: this.props.user.popularity,
-                        tags: tags,
-                        all_tags: all_tags,
-                        pictures: response.data.data.getUser.pictures,
-                        profile_picture: profile_picture,
-                        profile_picture_id: profile_picture_id
-                });
-                    
-                }
-                else {
-                    console.log("pres du toast error"); 
-                    //toast("Error while getting your profile. Please try to unlog and the relog !", {type: toast.TYPE.ERROR});
-                    this.props.history.push("/login");
-                }
-                //return response.data.data;
+            this.setState({...this.state,
+                oldLogin: this.props.user.login,
+                login: this.props.user.login,
+                first_name: this.props.user.firstName,
+                last_name: this.props.user.lastName,
+                oldEmail: this.props.user.email,
+                email: this.props.user.email,
+                share_location: Number.parseInt(this.props.user.share_location, 10),
+                last_visit: this.props.user.last_visit,
+                gender: this.props.user.gender,
+                orientation: this.props.user.orientation,
+                bio: this.props.user.bio,
+                birthdate: bday,
+                popularity: this.props.user.popularity,
+                tags: tags,
+                all_tags: all_tags,
+                pictures: response.data.data.getUser.pictures,
+                profile_picture: profile_picture,
+                profile_picture_id: profile_picture_id
             });
+                    
+        } else {
+            console.log("pres du toast error"); 
+            //toast("Error while getting your profile. Please try to unlog and the relog !", {type: toast.TYPE.ERROR});
+            this.props.history.push("/login");
+        }
     }
 
     updateUserInfo = async (ip, latitude = 0, longitude = 0) => {

@@ -57,8 +57,12 @@ module.exports = {
     },
 
 
-    getUser: async ({ token, extended, user_id2 = 0 }) => {
+    getUser: async ({extended, user_id2 = 0}, context) => {
+        console.log("HERE", context, user_id2);
+        //const token = context.token;
+        const token = context.token;
         try {
+            
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             console.log("token", token);
