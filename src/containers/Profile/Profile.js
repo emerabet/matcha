@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import * as actions from './Actions';
 
 import * as headers from '../../Tools/Header';
+import Aux from '../../Hoc/Aux/Aux';
 
 let geolocation;
 
@@ -370,9 +371,8 @@ class Profile extends Component{
         const oldPassOK = this.state.old_password !== "";
 
        return (
-            <div className="Profile_Container">
-                <Card style={styles.card} centered>
-                    <Card.Content header={ <div style={{display: "flex"}}>
+
+                <Aux>
                         <div style={{width: "60px"}}>
                             {
                                 this.state.pictures.map((pic) => {
@@ -384,21 +384,19 @@ class Profile extends Component{
                                         return (<div key="nokey"></div>);
                                     })
                             }
-                            {this.state.pictures.reduce(function (n, pic) {
+                            {
+                                this.state.pictures.reduce(function (n, pic) {
                                     return n + (pic.priority === 0);
                                 }, 0) < 4 && <div>
                                 <input type="file" style={styles.hiddenInput} name="side_picture" className="inputfile" onChange={this.handleUpload} id="empty_picture" />
                                     <label htmlFor="empty_picture">
                                         <Image id={0} name="empty_picture" src="/pictures/upload.png" size='tiny' rounded />
                                     </label>
-                            </div>}
-                            
+                                </div>
+                            }
 
-  </div>
-                                                        <ProfilePicture picture_src={this.state.profile_picture} picture_id={this.state.profile_picture_id} old_login={this.state.oldLogin} popularity={this.state.popularity} handleRefresh={this.handleRefresh} />
-                                                        
-                                            </div>} />
-                    <Card.Content description={
+                        </div>
+                        <ProfilePicture picture_src={this.state.profile_picture} picture_id={this.state.profile_picture_id} old_login={this.state.oldLogin} popularity={this.state.popularity} handleRefresh={this.handleRefresh} />
                          <Form onSubmit= {this.handleUpdate}>
                             <Form.Field>
                                 <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor="login">User name {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
@@ -478,12 +476,10 @@ class Profile extends Component{
                             </Form.Field>
                             <Button type='submit' disabled = {!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && !this.state.userNameAlreadyTaken && !this.emailAlreadyTaken && emailOK && oldPassOK)}>Update profile information</Button>
                        </Form>
-                    } />
-                    <Card.Content extra>
+             
                         Last visit: {new Date(this.state.last_visit / 1).toDateString()}
-                    </Card.Content>
-                </Card>
-            </div>
+          
+                </Aux>
         )
     }
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Image, Button, Icon, Segment } from 'semantic-ui-react';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import * as headers from '../../Tools/Header';
 
 
 class Stalk extends Component {
@@ -26,8 +27,8 @@ class Stalk extends Component {
 
         // recuperer profil utilisateur
         const query = `
-                        query getUser ($token: String!, $extended: Boolean, $user_id2: Int) {
-                            getUser(token: $token, extended: $extended, user_id2: $user_id2){
+                        query getUser ($extended: Boolean, $user_id2: Int) {
+                            getUser(extended: $extended, user_id2: $user_id2){
                                 user_id,
                                 login,
                                 first_name,
@@ -57,7 +58,7 @@ class Stalk extends Component {
             token: token,
             extended: true, 
             user_id2: id
-        }});
+        }}, headers.headers());
 
         this.setState({
             user: user.data.data.getUser,
