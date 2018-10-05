@@ -76,28 +76,12 @@ class Profile extends Component{
     }
 
     async componentDidMount() {
-
-        const query_t = `mutation likeUser($user_id_to_like: Int!){
-            likeUser(user_id_to_like: $user_id_to_like)
-        }`;
-// getting the list of all tags from the api
-
-const r = await axios.post(`/api`,
-{
-query: query_t,
-variables: {
-    user_id_to_like: 26
-}
-}, headers.headers());
-console.log("WFIWEHFWOQFOWQ", r);
         console.log("MOUNTING", this.props.user);
-    //    console.log("HEADERS", headers);
         const query_tags = `query getTags{
                                 getTags{
                                    tag
                                 }                   
                             }`;
-        // getting the list of all tags from the api
         
         const res = await axios.post(`/api`,
         {
