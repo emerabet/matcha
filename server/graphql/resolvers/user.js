@@ -288,5 +288,100 @@ module.exports = {
             throw err.message;
         }
 
+    },
+
+    addToBlackList: async ({user_id_to_black_list}, context) => {
+        const token = context.token;
+        try {
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            console.log("token", token);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            let sql = 'SELECT COUNT(user_id_blocked) as nb from `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;'
+            sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
+            let result = await db.conn.queryAsync(sql);
+            console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+            if (result[0].nb === 0){
+                sql = 'INSERT INTO `black_listed` (`user_id_blocked`, `user_id_blocker`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+                sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
+                result = await db.conn.queryAsync(sql);
+                console.log("ADDING", result);
+                
+                return true;
+            } else {
+                sql = 'DELETE FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
+                sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
+                result = await db.conn.queryAsync(sql);
+                console.log("DELETING", result);
+                
+                return false;
+            }
+        } catch (err) {
+            console.log("ERROR LIKED", err.message);
+            throw err.message;
+        }
+
+    },
+
+    addToReport: async ({user_id_to_report}, context) => {
+        const token = context.token;
+        try {
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            console.log("token", token);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            let sql = 'SELECT COUNT(user_id_reported) as nb from `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;'
+            sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
+            let result = await db.conn.queryAsync(sql);
+            console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+            if (result[0].nb === 0){
+                sql = 'INSERT INTO `reported` (`user_id_reported`, `user_id_reporter`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+                sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
+                result = await db.conn.queryAsync(sql);
+                console.log("ADDING", result);
+                
+                return true;
+            } else {
+                sql = 'DELETE FROM `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;';
+                sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
+                result = await db.conn.queryAsync(sql);
+                console.log("DELETING", result);
+                
+                return false;
+            }
+        } catch (err) {
+            console.log("ERROR LIKED", err.message);
+            throw err.message;
+        }
+
+    },
+
+    addVisit: async ({user_id_visited}, context) => {
+        console.log("IN ADDVISIT");
+        const token = context.token;
+        try {
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            console.log("token", token);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            
+            let sql = 'INSERT INTO `visit` (`visit_id`, `user_id_visitor`, `user_id_visited`, `date`) VALUES(NULL,?,?,CURRENT_TIMESTAMP);';
+            sql = mysql.format(sql, [decoded.user_id, user_id_visited]);
+            const result = await db.conn.queryAsync(sql);
+            console.log("ADDING", result);
+                
+            return true;
+            
+        } catch (err) {
+            console.log("ERROR LIKED", err.message);
+            throw err.message;
+        }
+
     }
 }
