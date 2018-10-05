@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from './Actions';
 import axios from 'axios';
-
+//import * as headers from '../Tools/Header';
+export const headers = {
+    headers: {
+    authorization: sessionStorage.getItem("token")
+    }
+}
 class Reload extends Component {
 
   
@@ -15,9 +20,9 @@ class Reload extends Component {
     }
 
     check = async (props) => {
-
+        console.log("IN HOC");
         try {
-            const res = await axios.post('/check', { token: sessionStorage.getItem('token') });
+            const res = await axios.get('/check', headers);
 
             console.log("FEF", res);
             console.log("actions login");

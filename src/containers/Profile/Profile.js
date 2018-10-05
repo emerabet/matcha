@@ -14,7 +14,11 @@ import ProfilePicture from '../../components/ProfilePicture/ProfilePicture';
 import { connect } from 'react-redux';
 import * as actions from './Actions';
 
+//import * as headers from '../../Tools/Header';
+
 let geolocation;
+
+
 
 class Profile extends Component{
 
@@ -73,16 +77,22 @@ class Profile extends Component{
 
     async componentDidMount() {
         console.log("MOUNTING", this.props.user);
+        console.log("HEADERS", headers);
         const query_tags = `query getTags{
                                 getTags{
                                    tag
                                 }                   
                             }`;
         // getting the list of all tags from the api
+        let headers = {
+            headers: {
+            authorization: sessionStorage.getItem("token")
+            }
+        }
         const res = await axios.post(`/api`,
         {
             query: query_tags
-        });
+        }, headers);
         
         const query = `
                         query getUser ($token: String!, $extended: Boolean) {
@@ -109,7 +119,13 @@ class Profile extends Component{
                     `;
 
         const token = sessionStorage.getItem("token");
-                        
+        
+        
+        headers = {
+            headers: {
+            authorization: sessionStorage.getItem("token")
+            }
+        }
         axios.post(`/api`,
             {
                 query: query,
@@ -117,10 +133,10 @@ class Profile extends Component{
                     token: token,
                     extended: true
                 }
-            })
+            }, headers)
             .then( async response => {
                 console.log('response', response);
-                if (!response.data.errors) {
+                if (response) {
                     console.log(response.data.data.getUser);
                     // formating birthdate to fit the form format
                     //const bday = new Date(this.props.user.birthdate / 1);
@@ -168,9 +184,10 @@ class Profile extends Component{
                 }
                 else {
                     console.log("pres du toast error"); 
-                    toast("Error while getting your profile. Please try to unlog and the relog !", {type: toast.TYPE.ERROR});
+                    //toast("Error while getting your profile. Please try to unlog and the relog !", {type: toast.TYPE.ERROR});
+                    this.props.history.push("/login");
                 }
-                return response.data.data;
+                //return response.data.data;
             });
     }
 

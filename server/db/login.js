@@ -26,7 +26,7 @@ exports.login = async (req, res) => {
 
         console.log("compare", bcrypt.compareSync(req.body.password, rows[0].password));
         if (bcrypt.compareSync(req.body.password, rows[0].password)) {
-            const token = jwt.sign({ user_id: rows[0].user_id }, config.SECRET_KEY, { expiresIn: 5 });
+            const token = jwt.sign({ user_id: rows[0].user_id }, config.SECRET_KEY, { expiresIn: 60 });
             const user = {
                 login: rows[0].login,
                 lastName: rows[0].last_name,
@@ -59,10 +59,10 @@ exports.login = async (req, res) => {
 
 exports.checkToken = async (req, res) => {
     console.log("GOT TOKEN", req.body.token);
-    if (req.body.token === undefined)
+    if (req.headers.authorization === undefined)
         res.status(403).send({ message: "Authentification failed" });
     try {
-        const decoded = await jwt.verify(req.body.token, config.SECRET_KEY);
+        const decoded = await jwt.verify(req.headers.authorization, config.SECRET_KEY);
         if (decoded.err)
         {    
             console.log("CANNOT DECODE");

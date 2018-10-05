@@ -44,7 +44,7 @@ exports.setRoutes = (app) => {
 
     app.get('/', (req, res) => res.send('Hello World!'));
 
-    app.post('/check', db.checkToken);
+    app.get('/check', db.checkToken);
     app.post('/connect', db.login);
     app.post('/upload_picture', up.single('file'), upload.upload);
 }

@@ -18,17 +18,17 @@ axios.interceptors.response.use(function (response) {
     console.log("AXIOS OK");
     console.log(response);
 
-    if (response.data.errors) {
-        sessionStorage.clear();
+   // if (response.data.errors) {
+   //     sessionStorage.clear();
        // window.location.assign("http://10.18.201.85:3000/login");
-    }
+  //  }
 
     return response;
   }, function (error) {
     console.log("AXIOS ERROR");
     // Do something with response error
-   // sessionStorage.clear();
-    return Promise.reject(error);
+    sessionStorage.clear();
+    //return Promise.reject(error);
   });
 const rootReducer = combineReducers({
     login: loginReducer,

@@ -11,6 +11,10 @@ const resolverTags = require('./graphql/resolvers/tag');
 const resolverPicture = require('./graphql/resolvers/picture');
 const errors = require('./graphql/errors');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const config = require('./config');
+
+
 let rootDir = __dirname; 
 let i = rootDir.lastIndexOf('/');
 if (i !== -1)
@@ -27,7 +31,27 @@ const root = {
     ...resolverPicture
 }
 
-app.use('/api', express_graphql({
+const mdw = async (req, res, next) => {
+    console.log("IN MIDDLEWARE", req.headers);
+    try {
+        if (!req.headers.authorization){
+            console.log("QQQQQQQQQQQ");
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+        }
+            console.log("token", req.headers.authorization);
+            const decoded = await jwt.verify(req.headers.authorization, config.SECRET_KEY);
+            if (decoded.err){
+                console.log("UWHIUEFBHOWEBHFOEBOG");
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            }
+            next();
+        } catch (err) {
+        console.log("ERROR IN MIDDLEWARE", err);   
+        res.status(403).send();    
+    }    
+}
+
+app.use('/api',mdw, express_graphql({
     schema: schemas.registerSchema,
     rootValue: root,
     graphiql: true,
