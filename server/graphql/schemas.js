@@ -31,7 +31,8 @@ exports.registerSchema = buildSchema(`
         birthdate: String
         popularity: Int,
         tags: [Tag],
-        pictures: [Picture]
+        pictures: [Picture],
+        isMyProfile: Boolean
     }
 
     type Tag {

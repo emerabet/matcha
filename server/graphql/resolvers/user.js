@@ -72,7 +72,7 @@ module.exports = {
             console.log("ne doit pas pparaitre");
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-
+            
             const userId = user_id2 === 0 ? decoded.user_id: user_id2;
             console.log("decoded", decoded);
             console.log("user to get from db", userId);
@@ -98,7 +98,10 @@ module.exports = {
             const pictures = await queriesPicture.getPicture({token: token, user_id2: user_id2});
             console.log("PICTURES...", pictures);
             users[0].pictures = pictures;
-            
+            if (user_id2 === decoded.user_id)
+                users[0].isMyProfile = true;
+            else
+                users[0].isMyProfile = false;
             console.log("ID", users[0]);
             return users[0];
         } catch (err) {
@@ -308,25 +311,28 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            let sql = 'SELECT COUNT(user_id_blocked) as nb from `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;'
-            sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
-            let result = await db.conn.queryAsync(sql);
-            console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
-            if (result[0].nb === 0){
-                sql = 'INSERT INTO `black_listed` (`user_id_blocked`, `user_id_blocker`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+            if (user_id_to_black_list != decoded.user_id) {
+                let sql = 'SELECT COUNT(user_id_blocked) as nb from `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;'
                 sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
-                result = await db.conn.queryAsync(sql);
-                console.log("ADDING", result);
-                
-                return true;
-            } else {
-                sql = 'DELETE FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
-                sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
-                result = await db.conn.queryAsync(sql);
-                console.log("DELETING", result);
-                
-                return false;
+                let result = await db.conn.queryAsync(sql);
+                console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+                if (result[0].nb === 0){
+                    sql = 'INSERT INTO `black_listed` (`user_id_blocked`, `user_id_blocker`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+                    sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
+                    result = await db.conn.queryAsync(sql);
+                    console.log("ADDING", result);
+                    module.exports.addNotification({type: "black_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
+                    return true;
+                } else {
+                    sql = 'DELETE FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
+                    sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
+                    result = await db.conn.queryAsync(sql);
+                    console.log("DELETING", result);
+                    module.exports.addNotification({type: "unblack_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
+                    return false;
+                }
             }
+            return false;
         } catch (err) {
             console.log("ERROR LIKED", err.message);
             throw err.message;
@@ -343,25 +349,28 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            let sql = 'SELECT COUNT(user_id_reported) as nb from `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;'
-            sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
-            let result = await db.conn.queryAsync(sql);
-            console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
-            if (result[0].nb === 0){
-                sql = 'INSERT INTO `reported` (`user_id_reported`, `user_id_reporter`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+            if (user_id_to_report != decoded.user_id) {
+                let sql = 'SELECT COUNT(user_id_reported) as nb from `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;'
                 sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
-                result = await db.conn.queryAsync(sql);
-                console.log("ADDING", result);
-                
-                return true;
-            } else {
-                sql = 'DELETE FROM `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;';
-                sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
-                result = await db.conn.queryAsync(sql);
-                console.log("DELETING", result);
-                
-                return false;
+                let result = await db.conn.queryAsync(sql);
+                console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+                if (result[0].nb === 0){
+                    sql = 'INSERT INTO `reported` (`user_id_reported`, `user_id_reporter`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
+                    sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
+                    result = await db.conn.queryAsync(sql);
+                    console.log("ADDING", result);
+                    module.exports.addNotification({type: "report", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
+                    return true;
+                } else {
+                    sql = 'DELETE FROM `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;';
+                    sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
+                    result = await db.conn.queryAsync(sql);
+                    console.log("DELETING", result);
+                    module.exports.addNotification({type: "unreport", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
+                    return false;
+                }
             }
+            return false;
         } catch (err) {
             console.log("ERROR LIKED", err.message);
             throw err.message;
@@ -379,14 +388,15 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            
-            let sql = 'INSERT INTO `visit` (`visit_id`, `user_id_visitor`, `user_id_visited`, `date`) VALUES(NULL,?,?,CURRENT_TIMESTAMP);';
-            sql = mysql.format(sql, [decoded.user_id, user_id_visited]);
-            const result = await db.conn.queryAsync(sql);
-            console.log("ADDING", result);
-                
-            return true;
-            
+            if (user_id_visited != decoded.user_id) {
+                let sql = 'INSERT INTO `visit` (`visit_id`, `user_id_visitor`, `user_id_visited`, `date`) VALUES(NULL,?,?,CURRENT_TIMESTAMP);';
+                sql = mysql.format(sql, [decoded.user_id, user_id_visited]);
+                const result = await db.conn.queryAsync(sql);
+                console.log("ADDING", result);
+                module.exports.addNotification({type: "visit", user_id_from: decoded.user_id, user_id_to: user_id_visited});
+                return true;
+            }
+            return false;
         } catch (err) {
             console.log("ERROR LIKED", err.message);
             throw err.message;
