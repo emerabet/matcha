@@ -20,19 +20,16 @@ class Home extends Component {
     const { activeItem } = this.state
 
     return (
-        <div className='Menu'>
-          <TopMenu />
-          <BottomNavigation
-        value={5}
-        onChange={null}
-        showLabels
-        className={classes.root}
-      >
-        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+      <BottomNavigation
+            value={5}
+            onChange={null}
+            showLabels
+            className={classes.root}
+          >
+            <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
+            <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
+            <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
       </BottomNavigation>
-      </div>
     )
   }
 
