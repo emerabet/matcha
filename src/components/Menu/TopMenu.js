@@ -19,20 +19,7 @@ class TopMenu extends Component {
     }
 
     handleLogOut = (e, data) => {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('last_name');
-      sessionStorage.removeItem('first_name');
-      sessionStorage.removeItem('email');
-      sessionStorage.removeItem('last_visit');
-      sessionStorage.removeItem('share_location');
-      sessionStorage.removeItem('gender');
-      sessionStorage.removeItem('orientation');
-      sessionStorage.removeItem('bio');
-      sessionStorage.removeItem('birthdate');
-      sessionStorage.removeItem('popularity');
-      sessionStorage.removeItem('latitude');
-      sessionStorage.removeItem('longitude');
-      sessionStorage.removeItem('login');
+      sessionStorage.clear();
       this.props.history.push('/login');
     }
 
