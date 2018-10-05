@@ -95,7 +95,7 @@ module.exports = {
 
             
 
-            const pictures = await queriesPicture.getPicture({token: token});
+            const pictures = await queriesPicture.getPicture({token: token, user_id2: user_id2});
             console.log("PICTURES...", pictures);
             users[0].pictures = pictures;
             
