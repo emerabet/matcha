@@ -132,7 +132,9 @@ class Profile extends Component{
                 console.log("NO PROPS");
             }
                     
-            const bday = this.props.user.birthdate.substr(0, 10);
+            let bday = ""; 
+            if (this.props.user.birthdate)
+                bday= this.props.user.birthdate.substr(0, 10);
             const tags = await response.data.data.getUser.tags.map(elem => {
                 return elem.tag;
             })
