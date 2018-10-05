@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import AdvancedSearch from './containers/AdvancedSearch/AdvancedSearch';
+import Layout from './Hoc/Layout/Layout'
 
 class App extends Component {
 
@@ -39,11 +40,10 @@ class App extends Component {
     }
 
     return (
-      <div id="wrapRoute">
-      
-        { routes }
-        <ToastContainer />
-      </div>
+        <Layout>
+          { routes }
+          <ToastContainer />
+        </Layout>
     );
   }
 }
