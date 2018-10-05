@@ -389,7 +389,7 @@ class Profile extends Component{
                                 }, 0) < 4 && <div>
                                 <input type="file" style={styles.hiddenInput} name="side_picture" className="inputfile" onChange={this.handleUpload} id="empty_picture" />
                                     <label htmlFor="empty_picture">
-                                        <Image id={0} name="empty_picture" style={styles.picture} src="/pictures/upload.png" size='tiny' rounded />
+                                        <Image id={0} name="empty_picture" src="/pictures/upload.png" size='tiny' rounded />
                                     </label>
                             </div>}
                             

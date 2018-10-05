@@ -20,7 +20,3 @@ export const hiddenInput = {
     overflow: 'hidden',
     position: 'absolute',
 }
-
-export const picture = {
-    marginTop: "15px"
-}
