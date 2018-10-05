@@ -371,8 +371,6 @@ class Profile extends Component{
 
        return (
             <div className="Profile_Container">
-                <ToastContainer />
-                <TopMenu />
                 <Card style={styles.card} centered>
                     <Card.Content header={ <div style={{display: "flex"}}>
                         <div style={{width: "60px"}}>
