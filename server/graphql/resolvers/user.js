@@ -134,9 +134,10 @@ module.exports = {
         }
     },
 
-    updateUser: async ({ token, user, profile, address }) => {
+    updateUser: async ({ user, profile, address }, context) => {
         console.log("user to update in db", user);
         console.log("address", address);
+        const token = context.token;
         try {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);

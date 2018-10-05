@@ -11,8 +11,10 @@ const queriesPicture = require('../graphql/resolvers/picture');
 const storage = multer.diskStorage({
     destination: './public/pictures',
     async filename(req, file, cb) {
+        const token = req.headers.authorization;
+        console.log("HEADER", req.headers.authorization)
         console.log("BODY", req.body);
-        await jwt.verify(req.body.token, config.SECRET_KEY, async (err, decoded) => {
+        await jwt.verify(token, config.SECRET_KEY, async (err, decoded) => {
             if (await !fs.existsSync(`${appRoot}/public/pictures/${decoded.user_id}/`)){
                 await fs.mkdirSync(`${appRoot}/public/pictures/${decoded.user_id}/`);
             }
@@ -23,9 +25,9 @@ const storage = multer.diskStorage({
             const file_name = `${uniqid()}.${type}`;
             cb(null, `/${decoded.user_id}/${file_name}`);
             const url = `${appRoot}/public/pictures/${decoded.user_id}/${file_name}`;
-            console.log("body token", req.body.token);
+            console.log("body token", token);
             const src = `/pictures/${decoded.user_id}/${file_name}`;
-            const r = await queriesPicture.addPicture({token: req.body.token, picture_id: req.body.picture_id, url: src, type: req.body.type, delete_url: req.body.src});
+            const r = await queriesPicture.addPicture({token: token, picture_id: req.body.picture_id, url: src, type: req.body.type, delete_url: req.body.src});
             console.log("ADDPICTURE", r.insertId);
             req.body.insertId = r.insertId;
        /* if (!result.data.errors)

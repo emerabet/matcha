@@ -16,42 +16,29 @@ class ProfilePicture extends Component {
 
         const data = new FormData();
         data.append('filename', "test.png");
-        data.append('token', localStorage.getItem("token"));
+       // data.append('token', localStorage.getItem("token"));
         data.append('type', e.target.name);
         data.append('picture_id', this.props.picture_id);
         data.append('src', this.props.picture_src);
         data.append('file', e.target.files[0], localStorage.getItem('token'));
-
-        const res = await axios.post('/upload_picture', data);
+        const headers = {
+            headers: {
+            authorization: localStorage.getItem("token")
+            }
+        }
+        const res = await axios.post('/upload_picture', data, headers);
         console.log("res", res);
         console.log("INSERT ID", res.insertId);
         console.log("UPLOADED");
         console.log("SIZE", res.data.pictures.length);
-
-        this.props.handleRefresh(res.data.pictures);
-        /*
-        if (res.data.pictures.length > 0){
-            if (res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1).length > 0) {
-                this.setState({pictures: res.data.pictures, profile_picture: res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].src,
-                    profile_picture_id: res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].picture_id}
-                    );
-            }
-            else {
-                this.setState({pictures: res.data.pictures, profile_picture: "/pictures/smoke_by.png",
-                    profile_picture_id: 0}
-                    );
-            }
-        } else {
-            this.setState({pictures: [], profile_picture: "/pictures/smoke_by.png",
-                    profile_picture_id: 0}
-                    );
-        }*/
+        if (res)
+            this.props.handleRefresh(res.data.pictures);
     }
 
     handleDelete = async (e) => {
         const query = `
-                        mutation deletePicture($token: String!, $picture_id: Int!, $picture_src: String!) {
-                            deletePicture(token: $token, picture_id: $picture_id, picture_src: $picture_src) {
+                        mutation deletePicture($picture_id: Int!, $picture_src: String!) {
+                            deletePicture(picture_id: $picture_id, picture_src: $picture_src) {
                                 
                                     picture_id,
                                     user_id,
@@ -61,6 +48,12 @@ class ProfilePicture extends Component {
                             }
                         }
                     `;
+        
+                    const headers = {
+                        headers: {
+                        authorization: localStorage.getItem("token")
+                        }
+                    }
 
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
@@ -68,7 +61,7 @@ class ProfilePicture extends Component {
             picture_id: this.props.picture_id,
             picture_src: this.props.picture_src
             }
-        });
+        }, headers);
 
         console.log("RESDDD", result);
         console.log(result.data.data.deletePicture);

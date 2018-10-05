@@ -28,7 +28,7 @@ module.exports = {
                     console.log("PRIORITYYYY", priority);
                     console.log("PICTURE ID", picture_id);
                 if (Number.parseInt(picture_id, 10) !== 0)
-                    module.exports.deletePicture({token: token, picture_id: picture_id, picture_src: delete_url});
+                    module.exports.deletePicture({picture_id: picture_id, picture_src: delete_url}, {token: token});
                     sql = "INSERT INTO `picture` (`picture_id`, `user_id`, `src`, `priority`) VALUES (NULL,?,?,?)";
                     sql = mysql.format(sql, [user_id, url, priority]);
                     result = await db.conn.queryAsync(sql); 
@@ -59,7 +59,8 @@ module.exports = {
         }
     },
 
-    deletePicture: async ({token, picture_id, picture_src}) => {
+    deletePicture: async ({picture_id, picture_src}, context) => {
+        const token = context.token;
         console.log("DELETING", picture_src);
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);

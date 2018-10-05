@@ -26,7 +26,7 @@ exports.login = async (req, res) => {
 
         console.log("compare", bcrypt.compareSync(req.body.password, rows[0].password));
         if (bcrypt.compareSync(req.body.password, rows[0].password)) {
-            const token = jwt.sign({ user_id: rows[0].user_id }, config.SECRET_KEY, { expiresIn: 60 });
+            const token = jwt.sign({ user_id: rows[0].user_id }, config.SECRET_KEY, { expiresIn: 3600 });
             const user = {
                 login: rows[0].login,
                 lastName: rows[0].last_name,

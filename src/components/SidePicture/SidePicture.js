@@ -21,14 +21,18 @@ class SidePicture extends Component {
         data.append('picture_id', this.props.pic.picture_id);
         data.append('src', this.props.pic.src);
         data.append('file', e.target.files[0], localStorage.getItem('token'));
-
-        const res = await axios.post('/upload_picture', data);
+        const headers = {
+            headers: {
+            authorization: localStorage.getItem("token")
+            }
+        }
+        const res = await axios.post('/upload_picture', data, headers);
         console.log("res", res);
         console.log("INSERT ID", res.insertId);
         console.log("UPLOADED");
         console.log("SIZE", res.data.pictures.length);
-
-        this.props.handleRefresh(res.data.pictures);
+        if (res)
+            this.props.handleRefresh(res.data.pictures);
         /*
         if (res.data.pictures.length > 0){
             if (res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1).length > 0) {
@@ -50,8 +54,8 @@ class SidePicture extends Component {
 
     handleDelete = async (e) => {
         const query = `
-                        mutation deletePicture($token: String!, $picture_id: Int!, $picture_src: String!) {
-                            deletePicture(token: $token, picture_id: $picture_id, picture_src: $picture_src) {
+                        mutation deletePicture($picture_id: Int!, $picture_src: String!) {
+                            deletePicture(picture_id: $picture_id, picture_src: $picture_src) {
                                 
                                     picture_id,
                                     user_id,
@@ -61,14 +65,18 @@ class SidePicture extends Component {
                             }
                         }
                     `;
-
+                    const headers = {
+                        headers: {
+                        authorization: localStorage.getItem("token")
+                        }
+                    }
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
             token: localStorage.getItem("token"), 
             picture_id: this.props.pic.picture_id,
             picture_src: this.props.pic.src
             }
-        });
+        }, headers);
 
         console.log("RESDDD", result);
         console.log(result.data.data.deletePicture);

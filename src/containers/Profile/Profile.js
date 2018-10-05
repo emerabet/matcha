@@ -185,8 +185,8 @@ class Profile extends Component{
 
     updateUserInfo = async (ip, latitude = 0, longitude = 0) => {
         const query = `
-                        mutation updateUser($token: String!, $user: AddUserInput!, $profile: AddProfileInput!, $address: AddAddressInput!) {
-                            updateUser(token: $token, user: $user, profile: $profile, address: $address)
+                        mutation updateUser($user: AddUserInput!, $profile: AddProfileInput!, $address: AddAddressInput!) {
+                            updateUser(user: $user, profile: $profile, address: $address)
                         }
                     `;
 
@@ -217,22 +217,29 @@ class Profile extends Component{
             ip: ip
         }
 
+        const headers = {
+            headers: {
+            authorization: localStorage.getItem("token")
+            }
+        }
+
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
-            token: localStorage.getItem("token"), 
             user: user,
             profile: profile,
             address: address
             }
-        });
+        }, headers);
 
         // dispatch
         console.log("DISPATCHING");
         await this.props.onUpdateProfile(this.state);
-        if (!result.data.errors)
+        console.log("RES", result);
+        if (result)
             toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
         else
-            toast("Error updating your profile information, please check that the password you put is correct !", {type: toast.TYPE.ERROR});
+            console.log("Error updating your profile information, please check that the password you put is correct !");
+            //toast("Error updating your profile information, please check that the password you put is correct !", {type: toast.TYPE.ERROR});
     }
 
     handleUpdate = async (e) => {
@@ -319,13 +326,17 @@ class Profile extends Component{
 
         const data = new FormData();
         data.append('filename', "test.png");
-        data.append('token', localStorage.getItem("token"));
+        //data.append('token', localStorage.getItem("token"));
         data.append('type', e.target.name);
       //  data.append('picture_id', this.state.picture_id_clicked);
        // data.append('src', this.state.picture_src_clicked);
         data.append('file', e.target.files[0], localStorage.getItem('token'));
-
-        const res = await axios.post('/upload_picture', data);
+        let headers = {
+            headers: {
+            authorization: localStorage.getItem("token")
+            }
+        }
+        const res = await axios.post('/upload_picture', data, headers);
         console.log("res", res);
         console.log("UPLOADED");
         console.log("SIZE", res.data.pictures.length);
@@ -459,8 +470,6 @@ class Profile extends Component{
                                 <label htmlFor="Ip">Ip</label>
                                 <Input type="text" onChange={this.handleChange} name="ip" value={ this.state.ip } placeholder="Ip" required></Input>                   
                             </Form.Field>
-                            
-                            
                             <Form.Field>
                                 <label htmlFor="gender">Gender</label>
                                 <Select compact options={gender_options} onChange={this.handleChange} name="gender" value={ this.state.gender } required></Select>                   
@@ -475,22 +484,18 @@ class Profile extends Component{
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="interest">Interest (Please press tab to add an interest)</label>
-                                
                                 <Chips
                                     value={[...this.state.tags.filter(elem => {
                                         return this.state.delete_tags.indexOf(elem) === -1;
                                     }), ...this.state.new_tags]}
-                                    
                                     onChange={this.onTagChange}
                                     suggestions={this.state.all_tags}
-                            
                                 />
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="birthdate">Birthdate</label>
                                 <Input type="date" onChange={this.handleChange} name="birthdate" value={ this.state.birthdate } placeholder="Birthdate" required></Input>                   
                             </Form.Field>
-                            
                             <Button type='submit' disabled = {!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && !this.state.userNameAlreadyTaken && !this.emailAlreadyTaken && emailOK && oldPassOK)}>Update profile information</Button>
                        </Form>
                     } />
