@@ -4,6 +4,7 @@ import Listview from './../../components/Listview/Listview';
 import { Divider, Icon, Pagination  } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import * as headers from '../../Tools/Header';
 
 import { buffer, point, polygon, pointsWithinPolygon, points } from '@turf/turf';
 
@@ -44,9 +45,9 @@ class AdvancedSearch extends Component {
                             }
                         }
                     `;
-
-        const users = await axios.post(`/api`, { query: query, variables: { extended: true } });
-        const tags = await axios.post('/api', { query: `query getTags { getTags { tag } }`});
+                    
+        const users = await axios.post(`/api`, { query: query, variables: { extended: true } }, headers.headers());
+        const tags = await axios.post('/api', { query: `query getTags { getTags { tag } }`}, headers.headers());
 
         const nbPages = this.calculPagination(users.data.data.getUsers.length, this.state.itemsPerPage);
         const paged = this.paginate(users.data.data.getUsers, this.state.itemsPerPage, this.state.activePage); 

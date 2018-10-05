@@ -1,5 +1,5 @@
-export const headers = {
-    headers: {
+export const headers = () => {
+    return {headers: {
     authorization: localStorage.getItem("token")
-    }
+    }}
 }
