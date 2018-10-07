@@ -91,8 +91,8 @@ class AdvancedSearch extends Component {
         });
 
         await this.setState({
-                                users: newUsers,
-                                lastDistanceChecked: distance
+                        users: newUsers,
+                        lastDistanceChecked: distance
                     });
     }
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Grid, Image, Button, Icon, Segment } from 'semantic-ui-react';
+import { Grid, Image, Button, Icon, Segment, Card } from 'semantic-ui-react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import * as headers from '../../Tools/Header';
-
+import Activity from '../../components/Activity/Activity';
 
 class Stalk extends Component {
 
@@ -16,6 +16,7 @@ class Stalk extends Component {
         activeImage: 0,
         src:'',
         userViewed: null,
+        isMyProfile: false
     }
 
     async componentDidMount() {
@@ -64,7 +65,8 @@ class Stalk extends Component {
             user: user.data.data.getUser,
             nbImage: user.data.data.getUser.pictures.length,
             src: this.getActivePicture(user.data.data.getUser),
-            userViewed: id
+            userViewed: id,
+            isMyProfile: user.data.data.getUser.isMyProfile
         })
 
         console.log(this.state);
@@ -171,40 +173,50 @@ class Stalk extends Component {
 
             loaded = (<Grid stackable divided='vertically'>
                     <Grid.Row columns={2} divided>
-                    <Grid.Column>
-                        <Button.Group attached='top'>
-                            <Button name='topleft' onClick={this.handleNextPhoto} ><Icon name='angle left' /></Button>
-                            <Button name='topright' onClick={this.handleNextPhoto} ><Icon name='angle right' /></Button>
-                        </Button.Group>
-                        <Segment attached>
-                            <Image src={this.state.src} />
-                        </Segment>
-                        <Button.Group attached='bottom'>
-                            <Button><Icon name='angle left' /></Button>
-                            <Button><Icon name='angle right' /></Button>
-                            <Button><Icon name='angle left' /></Button>
-                            <Button><Icon name='angle right' /></Button>
-                        </Button.Group>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <h5>Username: {this.state.user.login} ({this.state.user.age}))</h5>
-                        <h5>Localisation: {this.state.user.country} ({this.state.user.city})</h5>
-                        <h5>Popularity: {this.state.user.popularity}</h5>
-                        <h5>Status: Online</h5>
-                        <Button color={this.state.colorLike} onClick={this.handleLike} animated='vertical'>
-                            <Button.Content hidden>Like</Button.Content>
-                            <Button.Content visible>
-                                <Icon name='like' />
-                            </Button.Content>
-                        </Button>
-
-                        <Button color={this.state.colorBlacklist} onClick={this.handleBlacklist} animated='vertical'>
-                            <Button.Content hidden>Black list</Button.Content>
-                            <Button.Content visible>
-                                <Icon name='lock' />
-                            </Button.Content>
-                        </Button>
-                    </Grid.Column>
+                        <Grid.Column>
+                            <Button.Group attached='top'>
+                                <Button name='topleft' onClick={this.handleNextPhoto} ><Icon name='angle left' /></Button>
+                                <Button name='topright' onClick={this.handleNextPhoto} ><Icon name='angle right' /></Button>
+                            </Button.Group>
+                            <Segment attached>
+                                <Image src={this.state.src} />
+                            </Segment>
+                            <Button.Group attached='bottom'>
+                                <Button><Icon name='angle left' /></Button>
+                                <Button><Icon name='angle right' /></Button>
+                                <Button><Icon name='angle left' /></Button>
+                                <Button><Icon name='angle right' /></Button>
+                            </Button.Group>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Card>
+                                <Card.Content>
+                                    <Card.Header>{this.state.user.login} {this.state.user.age}</Card.Header>
+                                    <Card.Meta>{this.state.user.country} ({this.state.user.city})</Card.Meta>
+                                    <Card.Description>
+                                        <h5>Popularity: {this.state.user.popularity}</h5>
+                                        <h5>Status: Online</h5>
+                                    </Card.Description>
+                                </Card.Content>
+                                <Card.Content extra>
+                                    <div className='ui two buttons'>
+                                    <Button basic color={this.state.colorLike} onClick={this.handleLike} animated='vertical'>
+                                        <Button.Content hidden>Like</Button.Content>
+                                        <Button.Content visible>
+                                            <Icon name='like' />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button basic color={this.state.colorBlacklist} onClick={this.handleBlacklist} animated='vertical'>
+                                        <Button.Content hidden>Black list</Button.Content>
+                                        <Button.Content visible>
+                                            <Icon name='lock' />
+                                        </Button.Content>
+                                    </Button>
+                                    </div>
+                                </Card.Content>
+                            </Card>
+                            { this.state.isMyProfile &&  <Activity>fghj</Activity> }
+                        </Grid.Column>
                     </Grid.Row>
 
                     <Grid.Row columns={1}>
@@ -222,10 +234,9 @@ class Stalk extends Component {
                 </Grid>);
         }
 
-
         return (
             <div>
-            { loaded }
+                { loaded }
             </div>
         );
 
