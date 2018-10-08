@@ -242,9 +242,10 @@ class Profile extends Component{
                 console.log("WILL UPDATE");
                 this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
             });
-        } else
-        console.log("WILL UPDATE ONLY IP");
+        } else {
+            console.log("WILL UPDATE ONLY IP");
             this.updateUserInfo(ip);
+        }
     }
 
     handleAddChip = (chip) => {
