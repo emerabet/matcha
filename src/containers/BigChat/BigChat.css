@@ -1,0 +1,13 @@
+.big-chat-container {
+    display: grid;
+    grid-gap: 10px;
+    padding: 10px;
+}
+
+.contact-list {
+    grid-column: 1;
+}
+
+.big-chat {
+    grid-column: 2 / span 5;
+}
