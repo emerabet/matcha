@@ -413,5 +413,33 @@ module.exports = {
         console.log("INSERTED ID", result.insertId);
         if (result.insertId)
             return result.insertId;
+    },
+
+    getUserNotifications: async ({}, context) => {
+        console.log("USER NOTIFICATIONS");
+        console.log(context);
+        
+        try {
+            const token = context.token;
+
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const userId = decoded.user_id;
+            let sql = `SELECT notification_id, type, user_id_from, user_id_to, date, is_read, login, email, last_name, first_name
+                        FROM notification 
+                        INNER JOIN user on notification.user_id_from = user.user_id
+                        WHERE user_id_to = ?
+                        ORDER BY date DESC;`;
+            sql = mysql.format(sql, [userId]);
+            const result = await db.conn.queryAsync(sql);
+            console.log(result);
+            return result;
+        } catch (err) {
+            console.log("ERR", err);
+            throw (errors.errorTypes.BAD_REQUEST);
+        }
     }
 }

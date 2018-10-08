@@ -1,4 +1,7 @@
 import axios from 'axios';
+import * as headers from '../../Tools/Header';
+
+import * as actionsActivity from '../../components/Activity/Actions';
 
 export const LOGIN = 'LOGIN';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
@@ -23,6 +26,24 @@ export const login =(userName, password) => {
             localStorage.setItem('latitude', res.data.user.latitude);
             localStorage.setItem('longitude', res.data.user.longitude);
             localStorage.setItem('login', res.data.user.login);
+
+            const query = `query getUserNotifications { 
+                                getUserNotifications { 
+                                    notification_id,
+                                    type,
+                                    user_id_from,
+                                    user_id_to,
+                                    date,
+                                    is_read,
+                                    login
+                                } 
+                            }`;
+
+            //const notif = await axios.post(`/api`, { query: query }, headers.headers());
+
+            actionsActivity.load();
+
+            //dispatch({type: actionsActivity.NOTIFICATION_READ_SUCCESS, data: notif.data.data.getUserNotifications});
             dispatch({ type: LOGIN, data: res.data });
         } catch (err) {
             dispatch({

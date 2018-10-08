@@ -47,6 +47,16 @@ exports.registerSchema = buildSchema(`
         priority: Int
     }
 
+    type Notification {
+        notification_id: Int
+        type: String
+        user_id_from: Int
+        user_id_to: Int
+        date: String
+        is_read: Boolean
+        login: String
+    }
+
     input AddProfileInput {
         gender: String
         orientation: String
@@ -82,6 +92,7 @@ exports.registerSchema = buildSchema(`
         getUsers(extended: Boolean): [User],
         getTags: [Tag],
         getAllTags: [Tag],
+        getUserNotifications: [Notification],
         getLogin(login: String!): Boolean,
         getEmail(email: String!): Boolean,
         getPicture(token: String!, user_id2: Int) : [Picture]

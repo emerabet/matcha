@@ -1,10 +1,58 @@
 import React, { Component } from 'react';
-import { Feed, Card } from 'semantic-ui-react';
+import { Feed, Card, Icon } from 'semantic-ui-react';
+import * as actions from './Actions';
+import { connect } from 'react-redux';
 
 class Activity extends Component {
 
+    state = {
+        isRead: false,
+    }
+
+    componentDidMount() {
+        console.log("Activity mount");
+        console.log(this.props);
+        console.log("mounted");
+    }
+
+    handleNotificationClicked = (id) => {
+        
+    }
+
+
+    loadActivities = () => {
+
+        if (!this.props.user.notifications) {
+            return (<Feed.Summary>
+                    Nothing to show.
+            </Feed.Summary>)
+        }
+
+        const obj = {
+            visit: "viewed",
+            liked: "liked"
+        }
+
+        const loaded = this.props.user.notifications.map(itm => {           
+
+            const date = new Date(itm.date / 1);
+            return (
+                <Feed.Summary key= { itm.notification_id }>
+                    <Feed.Date>{ date.toDateString() }</Feed.Date> <a>{itm.login}</a> {obj[itm.type]} your profile.<Icon onClick={() => this.handleNotificationClicked(itm.notification_id)}name='close' />
+                </Feed.Summary>
+            );
+        });
+
+        return loaded;
+    }
+
+
 
     render() {
+
+
+        
+
 
         return (
             <Card>
@@ -14,23 +62,32 @@ class Activity extends Component {
                 <Card.Content>
                     <Feed>
                         <Feed.Event>
-                            <Feed.Label image='/images/avatar/small/laura.jpg' />
                             <Feed.Content>
-                                <Feed.Date>3 days ago</Feed.Date>
-                                <Feed.Summary>
-                                <a>Laura Faucet</a> created a post
-                                </Feed.Summary>
-                                <Feed.Extra text>Have you seen what's going on in Israel? Can you believe it.</Feed.Extra>
+                                { this.loadActivities() }
                             </Feed.Content>
                         </Feed.Event>
                     </Feed>
                 </Card.Content>
             </Card>
         );
-        
     }
-
-
 }
 
-export default Activity;
+const mapStateToProps = state => {
+
+    console.log("state");
+    console.log(state);
+
+    return {
+        user: state.login.user,
+        notifications: state.notification.notifications
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onRemoveNotification: (id) => dispatch(actions.remove(id))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Activity);
