@@ -1,0 +1,20 @@
+.message-from-user {
+    text-align: right;
+    grid-column: 2 / span 7;
+    background-color: #1976D2;
+    border-radius: 5px;
+    padding: 5px;
+    color: #fff;
+}
+
+.message-from-contact {
+    grid-column: 1 / span 6;
+    background-color: #F5F5F5;
+    color: #000;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.message-time {
+    font-size: 10px;
+}
