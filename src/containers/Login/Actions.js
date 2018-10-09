@@ -27,23 +27,7 @@ export const login =(userName, password) => {
             localStorage.setItem('longitude', res.data.user.longitude);
             localStorage.setItem('login', res.data.user.login);
 
-            const query = `query getUserNotifications { 
-                                getUserNotifications { 
-                                    notification_id,
-                                    type,
-                                    user_id_from,
-                                    user_id_to,
-                                    date,
-                                    is_read,
-                                    login
-                                } 
-                            }`;
-
-            //const notif = await axios.post(`/api`, { query: query }, headers.headers());
-
-            actionsActivity.load();
-
-            //dispatch({type: actionsActivity.NOTIFICATION_READ_SUCCESS, data: notif.data.data.getUserNotifications});
+            dispatch(actionsActivity.load());
             dispatch({ type: LOGIN, data: res.data });
         } catch (err) {
             dispatch({
