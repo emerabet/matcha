@@ -9,6 +9,7 @@ module.exports = {
     getContacts: async ({}, context) => {
         console.log("CONTEXT", context);
         console.log("TOKEN", context.token);
+        const token = context.token;
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
