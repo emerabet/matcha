@@ -26,7 +26,7 @@ class Chat extends Component {
                 {
                     this.props.messages.map((message) => {
                     return (
-                        <Message type="message-from-contact" msg={message.message} from={message.user_id_sender} date={message.date}/>
+                        <Message key={message.message_id} type="message-from-contact" msg={message.message} from={message.login} date={message.date}/>
                     )
                 })
                 }
