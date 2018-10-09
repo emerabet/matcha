@@ -13,13 +13,22 @@ class Activity extends Component {
         console.log("Activity mount");
         console.log(this.props);
         console.log("mounted");
+
+        if (this.props && this.props.notifications.length === 0) {
+            console.log("On essaye de charger les notifications");
+            this.props.onLoadNotification();
+        }
     }
 
-    handleNotificationClicked = (id) => {
+    handleRemoveNotificationClicked = (id) => {
         console.log(id);
         this.props.onRemoveNotification(id);
     }
 
+    handleReadNotificationClicked = (id) => {
+        console.log(id);
+        this.props.onCheckNotification(id);
+    }
 
     loadActivities = () => {
 
@@ -39,7 +48,9 @@ class Activity extends Component {
             const date = new Date(itm.date / 1);
             return (
                 <Feed.Summary key= { itm.notification_id }>
-                    <Feed.Date>{ date.toDateString() }</Feed.Date> <a>{itm.login}</a> {obj[itm.type]} your profile.<Icon onClick={() => this.handleNotificationClicked(itm.notification_id)}name='close' />
+                    <Feed.Date>{ date.toDateString() }</Feed.Date> <a>{itm.login}</a> {obj[itm.type]} your profile.
+                    <Icon onClick={() => this.handleRemoveNotificationClicked(itm.notification_id)} name='close' />
+                    <Icon onClick={() => this.handleReadNotificationClicked(itm.notification_id)} name='check' />
                 </Feed.Summary>
             );
         });
@@ -82,7 +93,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onRemoveNotification: (id) => dispatch(actions.remove(id))
+        onRemoveNotification: (id) => dispatch(actions.remove(id)),
+        onCheckNotification: (id) => dispatch(actions.check(id)),
+        onLoadNotification: (id) => dispatch(actions.load()),
     }
 }
 

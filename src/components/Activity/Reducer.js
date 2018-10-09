@@ -17,7 +17,7 @@ const reducer = (state = initialState, action) => {
                 notifications: [] };
             break ;
         case actions.NOTIFICATION_DELETED_SUCCESS:
-            console.log("data: ", action.data);
+            console.log("JE SUIS LA");
             const array = state.notifications.filter(itm => {
                 if (itm.notification_id === action.data)
                     return false;
@@ -28,12 +28,21 @@ const reducer = (state = initialState, action) => {
                 notifications: array };
             break ;
         case actions.NOTIFICATION_READ_SUCCESS:
+                console.log("JE SUIS ICI");
+
+            const newstate = state.notifications.map(itm => {
+                const obj = { ...itm };
+                if (itm.notification_id === action.data) {
+                    obj.is_read = true;
+                }
+                return obj;
+            });
+            console.log("New state: ", newstate);
             nextState = { ...state,
-                notifications: action.data };
+                notifications: newstate };
             break ;
         case actions.NOTIFICATION_READ_FAIL:
-            nextState = { ...state,
-                token: null };     
+            nextState = { ...state};     
             break 
         default: return state;
     }
