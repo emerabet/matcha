@@ -114,6 +114,6 @@ exports.registerSchema = buildSchema(`
         getEmail(email: String!): Boolean,
         getPicture(token: String!, user_id2: Int) : [Picture],
         getContacts: [Contact],
-        getMessages(chat_id Int!): [Message]
+        getMessages(chat_id: Int!): [Message]
     }
 `);
