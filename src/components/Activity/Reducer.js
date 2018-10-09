@@ -4,6 +4,7 @@ const initialState = {
     notifications: []
 }
 
+
 const reducer = (state = initialState, action) => {
     let nextState;
     switch(action.type) {
@@ -14,6 +15,17 @@ const reducer = (state = initialState, action) => {
         case actions.LOAD_FAILED:
             nextState = { ...state,
                 notifications: [] };
+            break ;
+        case actions.NOTIFICATION_DELETED_SUCCESS:
+            console.log("data: ", action.data);
+            const array = state.notifications.filter(itm => {
+                if (itm.notification_id === action.data)
+                    return false;
+                return true;
+            });
+
+            nextState = { ...state,
+                notifications: array };
             break ;
         case actions.NOTIFICATION_READ_SUCCESS:
             nextState = { ...state,

@@ -5,27 +5,40 @@ export const NOTIFICATION_READ_SUCCESS = 'NOTIFICATION_READ_SUCCESS';
 export const NOTIFICATION_READ_FAIL = 'NOTIFICATION_READ_FAIL';
 export const LOAD_FAILED = 'LOAD_FAILED';
 export const NOTIFICATION_LOADED = 'NOTIFICATION_LOADED';
+export const NOTIFICATION_DELETED_SUCCESS = 'NOTIFICATION_DELETED_SUCCESS';
 
 export const remove = (id) => {
     return async dispatch => {
         try {
 
-            // Traitement à faire ici
-            
-            dispatch({ type: NOTIFICATION_READ_SUCCESS, data: '' });
+            const query = `mutation removeNotification($notification_id: Int!) { 
+                removeNotification(notification_id: $notification_id)
+                            }`;
+
+            const res = await axios.post(`/api`, { query: query, 
+                                                variables: {
+                                                    notification_id:id
+                                                }}, headers.headers());
+            console.log("res query: ", res);
+            if (!res && res.data.data.removeNotification === true)
+                dispatch({ type: NOTIFICATION_DELETED_SUCCESS, data: id });
+            else
+                dispatch({
+                    type: NOTIFICATION_READ_FAIL,
+                    data: null
+                });
         } catch (err) {
             dispatch({
                 type: NOTIFICATION_READ_FAIL,
                 data: null
-            })
+            });
         }
     }
 }
 
-export const load = async () => {
+export const load = () => {
     return async dispatch => {
         try {
-            console.log("loaddddddddddddddddd");
             const query = `query getUserNotifications { 
                                     getUserNotifications { 
                                             notification_id,
@@ -39,8 +52,6 @@ export const load = async () => {
                                     }`;
 
             const notif = await axios.post(`/api`, { query: query }, headers.headers());
-            console.log("loaddddddddddddddddd");
-            console.log(notif);
 
             dispatch({ type: NOTIFICATION_LOADED, data: notif.data.data.getUserNotifications });
         } catch (err) {

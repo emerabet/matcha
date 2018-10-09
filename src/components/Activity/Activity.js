@@ -16,13 +16,14 @@ class Activity extends Component {
     }
 
     handleNotificationClicked = (id) => {
-        
+        console.log(id);
+        this.props.onRemoveNotification(id);
     }
 
 
     loadActivities = () => {
 
-        if (!this.props.user.notifications) {
+        if (!this.props.notifications || this.props.notifications.length === 0) {
             return (<Feed.Summary>
                     Nothing to show.
             </Feed.Summary>)
@@ -33,7 +34,7 @@ class Activity extends Component {
             liked: "liked"
         }
 
-        const loaded = this.props.user.notifications.map(itm => {           
+        const loaded = this.props.notifications.map(itm => {           
 
             const date = new Date(itm.date / 1);
             return (
@@ -49,11 +50,6 @@ class Activity extends Component {
 
 
     render() {
-
-
-        
-
-
         return (
             <Card>
                 <Card.Content>
@@ -80,7 +76,7 @@ const mapStateToProps = state => {
 
     return {
         user: state.login.user,
-        notifications: state.notification.notifications
+        notifications: state.notifications.notifications
     }
 };
 
