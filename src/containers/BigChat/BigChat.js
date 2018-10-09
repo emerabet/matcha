@@ -13,8 +13,8 @@ class BigChat extends Component {
 
     async componentDidMount() {
         const query = `
-                        query
-                            getContacts(){
+                        query getContacts {
+                            getContacts {
                                 chat_id,
                                 contact_id,
                                 login,
@@ -22,9 +22,9 @@ class BigChat extends Component {
                                 last_message,
                                 last_message_date
                             }
-                        
+                        }
                     `;
-console.log("HEADERS", headers.headers());
+
         
         const response = await axios.post(`/api`,
             {
