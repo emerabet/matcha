@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { TextArea, Button, Form, Header, Image, Segment } from 'semantic-ui-react';
 import './Chat.css';
-import Message from '../Message/Message';
+import Message from '../../components/Message/Message';
 
 class Chat extends Component {
+
+    componentDidMount(){
+        // get the list of messages
+    }
 
     render () {
         return (

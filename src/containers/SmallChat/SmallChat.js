@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Chat from '../../components/Chat/Chat';
-import './BigChat.css';
+import Chat from '../Chat/Chat';
+//import './SmallChat.css';
 
 class BigChat extends Component {
     render() {
