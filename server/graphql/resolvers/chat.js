@@ -6,7 +6,7 @@ const config = require('../../config');
 const fs = require('fs');
 
 module.exports = {
-    getContacts: async (context) => {
+    getContacts: async ({context}) => {
         console.log("CONTEXT", context);
         console.log("TOKEN", context.token);
         /*try {
