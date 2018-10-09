@@ -20,8 +20,39 @@ export const remove = (id) => {
                                                     notification_id:id
                                                 }}, headers.headers());
             console.log("res query: ", res);
-            if (!res && res.data.data.removeNotification === true)
+            if (res && res.data.data.removeNotification === true)
                 dispatch({ type: NOTIFICATION_DELETED_SUCCESS, data: id });
+            else
+                dispatch({
+                    type: NOTIFICATION_READ_FAIL,
+                    data: null
+                });
+        } catch (err) {
+            dispatch({
+                type: NOTIFICATION_READ_FAIL,
+                data: null
+            });
+        }
+    }
+}
+
+export const check = (id) => {
+    return async dispatch => {
+        try {
+
+            const query = `mutation checkNotification($notification_id: Int!) { 
+                checkNotification(notification_id: $notification_id)
+                            }`;
+
+            const res = await axios.post(`/api`, { query: query, 
+                                                variables: {
+                                                    notification_id:id
+                                                }}, headers.headers());
+            console.log("res query check: ", res);
+            if (res && res.data.data.checkNotification === true) {
+                console.log("okici");
+                dispatch({ type: NOTIFICATION_READ_SUCCESS, data: id });
+            }
             else
                 dispatch({
                     type: NOTIFICATION_READ_FAIL,
