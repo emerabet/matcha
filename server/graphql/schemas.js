@@ -93,7 +93,8 @@ exports.registerSchema = buildSchema(`
         addToBlackList(user_id_to_black_list: Int!): Boolean,
         addToReport(user_id_to_report: Int!): Boolean,
         addVisit(user_id_visited: Int!): Boolean,
-        removeNotification(notification_id: Int!): Boolean
+        removeNotification(notification_id: Int!): Boolean,
+        checkNotification(notification_id: Int!): Boolean
     }
 
 
@@ -106,6 +107,6 @@ exports.registerSchema = buildSchema(`
         getLogin(login: String!): Boolean,
         getEmail(email: String!): Boolean,
         getPicture(token: String!, user_id2: Int) : [Picture],
-        getContacts(): [Contact]
+        getContacts: [Contact]
     }
 `);
