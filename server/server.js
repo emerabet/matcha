@@ -9,6 +9,7 @@ const route = require('./routes/route');
 const resolversUser = require('./graphql/resolvers/user');
 const resolverTags = require('./graphql/resolvers/tag');
 const resolverPicture = require('./graphql/resolvers/picture');
+const resolverChat = require('./graphql/resolvers/chat');
 const errors = require('./graphql/errors');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -28,7 +29,8 @@ app.use(bodyParser.json());
 const root = {
     ...resolversUser,
     ...resolverTags,
-    ...resolverPicture
+    ...resolverPicture,
+    ...resolverChat
 }
 
 const mdw = async (req, res, next) => {
