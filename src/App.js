@@ -6,6 +6,8 @@ import Home from './containers/Home/Home';
 import Register from './components/Register/Register';
 import Profile from './containers/Profile/Profile';
 import Stalk from './containers/Stalk/Stalk';
+import BigChat from './containers/BigChat/BigChat';
+import ChatBottom from './components/ChatBottom/ChatBottom';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -34,6 +36,8 @@ class App extends Component {
         <Route path="/profile" exact component={ Profile }/>
         <Route path="/search" exact component={ AdvancedSearch }/>
         <Route path="/stalk/:id(\d+)" exact component={ Stalk }/>
+        <Route path="/chat" exact component={BigChat}/>
+        <Route path="/chatb" exact component={ChatBottom}/>
         <Redirect from="/" to="/home"/>
       </Switch>
       )
