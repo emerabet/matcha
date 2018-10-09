@@ -16,13 +16,20 @@ class Chat extends Component {
                 
                 <div className="chat-container">
                     <div className="contact-avatar">
-                        <Image avatar size="tiny" src="/pictures/smoke_by.png"/>
+                        <Image avatar size="tiny" src={this.props.contact_src} />
                     </div>
                     <div className="contact-name">
-                        <Header as='h2'>User Name</Header>
+                        <Header as='h2'> {this.props.contact_login} </Header>
                     </div>
                 </div>
                 <div className="chat-messages">
+                {
+                    this.props.messages.map((message) => {
+                    return (
+                        <Message type="message-from-contact" msg={message.message} from={message.user_id_sender} date={message.date}/>
+                    )
+                })
+                }
                     <Message type="message-from-contact" msg="hello wheu whor eoir eowhr oewrh eowroewri er" from="User Name" date="1507476561000"/>
                     <Message type="message-from-user" msg="hello wheu whor eoir eowhr oewrh eowroewri er" from="Me" date="1539012561000"/>
                     

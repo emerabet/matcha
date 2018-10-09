@@ -66,6 +66,14 @@ exports.registerSchema = buildSchema(`
         last_message_date: String
     }
 
+    type Message {
+        message_id: Int
+        user_id_sender: Int
+        login: String
+        message: String
+        date: String
+    }
+
     input AddProfileInput {
         gender: String
         orientation: String
@@ -107,6 +115,7 @@ exports.registerSchema = buildSchema(`
         getLogin(login: String!): Boolean,
         getEmail(email: String!): Boolean,
         getPicture(token: String!, user_id2: Int) : [Picture],
-        getContacts: [Contact]
+        getContacts: [Contact],
+        getMessages(chat_id: Int!): [Message]
     }
 `);
