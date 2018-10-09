@@ -35,7 +35,7 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const user_id = decoded.user_id;
-            sql = "SELECT user_id_sender, message, date  FROM `message` WHERE chat_id = ? ORDER BY date ASC";
+            sql = "SELECT message_id, user_id_sender, message, date, login  FROM `message` LEFT JOIN user ON user.user_id = message.user_id_sender WHERE chat_id = ? ORDER BY date ASC";
             sql = mysql.format(sql, [chat_id]);
             result = await db.conn.queryAsync(sql); 
             console.log("RES LAST INSERT", result);

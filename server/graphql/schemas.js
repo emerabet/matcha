@@ -67,7 +67,9 @@ exports.registerSchema = buildSchema(`
     }
 
     type Message {
+        message_id: Int
         user_id_sender: Int
+        login: String
         message: String
         date: String
     }
