@@ -432,11 +432,34 @@ module.exports = {
                         FROM notification 
                         INNER JOIN user on notification.user_id_from = user.user_id
                         WHERE user_id_to = ?
+                        AND is_read = 0
                         ORDER BY date DESC;`;
             sql = mysql.format(sql, [userId]);
             const result = await db.conn.queryAsync(sql);
             console.log(result);
             return result;
+        } catch (err) {
+            console.log("ERR", err);
+            throw (errors.errorTypes.BAD_REQUEST);
+        }
+    },
+
+    removeNotification: async ({notification_id}, context) => {
+        try {
+            console.log("helllooooooooooooooo");
+            const token = context.token;
+
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const userId = decoded.user_id;
+            let sql = `DELETE FROM notification WHERE notification_id = ? AND user_id_to = ?;`;
+            sql = mysql.format(sql, [notification_id, userId]);
+            const result = await db.conn.queryAsync(sql);
+            console.log("DELETE: ", result);
+            return true;
         } catch (err) {
             console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);

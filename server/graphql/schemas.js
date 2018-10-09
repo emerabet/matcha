@@ -83,7 +83,8 @@ exports.registerSchema = buildSchema(`
         likeUser(user_id_to_like: Int!): Boolean,
         addToBlackList(user_id_to_black_list: Int!): Boolean,
         addToReport(user_id_to_report: Int!): Boolean,
-        addVisit(user_id_visited: Int!): Boolean
+        addVisit(user_id_visited: Int!): Boolean,
+        removeNotification(notification_id: Int!): Boolean
     }
 
 
