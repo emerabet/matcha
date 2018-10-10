@@ -44,5 +44,25 @@ module.exports = {
             console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
+    },
+
+    addMessage: async ({chat_id, message}, context) => {
+        console.log("ADD MESSAGES");
+        console.log("TOKEN", context.token);
+        const token = context.token;
+        try {
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const user_id = decoded.user_id;
+            sql = "SELECT message_id, user_id_sender, message, date, login  FROM `message` LEFT JOIN user ON user.user_id = message.user_id_sender WHERE chat_id = ? ORDER BY date ASC";
+            sql = mysql.format(sql, [chat_id]);
+            result = await db.conn.queryAsync(sql); 
+            console.log("RES LAST INSERT", result);
+            return result;
+        } catch (err) {
+            console.log("ERR", err);
+            throw (errors.errorTypes.BAD_REQUEST);
+        }
     }
 }
