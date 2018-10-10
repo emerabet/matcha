@@ -4,6 +4,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import Aux from '../Aux/Aux';
 import TopMenu from '../../components/Menu/TopMenu';
+import ChatBottom from '../../containers/ChatBottom/ChatBottom';
 import './Layout.css';
 
 
@@ -16,6 +17,7 @@ class Stalk extends Component {
                 <main>
                     {this.props.children}
                 </main>
+                {localStorage.getItem("token") === null ? null : <ChatBottom />}
             </Aux>
         );
     }

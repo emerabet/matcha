@@ -98,7 +98,7 @@ class BigChat extends Component {
         return (
             <div className="big-chat-container">
                 <div className="contact-list">
-                    <ContactList selectContact={this.selectContact} contacts={this.state.contacts}/>    
+                    <ContactList pos="main" selectContact={this.selectContact} contacts={this.state.contacts}/>    
                 </div>
                 <div className="big-chat">
                     <Chat addMessage={this.handleAddMessage} chat_id={this.state.active_chat_id} messages={this.state.active_chat_messages} contact_login={this.state.active_chat_contact_login} contact_id={this.state.active_chat_contact_id} contact_src={this.state.active_chat_contact_src} />
