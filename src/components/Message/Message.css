@@ -18,3 +18,23 @@
 .message-time {
     font-size: 10px;
 }
+
+.message-header-container {
+    display: grid;
+}
+
+.message-picture {
+    grid-column: 1;
+}
+
+.message-login {
+    grid-column: 2 / span 50;
+}
+
+.message-picture-reverse {
+    grid-column: 50;
+}
+
+.message-login-reverse {
+    grid-column: 1 / span 49;
+}

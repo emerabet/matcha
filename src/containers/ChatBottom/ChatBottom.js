@@ -39,8 +39,8 @@ class ChatBottom extends Component {
     render () {
         return (
             <div>
-                <Card attached style={open_style}>
-        <Card.Content onClick={this.handleClickOpenClose} header={<div>User Name <Icon onClick={this.handleClickOpenClose} style={{position: "absolute", right: "5px"}} name="window close"/></div>} />
+                <Card style={open_style}>
+                    <Card.Content onClick={this.handleClickOpenClose} header={<div>User Name <Icon onClick={this.handleClickOpenClose} style={{position: "absolute", right: "5px"}} name="window close"/></div>} />
                     <Card.Content style={this.state.open ? null : closed_style} description={description} />
                     <Card.Content extra style={this.state.open ? null : closed_style}>
                     <Icon name='user' style={this.state.open ? null : closed_style} />

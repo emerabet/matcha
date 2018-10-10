@@ -5,9 +5,19 @@ import Message from '../../components/Message/Message';
 
 class Chat extends Component {
 
-    componentDidMount(){
-        // get the list of messages
+    state = {
+        message: ""
     }
+
+    handleSubmit = () => {
+        this.props.addMessage(this.props.chat_id, this.state.message);
+        this.setState({message: ""});
+    }
+
+    handleChange = async (e, data) => {
+            this.setState({ [e.target.name]: e.target.value });
+    }
+    
 
     render () {
         return (
@@ -25,19 +35,16 @@ class Chat extends Component {
                 <div className="chat-messages">
                 {
                     this.props.messages.map((message) => {
-                    return (
-                        <Message key={message.message_id} type="message-from-contact" msg={message.message} from={message.login} date={message.date}/>
+                    return ( 
+                        <Message key={message.message_id} type={this.props.contact_id === message.user_id_sender ? "message-from-contact" : "message-from-user"} msg={message.message} from={this.props.contact_id === message.user_id_sender ? message.login : "Me"} date={message.date}/>
                     )
                 })
                 }
-                    <Message type="message-from-contact" msg="hello wheu whor eoir eowhr oewrh eowroewri er" from="User Name" date="1507476561000"/>
-                    <Message type="message-from-user" msg="hello wheu whor eoir eowhr oewrh eowroewri er" from="Me" date="1539012561000"/>
-                    
                 </div>
-                <Form>
+                <Form onSubmit={this.handleSubmit}>
 
                 
-                    <TextArea type="textarea" style={{ borderTopLeftRadius: "5px", borderTopRightRadius: "5px", borderBottomLeftRadius: "0px", borderBottomRightRadius: "0px"}} autoHeight placeholder='Write your message here...' />
+                    <TextArea onChange={this.handleChange} value={this.state.message} name="message" type="textarea" style={{ borderTopLeftRadius: "5px", borderTopRightRadius: "5px", borderBottomLeftRadius: "0px", borderBottomRightRadius: "0px"}} autoHeight placeholder='Write your message here...' required />
                     
 
                     <Button style={{borderTopLeftRadius: "0px", borderTopRightRadius: "0px", width: "100%"}} type='submit' >Send</Button>

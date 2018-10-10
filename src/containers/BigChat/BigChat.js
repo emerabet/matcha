@@ -74,6 +74,26 @@ class BigChat extends Component {
         console.log("STATE", this.state);
     }
 
+    handleAddMessage = async (chat_id, message) => {
+        console.log("ADDING MESSAGE", chat_id, message);
+        const query = `
+                        mutation addMessage($chat_id: Int!, $message: String!) {
+                            addMessage(chat_id: $chat_id, message: $message)
+                        }
+                    `;
+
+        
+        const response = await axios.post(`/api`,
+            {
+                query: query,
+                variables: {
+                    chat_id: chat_id,
+                    message: message
+                }
+            }, headers.headers());
+        console.log("MESSAGES", response.data.data.addMessage);
+    }
+
     render() {
         return (
             <div className="big-chat-container">
@@ -81,7 +101,7 @@ class BigChat extends Component {
                     <ContactList selectContact={this.selectContact} contacts={this.state.contacts}/>    
                 </div>
                 <div className="big-chat">
-                    <Chat chat_id={this.state.chat_id} messages={this.state.active_chat_messages} contact_login={this.state.active_chat_contact_login} cotnact_id={this.active_chat_contact_id} contact_src={this.state.active_chat_contact_src} />
+                    <Chat addMessage={this.handleAddMessage} chat_id={this.state.active_chat_id} messages={this.state.active_chat_messages} contact_login={this.state.active_chat_contact_login} contact_id={this.state.active_chat_contact_id} contact_src={this.state.active_chat_contact_src} />
                 </div>
                 
             </div>
