@@ -55,11 +55,11 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const user_id = decoded.user_id;
-            sql = "SELECT message_id, user_id_sender, message, date, login  FROM `message` LEFT JOIN user ON user.user_id = message.user_id_sender WHERE chat_id = ? ORDER BY date ASC";
-            sql = mysql.format(sql, [chat_id]);
+            sql = "INSERT INTO `message` (`message_id`, `user_id_sender`, `chat_id`, `message`, `date`) VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP)";
+            sql = mysql.format(sql, [user_id, chat_id, message]);
             result = await db.conn.queryAsync(sql); 
             console.log("RES LAST INSERT", result);
-            return result;
+            return true;
         } catch (err) {
             console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
