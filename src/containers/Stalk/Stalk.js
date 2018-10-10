@@ -215,7 +215,14 @@ class Stalk extends Component {
                                     </div>
                                 </Card.Content>
                             </Card>
-                            { this.state.isMyProfile &&  <Activity>fghj</Activity> }
+                            { this.state.isMyProfile &&  <Card>
+                                                            <Card.Content>
+                                                                <Card.Header>Recent Activity</Card.Header>
+                                                            </Card.Content>
+                                                            <Card.Content>
+                                                                <Activity size='small'></Activity>
+                                                            </Card.Content>
+                                                        </Card> }
                         </Grid.Column>
                     </Grid.Row>
 
