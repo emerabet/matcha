@@ -27,7 +27,7 @@ export const login =(userName, password) => {
             localStorage.setItem('longitude', res.data.user.longitude);
             localStorage.setItem('login', res.data.user.login);
 
-            dispatch(actionsActivity.load());
+            dispatch(actionsActivity.load('unread'));
             dispatch({ type: LOGIN, data: res.data });
         } catch (err) {
             dispatch({
