@@ -23,20 +23,21 @@ class Chat extends Component {
         return (
 
             <div>
-                
-                <div className="chat-container">
-                    <div className="contact-avatar">
-                        <Image avatar size="tiny" src={this.props.contact_src} />
+                {this.props.pos === "main" &&
+                    <div className="chat-container">
+                        <div className="contact-avatar">
+                            <Image avatar size="tiny" src={this.props.contact_src} />
+                        </div>
+                        <div className="contact-name">
+                            <Header as='h2'> {this.props.contact_login} </Header>
+                        </div>
                     </div>
-                    <div className="contact-name">
-                        <Header as='h2'> {this.props.contact_login} </Header>
-                    </div>
-                </div>
+                }
                 <div className="chat-messages">
                 {
                     this.props.messages.map((message) => {
                     return ( 
-                        <Message key={message.message_id} type={this.props.contact_id === message.user_id_sender ? "message-from-contact" : "message-from-user"} msg={message.message} from={this.props.contact_id === message.user_id_sender ? message.login : "Me"} date={message.date}/>
+                        <Message key={message.message_id} pos={this.props.pos} type={this.props.contact_id === message.user_id_sender ? "message-from-contact" : "message-from-user"} msg={message.message} from={this.props.contact_id === message.user_id_sender ? message.login : "Me"} date={message.date}/>
                     )
                 })
                 }

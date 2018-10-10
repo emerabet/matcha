@@ -436,14 +436,14 @@ class Profile extends Component{
                             {this.state.share_location &&
                             <Form.Field>
                                 <label htmlFor="current_location">Current location</label>
-                                <Input type="text" onChange={this.handleChange} name="current_location" value={ this.state.current_location } placeholder="Current location"></Input>
+                                <Input action={<Button type="button" onClick={() => console.log("update location")}> Upate current location </Button>} type="text" onChange={this.handleChange} name="current_location" value={ this.state.current_location } placeholder="Current location"></Input>
                             </Form.Field>
                             }
-                            <Form.Field>
+                            <Form.Field style={{display: "none"}}>
                                 <label htmlFor="Latitude">Latitude</label>
                                 <Input type="text" onChange={this.handleChange} name="latitude" value={ this.state.latitude } placeholder="Latitude" required></Input>                   
                             </Form.Field>
-                            <Form.Field>
+                            <Form.Field style={{display: "none"}}>
                                 <label htmlFor="Longitude">Longitude</label>
                                 <Input type="text" onChange={this.handleChange} name="longitude" value={ this.state.longitude } placeholder="Longitude" required></Input>                   
                             </Form.Field>
