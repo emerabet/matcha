@@ -415,9 +415,10 @@ module.exports = {
             return result.insertId;
     },
 
-    getUserNotifications: async ({}, context) => {
+    getUserNotifications: async ({ search }, context) => {
         console.log("USER NOTIFICATIONS");
         console.log(context);
+        console.log("type: ", search);
         
         try {
             const token = context.token;
@@ -428,12 +429,14 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const userId = decoded.user_id;
-            let sql = `SELECT notification_id, type, user_id_from, user_id_to, date, is_read, login, email, last_name, first_name
+            let sql = `SELECT notification_id, type, user_id_from, user_id_to, date, is_read, login, email, last_name, first_name, src
                         FROM notification 
                         INNER JOIN user on notification.user_id_from = user.user_id
+                        LEFT JOIN picture on notification.user_id_from = picture.user_id
                         WHERE user_id_to = ?
-                        AND is_read = 0
-                        ORDER BY date DESC;`;
+                        AND (priority = 1 OR priority IS NULL) 
+                        ${search == 'unread' ? 'AND is_read = 0 ORDER BY date DESC;' : 'ORDER BY date DESC;'}
+                        `;
             sql = mysql.format(sql, [userId]);
             const result = await db.conn.queryAsync(sql);
             console.log(result);

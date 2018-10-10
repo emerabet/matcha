@@ -55,6 +55,7 @@ exports.registerSchema = buildSchema(`
         date: String
         is_read: Boolean
         login: String
+        src: String
     }
 
     type Contact {
@@ -112,7 +113,7 @@ exports.registerSchema = buildSchema(`
         getUsers(extended: Boolean): [User],
         getTags: [Tag],
         getAllTags: [Tag],
-        getUserNotifications: [Notification],
+        getUserNotifications(search: String): [Notification],
         getLogin(login: String!): Boolean,
         getEmail(email: String!): Boolean,
         getPicture(token: String!, user_id2: Int) : [Picture],
