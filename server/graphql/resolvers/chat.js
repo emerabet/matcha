@@ -57,6 +57,7 @@ module.exports = {
             const user_id = decoded.user_id;
             sql = "INSERT INTO `message` (`message_id`, `user_id_sender`, `chat_id`, `message`, `date`) VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP)";
             sql = mysql.format(sql, [user_id, chat_id, message]);
+            console.log("SQL", sql);
             result = await db.conn.queryAsync(sql); 
             console.log("RES LAST INSERT", result);
             return true;
