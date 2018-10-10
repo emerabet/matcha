@@ -67,23 +67,27 @@ export const check = (id) => {
     }
 }
 
-export const load = () => {
+export const load = (type) => {
     return async dispatch => {
         try {
-            const query = `query getUserNotifications { 
-                                    getUserNotifications { 
+            const query = `query getUserNotifications($search: String) { 
+                                    getUserNotifications(search: $search) { 
                                             notification_id,
                                             type,
                                             user_id_from,
                                             user_id_to,
                                             date,
                                             is_read,
-                                            login
+                                            login, 
+                                            src
                                         } 
                                     }`;
 
-            const notif = await axios.post(`/api`, { query: query }, headers.headers());
+            const notif = await axios.post(`/api`, { query: query, variables: {
+                search:type
+            } }, headers.headers());
 
+            console.log("TYPE:", type);
             dispatch({ type: NOTIFICATION_LOADED, data: notif.data.data.getUserNotifications });
         } catch (err) {
             dispatch({
