@@ -177,8 +177,8 @@ module.exports = {
                 console.log("SQL", sql);
                 result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
-                sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `user_id` = ?, `gender` = ?, `orientation` = ?, `bio` = ?, `popularity` = ?, `birthdate` = ?;';
-                sql = mysql.format(sql, [decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.popularity, profile.birthdate, decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.popularity, profile.birthdate]);
+                sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `birthdate`) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE `user_id` = ?, `gender` = ?, `orientation` = ?, `bio` = ?, `birthdate` = ?;';
+                sql = mysql.format(sql, [decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.birthdate, decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.birthdate]);
                 console.log("SQL", sql);
                 result = await db.conn.queryAsync(sql);
                 console.log("ID", result[0]);
