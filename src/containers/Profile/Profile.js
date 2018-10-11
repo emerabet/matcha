@@ -196,7 +196,6 @@ class Profile extends Component{
             gender: this.state.gender,
             orientation: this.state.orientation,
             bio: this.state.bio,
-            popularity: 5000,
             birthdate: this.state.birthdate,
             old_password: this.state.old_password,
             share_location: this.state.share_location,
