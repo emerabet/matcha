@@ -44,19 +44,26 @@ const mdw = async (req, res, next) => {
     // Cookies that have been signed
     console.log('Signed Cookies: ', req.signedCookies)
     try {
-        if (!req.headers.authorization){
-            console.log("QQQQQQQQQQQ");
-                throw new Error(errors.errorTypes.UNAUTHORIZED);
-        }
-            console.log("token in middleware", token);
-            const decoded = await jwt.verify(token, config.SECRET_KEY);
-            console.log("TEST");
-            if (decoded.err){
-                console.log("UWHIUEFBHOWEBHFOEBOG");
-                throw new Error(errors.errorTypes.UNAUTHORIZED);
-            }
-            console.log("TEST");
+        console.log("BODY", req.body.query);
+        if (req.body.query.replace(/\s/g, '') === "querygetLogin($login:String!){getLogin(login:$login)}"
+            || req.body.query.replace(/\s/g, '') === "querygetEmail($email:String!){getEmail(email:$email)}") {
+            console.log("OK", req.body.query.replace(/\s/g, ''));
             next();
+        } else {
+            if (!token || token === undefined){
+                console.log("QQQQQQQQQQQ");
+                    throw new Error(errors.errorTypes.UNAUTHORIZED);
+            }
+                console.log("token in middleware", token);
+                const decoded = await jwt.verify(token, config.SECRET_KEY);
+                console.log("TEST");
+                if (decoded.err){
+                    console.log("UWHIUEFBHOWEBHFOEBOG");
+                    throw new Error(errors.errorTypes.UNAUTHORIZED);
+                }
+                console.log("TEST");
+                next();
+            }
         } catch (err) {
         console.log("ERROR IN MIDDLEWARE", err);   
         res.status(403).send();    
