@@ -41,7 +41,11 @@ class Activity extends Component {
 
         const obj = {
             visit: "viewed",
-            liked: "liked"
+            like: "liked",
+            unlike: "unliked",
+            black_list: "blacklisted",
+            match: "matched",
+            unmatch: "unmatched",
         }
 
         const mystyle = {

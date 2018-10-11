@@ -75,6 +75,11 @@ exports.registerSchema = buildSchema(`
         date: String
     }
 
+    type IsLikedReported {
+        liked: String,
+        reported: String
+    }
+
     input AddProfileInput {
         gender: String
         orientation: String
@@ -118,6 +123,7 @@ exports.registerSchema = buildSchema(`
         getEmail(email: String!): Boolean,
         getPicture(token: String!, user_id2: Int) : [Picture],
         getContacts: [Contact],
-        getMessages(chat_id: Int!): [Message]
+        getMessages(chat_id: Int!): [Message],
+        getStatusLikedReported(user_id2: Int!): IsLikedReported
     }
 `);

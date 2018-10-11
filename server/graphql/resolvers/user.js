@@ -505,5 +505,36 @@ module.exports = {
             console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
+    },
+
+    getStatusLikedReported: async ({ user_id2 }, context) => {
+        try {
+            console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+            const token = context.token;
+
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                    throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const userId = decoded.user_id;
+            let sql = `SELECT liked.date as liked, reported.date as reported 
+            FROM user
+            LEFT JOIN reported ON user.user_id = reported.user_id_reporter
+            LEFT JOIN liked ON user.user_id = liked.user_id_visitor
+            WHERE (reported.user_id_reporter = ? OR liked.user_id_visitor = ?)
+            AND (reported.user_id_reported = ? OR liked.user_id_visited = ?)
+            LIMIT 1;`;
+
+            console.log("userid2====> ", user_id2);
+            sql = mysql.format(sql, [userId, userId, user_id2, user_id2]);
+            const result = await db.conn.queryAsync(sql);
+            console.log("ppppppppppppppppppppppppppppppppppppppppp");
+            console.log(result);
+            return result[0];
+        } catch (err) {
+            throw (errors.errorTypes.BAD_REQUEST);
+        }
     }
 }

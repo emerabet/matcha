@@ -19,11 +19,7 @@ class Stalk extends Component {
         isMyProfile: false
     }
 
-    async componentDidMount() {
-
-        const id = parseInt(this.props.match.params.id);
-
-        // recuperer profil utilisateur
+    getUserDetails = async (id) => {
         const query = `
                         query getUser ($extended: Boolean, $user_id2: Int) {
                             getUser(extended: $extended, user_id2: $user_id2){
@@ -53,47 +49,101 @@ class Stalk extends Component {
                             }
                         }
                     `;
-        const user = await axios.post('/api', { query, variables: {
+        const user = axios.post('/api', { query, variables: {
             extended: true, 
             user_id2: id
         }}, headers.headers());
 
-        console.log("icisdof");
-        console.log(user);
+        return user;
+    }
+
+    getIsLikedReported = async (id) => {
+        console.log("icsssssssssssssssssssssi");
+        try {
+            const query = `
+                            query getStatusLikedReported ($user_id2: Int!) {
+                                getStatusLikedReported(user_id2: $user_id2){
+                                    liked,
+                                    reported
+                                }
+                            }
+                        `;
+            const res = axios.post('/api', { query, variables: {
+                user_id2:id
+            }}, headers.headers());
+
+            console.log("okokokokok");
+            console.log(res);
+
+
+            return res;
+        } catch (err) {
+            console.log("catch");
+            console.log(err);
+            return err;
+        }
+    }
+
+    sendVisit = async (id) => {
+        const query = `mutation addVisit ($user_id_visited: Int!) {
+            addVisit(user_id_visited: $user_id_visited)
+        }`;
+        const res = axios.post('/api', { query, variables: {
+            user_id_visited: id
+        }}, headers.headers());
+
+        return res;
+    }
+
+    async componentDidMount() {
+
+        const id = parseInt(this.props.match.params.id);
+
+        // recuperer profil utilisateur
+        let res1 = this.getUserDetails(id);
+
+        // marquer le profil comme visité
+        let res2 = this.sendVisit(id);
+
+        let res3 = this.getIsLikedReported(id);
+
+        const user = await res1;
+        const resVisit = await res2;
+        const isLikedReported = await res3;
+
+        console.log("is reported or liked?");
+        console.log(isLikedReported);
+        const isLike = isLikedReported.data.data.getStatusLikedReported.liked == null ? false : true;
+        const isReported = isLikedReported.data.data.getStatusLikedReported.reported == null ? false : true;
+
+        const colorLike =  isLike === true ? 'red' : 'grey';
+        const colorBlacklist = isReported === true ? 'black' : 'grey';
+
+        console.log("isLike, isReported");
+        console.log(isLike, isReported);
 
         this.setState({
             user: user.data.data.getUser,
             nbImage: user.data.data.getUser.pictures.length,
             src: this.getActivePicture(user.data.data.getUser),
             userViewed: id,
-            isMyProfile: user.data.data.getUser.isMyProfile
+            isMyProfile: user.data.data.getUser.isMyProfile,
+            isLiked: isLike,
+            isBlacklist: isReported,
+            colorLike: colorLike,
+            colorBlacklist: colorBlacklist,
         })
 
-        console.log(this.state);
+        console.log("is reported or liked?");
+        console.log(isLikedReported);
 
         // * verifier si y'a deja un match
 
-        // * marquer le profil comme visité
-        this.sendVisit(id);
-        
         // * envoyer une socket de notification
         
         // Sinon charger le module de notifications ???
 
     }
-
-
-    sendVisit = async (id) => {
-        const query = `mutation addVisit ($user_id_visited: Int!) {
-            addVisit(user_id_visited: $user_id_visited)
-        }`;
-        const res = await axios.post('/api', { query, variables: {
-            user_id_visited: id
-        }}, headers.headers());
-
-        console.log("VISITED: ", res.data.data.addVisit);
-    }
-
 
     handleNextPhoto  = async (e, data) => {
 
