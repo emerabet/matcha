@@ -5,6 +5,7 @@ const mysql = require('mysql');
 const config = require('../config');
 const cookie = require('cookie-parser');
 const errors = require('../graphql/errors');
+var uniqid = require('uniqid');
 
 exports.login = async (req, res) => {
     console.log("Connected");
@@ -27,7 +28,8 @@ exports.login = async (req, res) => {
 
         console.log("compare", bcrypt.compareSync(req.body.password, rows[0].password));
         if (bcrypt.compareSync(req.body.password, rows[0].password)) {
-            const token = jwt.sign({ user_id: rows[0].user_id }, config.SECRET_KEY, { expiresIn: 3600 });
+            const csrf_token = uniqid();
+            const token = jwt.sign({ user_id: rows[0].user_id, csrf_token: csrf_token}, config.SECRET_KEY, { expiresIn: 3600 });
             const user = {
                 login: rows[0].login,
                 lastName: rows[0].last_name,
@@ -48,7 +50,7 @@ exports.login = async (req, res) => {
             
             console.log("AFTER COOKIE");
             console.log(res);
-            res.status(200).send({ auth: true, token: token, user: user });
+            res.status(200).send({ auth: true, csrf_token: csrf_token, user: user });
         } else {
             res.status(403).send({ auth: false, token: null });
         }

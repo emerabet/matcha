@@ -46,7 +46,8 @@ const mdw = async (req, res, next) => {
     try {
         console.log("BODY", req.body.query);
         if (req.body.query.replace(/\s/g, '') === "querygetLogin($login:String!){getLogin(login:$login)}"
-            || req.body.query.replace(/\s/g, '') === "querygetEmail($email:String!){getEmail(email:$email)}") {
+            || req.body.query.replace(/\s/g, '') === "querygetEmail($email:String!){getEmail(email:$email)}"
+            || req.body.query.replace(/\s/g, '') === "mutationaddUser($user:AddUserInput!,$address:AddAddressInput!){addUser(user:$user,address:$address)}") {
             console.log("OK", req.body.query.replace(/\s/g, ''));
             next();
         } else {
@@ -59,6 +60,11 @@ const mdw = async (req, res, next) => {
                 console.log("TEST");
                 if (decoded.err){
                     console.log("UWHIUEFBHOWEBHFOEBOG");
+                    throw new Error(errors.errorTypes.UNAUTHORIZED);
+                }
+                console.log ("CSRF TOKEN", req.headers.authorization, decoded.csrf_token);
+                if (req.headers.authorization !== decoded.csrf_token) {
+                    console.log("WRONG CSRF TOKEN");
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
                 }
                 console.log("TEST");
