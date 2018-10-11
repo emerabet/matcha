@@ -47,9 +47,16 @@ module.exports = {
             sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
             sql = mysql.format(sql, [result.insertId, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
             console.log("SQL", sql);
-            const res = await db.conn.queryAsync(sql);
+            let res = await db.conn.queryAsync(sql);
             console.log("ID", res[0]);
-            return result.insertId;
+            const insertId = result.insertId;
+            sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES (?, "","Both","",0,NULL);';
+            sql = mysql.format(sql, [insertId]);
+            console.log("SQL", sql);
+            res = await db.conn.queryAsync(sql);
+            
+
+            return insertId;
         } catch (err) {
             console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
