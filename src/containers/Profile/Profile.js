@@ -147,7 +147,7 @@ class Profile extends Component{
             if (this.props.user === undefined) {
                 console.log("NO PROPS");
             }
-                    
+                    console.log("PROPS", this.props);
             this.setState({...this.state,
                 oldLogin: this.props.user.login,
                 login: this.props.user.login,
@@ -453,11 +453,11 @@ class Profile extends Component{
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="gender">Gender</label>
-                                <Select compact options={gender_options} onChange={this.handleChange} name="gender" value={ this.state.gender } required></Select>                   
+                                <Select compact options={gender_options} onChange={this.handleChange} name="gender" value={ this.state.gender } text={ this.state.gender } required></Select>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="Orientation">Orientation</label>
-                                <Select compact options={orientation_options} onChange={this.handleChange} name="orientation" value={ this.state.orientation } required></Select>                   
+                                <Select compact options={orientation_options} onChange={this.handleChange} name="orientation" value={ this.state.orientation } text={ this.state.orientation } required></Select>                   
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="bio">Bio</label>
