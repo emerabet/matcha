@@ -29,7 +29,7 @@ class App extends Component {
       </Switch>
     );
 
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('logged')) {
       routes = (
       <Switch>
         <Route path="/home" exact component={ Home }/>
