@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
                 longitude: rows[0].longitude
             };
 
-            res.cookie('sessionid', token, { httpOnly: true });
+            res.cookie('sessionid', token, { httpOnly: true/*, sameSite: "strict"*/ });
             
             console.log("AFTER COOKIE");
             console.log(res);
