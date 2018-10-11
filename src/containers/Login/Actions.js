@@ -12,6 +12,7 @@ export const login =(userName, password) => {
             const res = await axios.post('/connect', { login: userName, password: password });
             console.log("actions login");
             console.log('data login', res.data);
+            localStorage.setItem('csrf_token', res.data.csrf_token);
             localStorage.setItem('logged', true);
             localStorage.setItem('last_name', res.data.user.lastName);
             localStorage.setItem('first_name', res.data.user.firstName);
