@@ -261,7 +261,7 @@ module.exports = {
                 sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
                 let result = await db.conn.queryAsync(sql);
                 const flag_liked = result[0].nb;
-
+                console.log("FLAG LIKED1", flag_liked);
                 sql = 'SELECT COUNT(user_id_visitor) as nb from `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;'
                 sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                 result = await db.conn.queryAsync(sql);
@@ -276,9 +276,14 @@ module.exports = {
                         sql = 'INSERT INTO `matched` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                         result = await db.conn.queryAsync(sql);
+                        console.log(sql);
                         console.log("MATCHED", result);
                         module.exports.addNotification({type: "match", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                         module.exports.addNotification({type: "match", user_id_from: user_id_to_like, user_id_to: decoded.user_id});
+                        sql = 'INSERT INTO `chat` (`chat_id`, `user_id1`, `user_id2`) VALUES(NULL,?,?);';
+                        sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
+                        result = await db.conn.queryAsync(sql);
+                        console.log("NEW CHAT CREATED", result);
                     }
                     return true;
                 } else {
@@ -287,14 +292,19 @@ module.exports = {
                     result = await db.conn.queryAsync(sql);
                     module.exports.addNotification({type: "unlike", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                     console.log("DELETING", result);
+                    console.log("FLAG LIKED", flag_liked);
                     if (flag_liked > 0) {
                         sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                         result = await db.conn.queryAsync(sql);
+                        console.log(sql);
+                        console.log("UNMATCH", result);
                         module.exports.addNotification({type: "unmatch", user_id_from: user_id_to_like, user_id_to: decoded.user_id});
-                        sql = 'DELETE FROM `matched` WHERE `user_id_visited` = ? AND `user_id_visitor` = ?;';
+                        sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                         sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
                         result = await db.conn.queryAsync(sql);
+                        console.log(sql);
+                        console.log("UNMATCH", result);
                         module.exports.addNotification({type: "unmatch", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                         console.log("MISMATCHED", result);
                     }
