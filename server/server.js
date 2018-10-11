@@ -14,6 +14,8 @@ const errors = require('./graphql/errors');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
+const cookieParser = require('cookie-parser');
+
 
 
 let rootDir = __dirname; 
@@ -22,7 +24,8 @@ if (i !== -1)
     rootDir = rootDir.substr(0, i);
 global.appRoot = path.resolve(rootDir);
 
-app.use(cors());
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -35,6 +38,10 @@ const root = {
 
 const mdw = async (req, res, next) => {
     console.log("IN MIDDLEWARE", req.headers);
+    console.log('Cookies: ', req.cookies)
+
+    // Cookies that have been signed
+    console.log('Signed Cookies: ', req.signedCookies)
     try {
         if (!req.headers.authorization){
             console.log("QQQQQQQQQQQ");
@@ -64,7 +71,7 @@ app.use('/api', mdw, express_graphql( req =>( {
     graphiql: true,    
     formatError: (err) => {
         //console.log(err);
-        return ({ message: err.message, statusCode: 403/*errors.errorCodes[err.message].statusCode*/})
+        return ({ message: err.message, statusCode: 403})
     }
 })));
 

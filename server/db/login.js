@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
 const config = require('../config');
+const cookie = require('cookie-parser');
 const errors = require('../graphql/errors');
 
 exports.login = async (req, res) => {
@@ -42,6 +43,11 @@ exports.login = async (req, res) => {
                 latitude: rows[0].latitude,
                 longitude: rows[0].longitude
             };
+
+            res.cookie('sessionid', token, { httpOnly: true });
+            
+            console.log("AFTER COOKIE");
+            console.log(res);
             res.status(200).send({ auth: true, token: token, user: user });
         } else {
             res.status(403).send({ auth: false, token: null });

@@ -5,6 +5,7 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import loginReducer from './containers/Login/Reducer';
+import notificationReducer from './components/Activity/Reducer';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import axios from 'axios';
@@ -12,7 +13,8 @@ import thunk from 'redux-thunk';
 import 'semantic-ui-css/semantic.min.css';
 import Reload from './Hoc/Reload';
 
-axios.defaults.baseURL = 'http://10.18.201.85:4000';
+axios.defaults.baseURL = 'http://localhost:4000';
+axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {
     // Do something with response data
     console.log("AXIOS OK");
@@ -32,6 +34,7 @@ axios.interceptors.response.use(function (response) {
   });
 const rootReducer = combineReducers({
     login: loginReducer,
+    notifications: notificationReducer,
 });
 
 /*const initialState = {
