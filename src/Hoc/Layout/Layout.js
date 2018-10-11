@@ -17,7 +17,7 @@ class Stalk extends Component {
                 <main>
                     {this.props.children}
                 </main>
-                {localStorage.getItem("token") === null ? null : <ChatBottom />}
+                {localStorage.getItem("logged") === null ? null : <ChatBottom />}
             </Aux>
         );
     }
