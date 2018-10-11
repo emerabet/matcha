@@ -64,11 +64,12 @@ exports.login = async (req, res) => {
 }
 
 exports.checkToken = async (req, res) => {
-    console.log("GOT TOKEN", req.body.token);
-    if (req.headers.authorization === undefined)
+    const token = req.cookies['sessionid'];
+    console.log("GOT TOKEN", token);
+    if (token === undefined)
         res.status(403).send({ message: "Authentification failed" });
     try {
-        const decoded = await jwt.verify(req.headers.authorization, config.SECRET_KEY);
+        const decoded = await jwt.verify(token, config.SECRET_KEY);
         if (decoded.err)
         {    
             console.log("CANNOT DECODE");
