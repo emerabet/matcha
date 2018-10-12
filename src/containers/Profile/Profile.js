@@ -446,7 +446,7 @@ class Profile extends Component{
                                 <label htmlFor="Longitude">Longitude</label>
                                 <Input type="text" onChange={this.handleChange} name="longitude" value={ this.state.longitude } placeholder="Longitude" required></Input>                   
                             </Form.Field>
-                            <Form.Field>
+                            <Form.Field style={{display: "none"}}>
                                 <label htmlFor="Ip">Ip</label>
                                 <Input type="text" onChange={this.handleChange} name="ip" value={ this.state.ip } placeholder="Ip" required></Input>                   
                             </Form.Field>

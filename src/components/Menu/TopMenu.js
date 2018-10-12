@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './TopMenu.css';
 import { withRouter } from 'react-router-dom';
-import { Menu, Icon } from 'semantic-ui-react';
+import { Menu, Icon, Label } from 'semantic-ui-react';
 
 class TopMenu extends Component {
 
@@ -57,8 +57,14 @@ class TopMenu extends Component {
             active={this.state.activeItem === 'chat'}
             onClick={this.handleItemClick}
           >
-            <Icon name='wechat' />
+            <Icon.Group size="large">
+            <Icon size="large" name='wechat'> </Icon>
+            <Label size="small" color='blue' horizontal circular >
+            22
+          </Label>
+          </Icon.Group>
             Chat
+            
           </Menu.Item>
 
           <Menu.Item

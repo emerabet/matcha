@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Icon, Button, Image } from 'semantic-ui-react'
+import { Card, Icon, Button, Image, Label, Statistic } from 'semantic-ui-react'
 import ContactList from '../ContactList/ContactList';
 import axios from 'axios';
 import * as headers from '../../Tools/Header';
@@ -181,7 +181,10 @@ class ChatBottom extends Component {
                         : 
                             <Aux>
                                 <Icon name="users"/>
-                                Contacts
+                                Chat 
+                      
+                                <Label color="blue" circular> 22 </Label>
+                                
                             </Aux> }
                     </div>
                     <div style={{gridColumn: "5"}}>
