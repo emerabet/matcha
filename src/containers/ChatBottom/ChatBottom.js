@@ -30,98 +30,28 @@ class ChatBottom extends Component {
 
     state = {
         open: false,
-        chats: [],
-        contacts: [],
         active_chat_id: 0,
         active_chat_contact_login: "",
         active_chat_contact_id: 0,
         active_chat_contact_src: "",
-        active_chat_messages: [],
+        active_chat_messages: [{chat_id: 0, messages: []}],
         active_chat_selected: false,
         active_chat_list_display: false,
         active_chats: [],
         contacts_active_chats: []
     }
 
-    async componentDidMount() {
-        const query = `
-                        query getContacts {
-                            getContacts {
-                                chat_id,
-                                message_id,
-                                user_id_sender,
-                                message,
-                                date,
-                                read_date,
-                                contact_id,
-                                contact_login,
-                                contact_src
-                            }
-                        }
-                    `;
-
-        
-        const response = await axios.post(`/api`,
-            {
-                query: query
-            }, headers.headers());
-        console.log("CONTACTS", response.data.data.getContacts);
-        const query_messages = `
-        query getAllMessagesFromUser {
-            getAllMessagesFromUser {
-                chat_id,
-                messages{
-                    message_id,
-                    user_id_sender,
-                    login,
-                    message,
-                    date,
-                    read_date
-                }
-            }
-        }
-    `;
-
-        const response_messages = await axios.post(`/api`,
-        {
-             query: query_messages
-        }, headers.headers());
-        console.log("MESSAGES", response_messages.data.data.getAllMessagesFromUser);
-               
-        this.setState({ contacts: response.data.data.getContacts,
-                        chats: response_messages.data.data.getAllMessagesFromUser });
-    }
-
     selectContact = async (user_id, user_name, chat_id, src) => {
         console.log("user id", user_id);
         console.log("user name", user_name);
         console.log("CHAT ID", chat_id);
-       /* const query = `
-                        query getMessages($chat_id: Int!) {
-                            getMessages(chat_id: $chat_id) {
-                                message_id,
-                                user_id_sender,
-                                message,
-                                date,
-                                login
-                            }
-                        }
-                    `;
-        
-        const response = await axios.post(`/api`,
-            {
-                query: query,
-                variables: {
-                    chat_id: chat_id
-                }
-            }, headers.headers());
-        console.log("MESSAGES", response.data.data.getMessages);*/
+       
         const c = this.state.contacts_active_chats.map((contact) => {
             return contact.contact_id;
         }).indexOf(user_id);
         
         const cont = c === -1
-        ? [...this.state.contacts_active_chats, this.state.contacts.filter((contact) => {
+        ? [...this.state.contacts_active_chats, this.props.contacts.filter((contact) => {
             
             return contact.contact_id === user_id;
         })[0]]
@@ -131,26 +61,12 @@ class ChatBottom extends Component {
             active_chat_contact_login: user_name,
             active_chat_contact_id: user_id,
             active_chat_contact_src: src,
-            active_chat_messages: this.state.chats.filter(chat => {
+            active_chat_messages: this.props.chats.filter(chat => {
                 return (chat.chat_id === chat_id)
             }),
             active_chat_selected: true,
             contacts_active_chats: cont}); 
-        /*const p = this.state.active_chats.map((chat) => {
-            return chat.chat_id;
-        }).indexOf(chat_id);
-        console.log("P", p);
-        const new_chat = p === -1 
-            ? [...this.state.active_chats, {chat_id: chat_id, user_id: user_id, src: src, messages: response.data.data.getMessages}] 
-            : this.state.active_chats ;
-        this.setState({active_chat_id: chat_id,
-                        active_chat_contact_login: user_name,
-                        active_chat_contact_id: user_id,
-                        active_chat_contact_src: src,
-                        active_chat_messages: response.data.data.getMessages,
-                        active_chat_selected: true,
-                        active_chats: new_chat});     
-        */console.log("STATE", this.state);
+        console.log("STATE", this.state);
     }
 
     handleClickOpenClose = (e) => {
@@ -180,22 +96,7 @@ class ChatBottom extends Component {
     }
 
     handleAddMessage = async (chat_id, message) => {
-        console.log("ADDING MESSAGE", chat_id, message);
-        const query = `
-                        mutation addMessage($chat_id: Int!, $message: String!) {
-                            addMessage(chat_id: $chat_id, message: $message)
-                        }
-                    `;
-        
-        const response = await axios.post(`/api`,
-            {
-                query: query,
-                variables: {
-                    chat_id: chat_id,
-                    message: message
-                }
-            }, headers.headers());
-        console.log("MESSAGES", response.data.data.addMessage);
+        this.props.handleAddMessage(chat_id, message);
     }
 
     render () {
@@ -236,7 +137,7 @@ class ChatBottom extends Component {
                 ?
                     this.state.active_chat_list_display === false
                         ?
-                            <ContactList pos="bottom" selectContact={this.selectContact} contacts={this.state.contacts}/>
+                            <ContactList pos="bottom" selectContact={this.selectContact} contacts={this.props.contacts}/>
                         :
                             <ContactList pos="main" selectContact={this.selectContact} contacts={this.state.contacts_active_chats}/>
                 :
@@ -252,7 +153,7 @@ class ChatBottom extends Component {
                     <Card.Content style={this.state.open ? null : closed_style} description={main()} />
                     <Card.Content extra style={this.state.open ? null : closed_style}>
                         <Icon name='user' style={this.state.open ? null : closed_style} />
-                        {this.state.contacts.length > 0 && `${this.state.contacts.length} friends`}
+                        {this.props.contacts.length > 0 && `${this.props.contacts.length} friends`}
                     </Card.Content>
                 </Card>
             </div>

@@ -6,6 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import loginReducer from './containers/Login/Reducer';
 import notificationReducer from './components/Activity/Reducer';
+import chatReducer from './containers/SuperChat/Reducer';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import axios from 'axios';
@@ -35,6 +36,7 @@ axios.interceptors.response.use(function (response) {
 const rootReducer = combineReducers({
     login: loginReducer,
     notifications: notificationReducer,
+    chat: chatReducer,
 });
 
 /*const initialState = {
