@@ -9,11 +9,12 @@ class BigChat extends Component {
 
     state = {
         contacts: [],
+        chats: [],
         active_chat_id: 0,
         active_chat_contact_login: "",
         active_chat_contact_id: 0,
         active_chat_contact_src: "",
-        active_chat_messages: []
+        active_chat_messages: [{chat_id: 0, messages: []}]
     }
 
     async componentDidMount() {
@@ -21,11 +22,14 @@ class BigChat extends Component {
                         query getContacts {
                             getContacts {
                                 chat_id,
+                                message_id,
+                                user_id_sender,
+                                message,
+                                date,
+                                read_date,
                                 contact_id,
-                                login,
-                                src,
-                                last_message,
-                                last_message_date
+                                contact_login,
+                                contact_src
                             }
                         }
                     `;
@@ -36,7 +40,30 @@ class BigChat extends Component {
                 query: query
             }, headers.headers());
         console.log("CONTACTS", response.data.data.getContacts);
-        this.setState({ contacts: response.data.data.getContacts });
+        const query_messages = `
+        query getAllMessagesFromUser {
+            getAllMessagesFromUser {
+                chat_id,
+                messages{
+                    message_id,
+                    user_id_sender,
+                    login,
+                    message,
+                    date,
+                    read_date
+                }
+            }
+        }
+    `;
+
+        const response_messages = await axios.post(`/api`,
+        {
+             query: query_messages
+        }, headers.headers());
+        console.log("MESSAGES", response_messages.data.data.getAllMessagesFromUser);
+               
+        this.setState({ contacts: response.data.data.getContacts,
+                        chats: response_messages.data.data.getAllMessagesFromUser });
     }
 
 
@@ -44,7 +71,9 @@ class BigChat extends Component {
     selectContact = async (user_id, user_name, chat_id, src) => {
         console.log("user id", user_id);
         console.log("user name", user_name);
-        console.log("CHAT ID", chat_id);
+        console.log("CHAT ID", chat_id, this.state.chats.filter(chat => {
+            return (chat.chat_id === chat_id)
+        }));/*
         const query = `
                         query getMessages($chat_id: Int!) {
                             getMessages(chat_id: $chat_id) {
@@ -65,12 +94,14 @@ class BigChat extends Component {
                     chat_id: chat_id
                 }
             }, headers.headers());
-        console.log("MESSAGES", response.data.data.getMessages);
+        console.log("MESSAGES", response.data.data.getMessages);*/
         this.setState({active_chat_id: chat_id,
                         active_chat_contact_login: user_name,
                         active_chat_contact_id: user_id,
                         active_chat_contact_src: src,
-                        active_chat_messages: response.data.data.getMessages});
+                        active_chat_messages: this.state.chats.filter(chat => {
+                            return (chat.chat_id === chat_id)
+                        })});
         console.log("STATE", this.state);
     }
 

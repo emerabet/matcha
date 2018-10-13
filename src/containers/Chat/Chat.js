@@ -20,6 +20,9 @@ class Chat extends Component {
     
 
     render () {
+        console.log("ICI");
+        if (this.props.messages[0])
+        console.log("TEST", this.props.messages[0].messages);
         return (
 
             <div>
@@ -35,7 +38,7 @@ class Chat extends Component {
                 }
                 <div className="chat-messages">
                 {
-                    this.props.messages.map((message) => {
+                    this.props.messages[0].messages.map((message) => {
                     return ( 
                         <Message key={message.message_id} pos={this.props.pos} type={this.props.contact_id === message.user_id_sender ? "message-from-contact" : "message-from-user"} msg={message.message} from={this.props.contact_id === message.user_id_sender ? message.login : "Me"} date={message.date}/>
                     )
