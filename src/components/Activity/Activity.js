@@ -69,7 +69,7 @@ class Activity extends Component {
                         
                         <Feed.Summary style={ itm.is_read ? mystyle : null }>
                             <Feed.Date>{ date.toDateString() }</Feed.Date> <Link to={`/stalk/${itm.user_id_from}`}>{itm.login}</Link> {obj[itm.type]} your profile.
-                            {itm.is_read === false && <Icon link onClick={() => this.handleReadNotificationClicked(itm.notification_id)} name='check' />}
+                            {itm.is_read === false && <Icon id='chk' link onClick={() => this.handleReadNotificationClicked(itm.notification_id)} name='check' />}
                         </Feed.Summary>
                     </Feed.Content>
                 </Feed.Event>
