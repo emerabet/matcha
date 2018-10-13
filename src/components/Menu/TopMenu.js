@@ -1,16 +1,29 @@
 import React, { Component } from 'react';
 import './TopMenu.css';
 import { withRouter } from 'react-router-dom';
-import { Menu, Icon, Label } from 'semantic-ui-react';
+import { Menu, Icon, Label, Dropdown } from 'semantic-ui-react';
+import Activity from '../Activity/Activity';
 
 class TopMenu extends Component {
 
     state = {
-      activeItem: 'home'
+      activeItem: 'home',
+      notificationOpen: false
     }
 
     handleItemClick = (e, data) => {
-      if (data.name) {
+      if (e.target.id == 'chk')
+        return ;
+      if (data.name && data.name == 'ddNotification') {
+        
+          const n = this.state.notificationOpen;
+
+          console.log("ici ", n, !n);
+          this.setState({
+            notificationOpen: !n
+          })
+      }
+      else if (data.name) {
         this.setState(...this.state, { activeItem: data.name })
         console.log(data.name);
         console.log("ACTIVE", this.state.activeItem);
@@ -25,9 +38,6 @@ class TopMenu extends Component {
 
     render (){
       return (
-      
-        
-
         <Menu stackable icon='labeled' className='test' >
           <Menu.Item name='home' active={this.state.activeItem === 'home'} onClick={this.handleItemClick}>
             <Icon name='home' />
@@ -42,6 +52,18 @@ class TopMenu extends Component {
             <Icon name='user secret' />
             Profile
           </Menu.Item>
+
+            <Dropdown onClick={this.handleItemClick} 
+                      item name="ddNotification"
+                      icon='bell outline'
+                      open={this.state.notificationOpen}
+                      >
+                      
+                <Dropdown.Menu>
+                  <Dropdown.Header>Text Size</Dropdown.Header>
+                  <Activity size='small'></Activity>
+                </Dropdown.Menu>
+            </Dropdown>
 
           <Menu.Item
             name='notifications'
@@ -84,6 +106,8 @@ class TopMenu extends Component {
             <Icon name='log out' />
             Log out
           </Menu.Item>
+
+          
           
         </Menu>
 

@@ -113,14 +113,19 @@ class Stalk extends Component {
 
         console.log("is reported or liked?");
         console.log(isLikedReported);
-        const isLike = isLikedReported.data.data.getStatusLikedReported.liked == null ? false : true;
-        const isReported = isLikedReported.data.data.getStatusLikedReported.reported == null ? false : true;
 
-        const colorLike =  isLike === true ? 'red' : 'grey';
-        const colorBlacklist = isReported === true ? 'black' : 'grey';
+        let colorLike = 'grey';
+        let colorBlacklist = 'grey';
+        let isLike = false;
+        let isReported = false;
 
-        console.log("isLike, isReported");
-        console.log(isLike, isReported);
+        if (isLikedReported.data.data.getStatusLikedReported) {
+            isLike = isLikedReported.data.data.getStatusLikedReported.liked == null ? false : true;
+            isReported = isLikedReported.data.data.getStatusLikedReported.reported == null ? false : true;
+
+            colorLike =  isLike === true ? 'red' : 'grey';
+            colorBlacklist = isReported === true ? 'black' : 'grey';
+        }
 
         this.setState({
             user: user.data.data.getUser,
