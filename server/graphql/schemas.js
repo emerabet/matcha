@@ -60,11 +60,19 @@ exports.registerSchema = buildSchema(`
 
     type Contact {
         chat_id: Int
+        message_id: Int
+        user_id_sender: Int
+        message: String
+        date: String
+        read_date: String
         contact_id: Int
-        login: String
-        src: String
-        last_message: String
-        last_message_date: String
+        contact_login: String
+        contact_src: String
+    }
+
+    type Chat {
+        chat_id: Int
+        messages: [Message]
     }
 
     type Message {
@@ -73,6 +81,7 @@ exports.registerSchema = buildSchema(`
         login: String
         message: String
         date: String
+        read_date: String
     }
 
     type IsLikedReported {
@@ -124,6 +133,7 @@ exports.registerSchema = buildSchema(`
         getPicture(token: String!, user_id2: Int) : [Picture],
         getContacts: [Contact],
         getMessages(chat_id: Int!): [Message],
-        getStatusLikedReported(user_id2: Int!): IsLikedReported
+        getStatusLikedReported(user_id2: Int!): IsLikedReported,
+        getAllMessagesFromUser: [Chat]
     }
 `);
