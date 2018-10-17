@@ -91,16 +91,17 @@ app.use('/api', mdw, express_graphql( req =>( {
 })));
 
 
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+console.log('ici');
+io.on('connection', mySocket);
+io.listen(5000);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
 
-io.on('connection', function(socket){
-    console.log('a user connected');
-  });
 
 
 route.setRoutes(app);
