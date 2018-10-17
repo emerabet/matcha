@@ -1,8 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+
 const mySocket = require('./socket');
 const port = 4000;
 const bodyParser = require('body-parser');
@@ -91,9 +90,17 @@ app.use('/api', mdw, express_graphql( req =>( {
     }
 })));
 
-io.on('connection', mySocket);
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+io.on('connection', function(socket){
+    console.log('a user connected');
+  });
 
 
 route.setRoutes(app);

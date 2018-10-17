@@ -7,8 +7,6 @@ const fs = require('fs');
 
 module.exports = {
     getContacts: async ({}, context) => {
-        console.log("GET CONTACTS");
-        console.log("TOKEN", context.token);
         const token = context.token;
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
@@ -17,9 +15,9 @@ module.exports = {
             const user_id = decoded.user_id;
             let sql = "SELECT chat.chat_id, `message_id`, `user_id_sender`, `message`, `date`, `read_date`, CASE WHEN user_id1 = ? THEN user_id2 ELSE user_id1 END AS contact_id, CASE WHEN user_id1 = ? THEN us2.login ELSE us.login END AS contact_login, CASE WHEN user_id1 = ? THEN p2.src ELSE p1.src END AS contact_src FROM `chat` LEFT JOIN `message` ON message.chat_id = chat.chat_id LEFT JOIN `user` us ON us.user_id = user_id1 && user_id1 != ? LEFT JOIN `user` us2 ON us2.user_id = user_id2 && user_id2 != ? LEFT JOIN `picture` p1 ON p1.user_id = user_id1 && user_id1 != ? &&p1.priority = 1 LEFT JOIN `picture` p2 ON p2.user_id = user_id2 && user_id2 != ? && p1.priority = 1 WHERE`user_id1` = ? OR `user_id2` = ? GROUP BY chat.chat_id ORDER BY `date` DESC, chat.chat_id";
             sql = mysql.format(sql, [user_id, user_id, user_id, user_id, user_id, user_id, user_id, user_id, user_id]);
-            console.log("SQL", sql);
+
             const result = await db.conn.queryAsync(sql); 
-            console.log("RES LAST INSERT", result);
+
             return result;
         } catch (err) {
             console.log("ERR", err);
@@ -28,8 +26,6 @@ module.exports = {
     },
 
     getMessages: async ({chat_id}, context) => {
-        console.log("GET MESSAGES");
-        console.log("TOKEN", context.token);
         const token = context.token;
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
@@ -39,17 +35,13 @@ module.exports = {
             let sql = "SELECT message_id, user_id_sender, message, date, login  FROM `message` LEFT JOIN user ON user.user_id = message.user_id_sender WHERE chat_id = ? ORDER BY date ASC";
             sql = mysql.format(sql, [chat_id]);
             const result = await db.conn.queryAsync(sql); 
-            console.log("RES LAST INSERT", result);
             return result;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
 
     addMessage: async ({chat_id, message}, context) => {
-        console.log("ADD MESSAGES");
-        console.log("TOKEN", context.token);
         const token = context.token;
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
@@ -58,19 +50,18 @@ module.exports = {
             const user_id = decoded.user_id;
             let sql = "INSERT INTO `message` (`message_id`, `user_id_sender`, `chat_id`, `message`, `date`) VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP)";
             sql = mysql.format(sql, [user_id, chat_id, message]);
-            console.log("SQL", sql);
+
             const result = await db.conn.queryAsync(sql); 
-            console.log("RES LAST INSERT", result);
+
             return true;
         } catch (err) {
-            console.log("ERR", err);
+
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
 
     getAllMessagesFromUser: async ({}, context) => {
-        console.log("GET ALL MESSAGES FROM USER");
-        console.log("TOKEN", context.token);
+
         const token = context.token;
         try {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
@@ -79,9 +70,9 @@ module.exports = {
             const user_id = decoded.user_id;
             let sql = "SELECT chat.chat_id, `message_id`, `user_id_sender`, user.login, `message`, `date`, `read_date` FROM `chat` LEFT JOIN `message` ON message.chat_id = chat.chat_id LEFT JOIN `user` ON message.user_id_sender = user.user_id WHERE `user_id1` = ? OR `user_id2` = ? ORDER BY chat.chat_id, `date`";
             sql = mysql.format(sql, [user_id, user_id]);
-            console.log("SQL", sql);
+    
             const result = await db.conn.queryAsync(sql); 
-            console.log("RES LAST INSERT", result);
+
             let current_chat_id = 0;
             let current_chat = {}
             let all_chats = [];
@@ -101,7 +92,7 @@ module.exports = {
         //    console.log("CHAT MESSAGES", all_chats, current_chat);
             return all_chats;
         } catch (err) {
-            console.log("ERR", err);
+   
             throw (errors.errorTypes.BAD_REQUEST);
         }
     }

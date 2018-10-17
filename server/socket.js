@@ -3,8 +3,9 @@ const testConnection = (socket) => {
 };
 
 
-const initSocket = (socket) => {
+const mySocket = (socket) => {
+    console.log('socket init');
 	testConnection(socket);
 };
 
-module.exports = initSocket;
+module.exports = mySocket;

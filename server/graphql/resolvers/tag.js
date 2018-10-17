@@ -7,7 +7,6 @@ module.exports = {
         try {
             let sql = "SELECT DISTINCT tag FROM interest ORDER BY tag;";
             const result = await db.conn.queryAsync(sql);
-            console.log(result);
             return result;
         } catch (err) {
             console.log("ERR", err);
@@ -19,7 +18,6 @@ module.exports = {
         try {
             let sql = "SELECT interest.user_id as owner_id, tag FROM interest ORDER BY user_id;";
             const result = await db.conn.queryAsync(sql);
-            console.log(result);
             return result;
         } catch (err) {
             console.log("ERR", err);
@@ -32,7 +30,6 @@ module.exports = {
             let sql = "SELECT tag FROM interest WHERE interest.user_id = ? ORDER BY tag;";
             sql = mysql.format(sql, [id]);
             const result = await db.conn.queryAsync(sql);
-            console.log(result);
             return result;
         } catch (err) {
             console.log("ERR", err);

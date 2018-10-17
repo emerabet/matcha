@@ -97,19 +97,16 @@ module.exports = {
             if (extended === true) {
                 const tags = await queriesTag.getTagByUser(userId);
                 users[0].tags = tags;
-                console.log("TAGS", tags);
             }
 
             
 
             const pictures = await queriesPicture.getPicture({token: token, user_id2: user_id2});
-            console.log("PICTURES...", pictures);
             users[0].pictures = pictures;
             if (user_id2 === decoded.user_id)
                 users[0].isMyProfile = true;
             else
                 users[0].isMyProfile = false;
-            console.log("ID", users[0]);
             return users[0];
         } catch (err) {
             console.log("catch get user");
@@ -134,10 +131,6 @@ module.exports = {
                 mergeResults(users, tags, "tags", { parentCmp: "user_id", childCmp: "owner_id" });
             }
 
-
-
-
-            console.log("ID", users[1].tags);
             return users;
         } catch (err) {
             throw err.message;
@@ -155,9 +148,6 @@ module.exports = {
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-                console.log("decoded", decoded);
-                console.log("USER", user);
-                console.log("PROFILE", profile);
                 let sql = 'SELECT `password` FROM `user` WHERE `user_id` = ?;'; 
                 sql = mysql.format(sql, decoded.user_id);
                 console.log("SQL", sql);
@@ -198,14 +188,12 @@ module.exports = {
                     sql += 'DELETE FROM `interest` WHERE `user_id` = ? AND `tag` = ?; ';
                     sql = mysql.format(sql, [decoded.user_id, profile.delete_tags[i]]);
                 }
-                console.log("SQL", sql);
+                
                 if (sql !== "") {
                     result = await db.conn.queryAsync(sql);
                     console.log("ID", result[0]);
                 }
 
-                console.log(address);
-                console.log("ICI");
                 if (address.latitude == 0 || address.longitude == 0) {
                     const add = await axios.get(`http://api.ipstack.com/${address.ip}?access_key=${config.IPSTACK_KEY}`);
                     console.log("LOCATION", add.data);
@@ -213,7 +201,6 @@ module.exports = {
                     sql = mysql.format(sql, [decoded.user_id, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
                     console.log("SQL", sql);
                     result = await db.conn.queryAsync(sql);
-                    console.log("ID", result[0]);
                 } else {
                     geocoder.reverse({lat: address.latitude, lon: address.longitude}, function(err, res) {
                         console.log("GOOGLE", res);
@@ -252,7 +239,7 @@ module.exports = {
         try {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            console.log("token", token);
+            
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
@@ -261,29 +248,28 @@ module.exports = {
                 sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
                 let result = await db.conn.queryAsync(sql);
                 const flag_liked = result[0].nb;
-                console.log("FLAG LIKED1", flag_liked);
+                
                 sql = 'SELECT COUNT(user_id_visitor) as nb from `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;'
                 sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                 result = await db.conn.queryAsync(sql);
-                console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+                
                 if (result[0].nb === 0){
                     sql = 'INSERT INTO `liked` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
-                    console.log("ADDING", result);
+                    
                     module.exports.addNotification({type: "like", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                     if (flag_liked > 0) {
                         sql = 'INSERT INTO `matched` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                         result = await db.conn.queryAsync(sql);
-                        console.log(sql);
-                        console.log("MATCHED", result);
+                        
                         module.exports.addNotification({type: "match", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                         module.exports.addNotification({type: "match", user_id_from: user_id_to_like, user_id_to: decoded.user_id});
                         sql = 'INSERT INTO `chat` (`chat_id`, `user_id1`, `user_id2`) VALUES(NULL,?,?);';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                         result = await db.conn.queryAsync(sql);
-                        console.log("NEW CHAT CREATED", result);
+                        
                     }
                     return true;
                 } else {
@@ -291,20 +277,17 @@ module.exports = {
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
                     module.exports.addNotification({type: "unlike", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
-                    console.log("DELETING", result);
-                    console.log("FLAG LIKED", flag_liked);
+                    
                     if (flag_liked > 0) {
                         sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                         result = await db.conn.queryAsync(sql);
-                        console.log(sql);
-                        console.log("UNMATCH", result);
+                        
                         module.exports.addNotification({type: "unmatch", user_id_from: user_id_to_like, user_id_to: decoded.user_id});
                         sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                         sql = mysql.format(sql, [user_id_to_like, decoded.user_id]);
                         result = await db.conn.queryAsync(sql);
-                        console.log(sql);
-                        console.log("UNMATCH", result);
+                        
                         module.exports.addNotification({type: "unmatch", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                         console.log("MISMATCHED", result);
                     }
@@ -324,7 +307,7 @@ module.exports = {
         try {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            console.log("token", token);
+                
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
@@ -332,19 +315,19 @@ module.exports = {
                 let sql = 'SELECT COUNT(user_id_blocked) as nb from `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;'
                 sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                 let result = await db.conn.queryAsync(sql);
-                console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+                
                 if (result[0].nb === 0){
                     sql = 'INSERT INTO `black_listed` (`user_id_blocked`, `user_id_blocker`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                     sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
-                    console.log("ADDING", result);
+                    
                     module.exports.addNotification({type: "black_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
                     return true;
                 } else {
                     sql = 'DELETE FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
                     sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
-                    console.log("DELETING", result);
+                    
                     module.exports.addNotification({type: "unblack_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
                     return false;
                 }
@@ -362,7 +345,7 @@ module.exports = {
         try {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            console.log("token", token);
+                
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
@@ -370,38 +353,36 @@ module.exports = {
                 let sql = 'SELECT COUNT(user_id_reported) as nb from `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;'
                 sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
                 let result = await db.conn.queryAsync(sql);
-                console.log("NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", result[0].nb);
+                
                 if (result[0].nb === 0){
                     sql = 'INSERT INTO `reported` (`user_id_reported`, `user_id_reporter`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                     sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
-                    console.log("ADDING", result);
+                    
                     module.exports.addNotification({type: "report", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
                     return true;
                 } else {
                     sql = 'DELETE FROM `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;';
                     sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
-                    console.log("DELETING", result);
+                    
                     module.exports.addNotification({type: "unreport", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
                     return false;
                 }
             }
             return false;
         } catch (err) {
-            console.log("ERROR LIKED", err.message);
             throw err.message;
         }
 
     },
 
     addVisit: async ({user_id_visited}, context) => {
-        console.log("IN ADDVISIT");
         const token = context.token;
         try {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            console.log("token", token);
+                
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
@@ -409,7 +390,7 @@ module.exports = {
                 let sql = 'INSERT INTO `visit` (`visit_id`, `user_id_visitor`, `user_id_visited`, `date`) VALUES(NULL,?,?,CURRENT_TIMESTAMP);';
                 sql = mysql.format(sql, [decoded.user_id, user_id_visited]);
                 const result = await db.conn.queryAsync(sql);
-                console.log("ADDING", result);
+                
                 module.exports.addNotification({type: "visit", user_id_from: decoded.user_id, user_id_to: user_id_visited});
                 return true;
             }
@@ -422,21 +403,17 @@ module.exports = {
     },
 
     addNotification: async ({type, user_id_from, user_id_to}) => {
-        console.log("NOTIFICATION");
+        
         let sql = 'INSERT INTO `notification` (`notification_id`, `type`, `user_id_from`, `user_id_to`, `date`, `is_read`) VALUES(NULL,?,?,?,CURRENT_TIMESTAMP, 0);';
         sql = mysql.format(sql, [type, user_id_from, user_id_to]);
         const result = await db.conn.queryAsync(sql);
-        console.log("ADDING NOTIFICATION", result);
-        console.log("INSERTED ID", result.insertId);
+        
         if (result.insertId)
             return result.insertId;
     },
 
     getUserNotifications: async ({ search }, context) => {
-        console.log("USER NOTIFICATIONS");
-        console.log(context);
-        console.log("type: ", search);
-        
+                
         try {
             const token = context.token;
 
@@ -456,17 +433,15 @@ module.exports = {
                         `;
             sql = mysql.format(sql, [userId]);
             const result = await db.conn.queryAsync(sql);
-            console.log(result);
             return result;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
 
     removeNotification: async ({notification_id}, context) => {
         try {
-            console.log("helllooooooooooooooo");
+            
             const token = context.token;
 
             if (!token)
@@ -478,10 +453,9 @@ module.exports = {
             let sql = `DELETE FROM notification WHERE notification_id = ? AND user_id_to = ?;`;
             sql = mysql.format(sql, [notification_id, userId]);
             const result = await db.conn.queryAsync(sql);
-            console.log("DELETE: ", result);
+            
             return true;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
@@ -499,17 +473,15 @@ module.exports = {
             let sql = `UPDATE notification SET is_read = 1 WHERE notification_id = ? AND user_id_to = ?;`;
             sql = mysql.format(sql, [notification_id, userId]);
             const result = await db.conn.queryAsync(sql);
-            console.log("DELETE: ", result);
             return true;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
 
     getStatusLikedReported: async ({ user_id2 }, context) => {
         try {
-            console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+            
             const token = context.token;
 
             if (!token)
@@ -527,11 +499,8 @@ module.exports = {
             AND (reported.user_id_reported = ? OR liked.user_id_visited = ?)
             LIMIT 1;`;
 
-            console.log("userid2====> ", user_id2);
             sql = mysql.format(sql, [userId, userId, user_id2, user_id2]);
             const result = await db.conn.queryAsync(sql);
-            console.log("ppppppppppppppppppppppppppppppppppppppppp");
-            console.log(result);
             return result[0];
         } catch (err) {
             throw (errors.errorTypes.BAD_REQUEST);
