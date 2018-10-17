@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const mySocket = require('./socket');
 const port = 4000;
 const bodyParser = require('body-parser');
 const express_graphql = require('express-graphql');
@@ -15,7 +18,6 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
 const cookieParser = require('cookie-parser');
-
 
 
 let rootDir = __dirname; 
@@ -88,6 +90,8 @@ app.use('/api', mdw, express_graphql( req =>( {
         return ({ message: err.message, statusCode: 403})
     }
 })));
+
+io.on('connection', mySocket);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
