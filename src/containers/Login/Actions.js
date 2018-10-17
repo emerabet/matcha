@@ -10,8 +10,9 @@ export const login =(userName, password) => {
     return async dispatch => {
         try {
             const res = await axios.post('/connect', { login: userName, password: password });
-            console.log("actions login");
-            console.log('data login', res.data);
+            console.log("actions login test");
+            console.log('data login', res.data.auth);
+
             localStorage.setItem('csrf_token', res.data.csrf_token);
             localStorage.setItem('logged', true);
             localStorage.setItem('last_name', res.data.user.lastName);

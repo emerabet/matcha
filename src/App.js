@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createContext } from 'react';
 import './App.css';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Login from './containers/Login/Login';
@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import AdvancedSearch from './containers/AdvancedSearch/AdvancedSearch';
 import Layout from './Hoc/Layout/Layout'
+import SocketProvider from './Hoc/Socket/SocketProvider';
 
 class App extends Component {
 
@@ -43,10 +44,12 @@ class App extends Component {
     }
 
     return (
+      <SocketProvider>
         <Layout>
           { routes }
           <ToastContainer />
         </Layout>
+      </SocketProvider>
     );
   }
 }
