@@ -18,6 +18,7 @@ const jwt = require('jsonwebtoken');
 const config = require('./config');
 const cookieParser = require('cookie-parser');
 
+let connected_users = [];
 
 let rootDir = __dirname; 
 let i = rootDir.lastIndexOf('/');
@@ -94,11 +95,16 @@ app.use('/api', mdw, express_graphql( req =>( {
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+const addConnectedUser = (user) => {
+    connected_users.push(user);
+    console.log("LIST OF CONNECTED USERS FROM SERVER", connected_users);
+}
 console.log('ici');
-io.on('connection', mySocket);
+io.on('connection', (socket) => mySocket(socket, addConnectedUser));
 io.listen(5000);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
+console.log("CLIENTS", io.sockets.clients());
 
 route.setRoutes(app);
