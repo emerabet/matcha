@@ -6,7 +6,8 @@ import Message from '../../components/Message/Message';
 class Chat extends Component {
 
     state = {
-        message: ""
+        message: "",
+        isTyping: false
     }
 
     handleSubmit = () => {

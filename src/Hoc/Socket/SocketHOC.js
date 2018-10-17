@@ -1,3 +1,4 @@
+import React from 'react';
 import { SocketContext } from './SocketProvider';
 
 const withSocket = (Component) => {

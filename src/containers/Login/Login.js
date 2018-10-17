@@ -5,6 +5,7 @@ import { Component } from 'react';
 import classes from './Login.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import withSocket from '../../Hoc/Socket/SocketHOC';
 
 class  Login extends Component {
    
@@ -16,8 +17,8 @@ class  Login extends Component {
     handleLogin = async (e) => {
         e.preventDefault();
         console.log('in handle login');
-        await this.props.onLogin(this.state.userName, this.state.password);
-
+        await this.props.onLogin(this.state.userName, this.state.password, this.props.socket);
+       
         this.props.history.push('/home');
     }
 
@@ -51,8 +52,8 @@ const mapStateToProps = null;
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLogin: (userName, password) => dispatch(actions.login(userName, password))
+        onLogin: (userName, password, socket) => dispatch(actions.login(userName, password, socket))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default withSocket(connect(mapStateToProps, mapDispatchToProps)(Login));
