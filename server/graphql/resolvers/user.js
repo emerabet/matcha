@@ -461,12 +461,12 @@ module.exports = {
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
             const userId = decoded.user_id;
             let sql = `SELECT liked.date as liked, reported.date as reported 
-            FROM user
-            LEFT JOIN reported ON user.user_id = reported.user_id_reporter
-            LEFT JOIN liked ON user.user_id = liked.user_id_visitor
-            WHERE (reported.user_id_reporter = ? OR liked.user_id_visitor = ?)
-            AND (reported.user_id_reported = ? OR liked.user_id_visited = ?)
-            LIMIT 1;`;
+                        FROM user
+                        LEFT JOIN reported ON user.user_id = reported.user_id_reporter
+                        LEFT JOIN liked ON user.user_id = liked.user_id_visitor
+                        WHERE (reported.user_id_reporter = ? OR liked.user_id_visitor = ?)
+                        AND (reported.user_id_reported = ? OR liked.user_id_visited = ?)
+                        LIMIT 1;`;
 
             sql = mysql.format(sql, [userId, userId, user_id2, user_id2]);
             const result = await db.conn.queryAsync(sql);
