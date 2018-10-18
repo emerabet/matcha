@@ -1,6 +1,7 @@
 import * as actions from './Actions';
 import * as profileActions from '../Profile/Actions';
 import * as reloadActions from '../../Hoc/Actions';
+import * as clearActions from '../../components/Menu/Actions';
 
 const initialState = {
     logged: false
@@ -17,6 +18,9 @@ const reducer = (state = initialState, action) => {
             nextState = { ...state,
                         token: action.data.token,
                         user: action.data.user };
+            break ;
+        case clearActions.CLEAR_STORE:
+            nextState = initialState;
             break ;
         case actions.LOGIN_FAIL:
             nextState = { ...state,

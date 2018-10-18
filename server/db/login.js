@@ -31,6 +31,7 @@ exports.login = async (req, res) => {
             const csrf_token = uniqid();
             const token = jwt.sign({ user_id: rows[0].user_id, csrf_token: csrf_token}, config.SECRET_KEY, { expiresIn: 3600 });
             const user = {
+                user_id: rows[0].user_id,
                 login: rows[0].login,
                 lastName: rows[0].last_name,
                 firstName: rows[0].first_name,
@@ -45,12 +46,11 @@ exports.login = async (req, res) => {
                 latitude: rows[0].latitude,
                 longitude: rows[0].longitude
             };
-            await res.clearCookie("sessionid");
-            await res.cookie('sessionid', token, { httpOnly: true/*, sameSite: "strict"*/ });
-            
-          //  console.log("AFTER COOKIE");
-          //  console.log(res);
-            res.status(200).send({ auth: true, csrf_token: csrf_token, user: user });
+            await res.clearCookie();
+            console.log("TOOOOO", token);
+            res.header('Pragma', 'no-cache');
+            await res.cookie('sessionid', token, { httpOnly: true/*, sameSite: "strict"*/ })
+            .status(200).send({ auth: true, csrf_token: csrf_token, user: user });
         } else {
             res.status(403).send({ auth: false, token: null });
         }
@@ -68,8 +68,7 @@ exports.login = async (req, res) => {
 exports.checkToken = async (req, res) => {
     const token = req.cookies['sessionid'];
     console.log("GOT TOKEN", token);
-    if (token === undefined)
-        res.status(403).send({ message: "Authentification failed" });
+
     try {
         const decoded = await jwt.verify(token, config.SECRET_KEY);
         if (decoded.err)
@@ -85,4 +84,9 @@ exports.checkToken = async (req, res) => {
         console.log("TOKEN EXPIRED");
         res.status(403).send({ message: "Authentification failed" });
     }
+}
+
+exports.logout = async (req, res) => {
+    console.log("LOGGING OUT CLEAR COOKIES");
+    res.clearCookie("sessionid").status(200).send();
 }

@@ -13,6 +13,7 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const user_id = decoded.user_id;
+            console.log("USER ID GET CONTACT", user_id);
             let sql = "SELECT chat.chat_id, `message_id`, `user_id_sender`, `message`, `date`, `read_date`, CASE WHEN user_id1 = ? THEN user_id2 ELSE user_id1 END AS contact_id, CASE WHEN user_id1 = ? THEN us2.login ELSE us.login END AS contact_login, CASE WHEN user_id1 = ? THEN p2.src ELSE p1.src END AS contact_src FROM `chat` LEFT JOIN `message` ON message.chat_id = chat.chat_id LEFT JOIN `user` us ON us.user_id = user_id1 && user_id1 != ? LEFT JOIN `user` us2 ON us2.user_id = user_id2 && user_id2 != ? LEFT JOIN `picture` p1 ON p1.user_id = user_id1 && user_id1 != ? &&p1.priority = 1 LEFT JOIN `picture` p2 ON p2.user_id = user_id2 && user_id2 != ? && p1.priority = 1 WHERE`user_id1` = ? OR `user_id2` = ? GROUP BY chat.chat_id ORDER BY `date` DESC, chat.chat_id";
             sql = mysql.format(sql, [user_id, user_id, user_id, user_id, user_id, user_id, user_id, user_id, user_id]);
 

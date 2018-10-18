@@ -3,6 +3,9 @@ import './TopMenu.css';
 import { withRouter } from 'react-router-dom';
 import { Menu, Icon, Label, Dropdown } from 'semantic-ui-react';
 import Activity from '../Activity/Activity';
+import { connect } from 'react-redux';
+import * as actions from './Actions';
+import axios from 'axios';
 
 class TopMenu extends Component {
 
@@ -33,6 +36,8 @@ class TopMenu extends Component {
 
     handleLogOut = (e, data) => {
       localStorage.clear();
+      this.props.onClearStore();
+      axios.post('/logout');
       this.props.history.push('/login');
     }
 
@@ -117,4 +122,11 @@ class TopMenu extends Component {
   }
 }
 
-export default withRouter(TopMenu);
+const mapStateToProps = null;
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onClearStore: () => dispatch(actions.clearStore())
+    }
+}
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TopMenu));

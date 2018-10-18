@@ -13,11 +13,14 @@ export const login =(userName, password, socket) => {
             console.log("actions login test");
             console.log('data login', res.data.auth);
             if (res.data.auth){
+                console.log("CONNECTED", res.data);
                 console.log("EMITTING");
-                socket.emit('login', userName);
+                socket.emit('login', userName, res.data.user.user_id)
+                
             }
             localStorage.setItem('csrf_token', res.data.csrf_token);
             localStorage.setItem('logged', true);
+            localStorage.setItem('user_id', res.data.user.user_id);
             localStorage.setItem('last_name', res.data.user.lastName);
             localStorage.setItem('first_name', res.data.user.firstName);
             localStorage.setItem('email', res.data.user.email);

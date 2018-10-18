@@ -1,4 +1,5 @@
 import * as actions from './Actions';
+import * as clearActions from '../../components/Menu/Actions';
 
 const initialState = {
     contacts: [],
@@ -9,6 +10,9 @@ const reducer = (state = initialState, action) => {
     let nextState;
     console.log('in super chat reducer', action);
     switch(action.type) {
+        case clearActions.CLEAR_STORE:
+            nextState = initialState;
+            break ;
         case actions.CONTACTS:
             console.log("from reducer contacts", action);
             nextState = { ...state,

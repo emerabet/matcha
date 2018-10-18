@@ -1,4 +1,5 @@
 import * as actions from './Actions';
+import * as clearActions from '../Menu/Actions';
 
 const initialState = {
     notifications: []
@@ -8,6 +9,9 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     let nextState;
     switch(action.type) {
+        case clearActions.CLEAR_STORE:
+            nextState = initialState;
+            break ;
         case actions.NOTIFICATION_LOADED:
             nextState = { ...state,
                 notifications: action.data };
