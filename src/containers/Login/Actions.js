@@ -6,7 +6,7 @@ import * as actionsActivity from '../../components/Activity/Actions';
 export const LOGIN = 'LOGIN';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 
-export const login =(userName, password, socket) => {
+export const login = (userName, password, socket) => {
     return async dispatch => {
         try {
             socket.disconnect();
@@ -17,8 +17,7 @@ export const login =(userName, password, socket) => {
                 console.log("CONNECTED", res.data);
                 console.log("EMITTING");
                 socket.connect();
-                socket.emit('login', userName, res.data.user.user_id)
-                
+                socket.emit('login', userName);
             }
             localStorage.setItem('csrf_token', res.data.csrf_token);
             localStorage.setItem('logged', true);
