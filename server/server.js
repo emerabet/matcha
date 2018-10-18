@@ -67,11 +67,10 @@ const mdw = async (req, res, next) => {
                     console.log("WRONG CSRF TOKEN");
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
                 }
-                console.log("TEST");
                 next();
             }
         } catch (err) {
-        console.log("ERROR IN MIDDLEWARE", err);   
+        console.log("ERROR IN MIDDLEWARE");   
         res.status(403).send();    
     }
 }
@@ -97,7 +96,7 @@ const mySocketMiddleware = mySocket();
 */const connectedUsers = new Map();
 
 console.log('ici');
-io.on('connection', (socket) => mySocket(socket, connectedUsers));
+io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
 io.listen(5000);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
