@@ -7,8 +7,8 @@ export const SocketContext = createContext({
 
 class SocketProvider extends Component {
     state = {
-     // socket: socketIOClient('http://localhost:4000')
-      socket: socketIOClient('http://10.18.201.85:4000')
+      socket: socketIOClient('http://localhost:5000')
+    // socket: socketIOClient('http://10.18.201.85:4000')
     };
   
     render() {

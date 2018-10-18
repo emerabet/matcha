@@ -1,19 +1,33 @@
-const testConnection = (socket) => {
-console.log('Connexion socket: '/*, socket*/);
-};
+const jwt = require('jsonwebtoken');
+const config = require('./config');
 
-let connected_users = [];
+const parseCookies = (cookies) => {
+	let c = cookies.split(";")
+	let result = new Map();
 
-
-const mySocket = (socket, addConnectedUser) => {
-	console.log('socket init');
-	socket.on('login', (data) => {
-		console.log("LOGIN", data)
-		connected_users.push(data);
-		addConnectedUser(data);
-		console.log("LIST OF CONNECTED USERS", data);
+	c.forEach(element => {
+		let cc = element.split("=");
+		result.set(cc[0], cc[1]);
 	});
-	testConnection(socket);
+	return result;
+}
+
+const mySocket = async (socket, connectedUsers) => {
+	socket.on('login', async (data) => {
+		const c = parseCookies(socket.request.headers.cookie);
+		const token = c.get('sessionid');
+    try {
+        const decoded = await jwt.verify(token, config.SECRET_KEY);
+        if (decoded.err)
+            return ;
+        else {
+			connectedUsers.push(data);
+			console.log("LIST OF CONNECTED USERS", connectedUsers);
+        }
+    } catch (err) {
+        return ;
+    }
+	});
 };
 
 module.exports = mySocket;

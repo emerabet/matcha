@@ -20,7 +20,6 @@ module.exports = {
 
             return result;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
@@ -89,7 +88,6 @@ module.exports = {
             })
             if (current_chat_id !== 0)
                 all_chats.push(current_chat);
-        //    console.log("CHAT MESSAGES", all_chats, current_chat);
             return all_chats;
         } catch (err) {
    

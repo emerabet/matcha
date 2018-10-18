@@ -18,8 +18,6 @@ const jwt = require('jsonwebtoken');
 const config = require('./config');
 const cookieParser = require('cookie-parser');
 
-let connected_users = [];
-
 let rootDir = __dirname; 
 let i = rootDir.lastIndexOf('/');
 if (i !== -1)
@@ -40,13 +38,13 @@ const root = {
 }
 
 const mdw = async (req, res, next) => {
-    console.log("IN MIDDLEWARE", req.headers);
-    console.log('Cookies: ', req.cookies)
+   // console.log("IN MIDDLEWARE", req.headers);
+   // console.log('Cookies: ', req.cookies)
     const token = req.cookies['sessionid'];
     // Cookies that have been signed
-    console.log('Signed Cookies: ', req.signedCookies)
+   // console.log('Signed Cookies: ', req.signedCookies)
     try {
-        console.log("BODY", req.body.query);
+     //   console.log("BODY", req.body.query);
         if (req.body.query.replace(/\s/g, '') === "querygetLogin($login:String!){getLogin(login:$login)}"
             || req.body.query.replace(/\s/g, '') === "querygetEmail($email:String!){getEmail(email:$email)}"
             || req.body.query.replace(/\s/g, '') === "mutationaddUser($user:AddUserInput!,$address:AddAddressInput!){addUser(user:$user,address:$address)}") {
@@ -94,17 +92,14 @@ app.use('/api', mdw, express_graphql( req =>( {
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+/*
+const mySocketMiddleware = mySocket();
+*/const connectedUsers = [];
 
-const addConnectedUser = (user) => {
-    connected_users.push(user);
-    console.log("LIST OF CONNECTED USERS FROM SERVER", connected_users);
-}
 console.log('ici');
-io.on('connection', (socket) => mySocket(socket, addConnectedUser));
+io.on('connection', (socket) => mySocket(socket, connectedUsers));
 io.listen(5000);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
-console.log("CLIENTS", io.sockets.clients());
 
 route.setRoutes(app);

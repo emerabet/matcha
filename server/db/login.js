@@ -48,8 +48,8 @@ exports.login = async (req, res) => {
 
             res.cookie('sessionid', token, { httpOnly: true/*, sameSite: "strict"*/ });
             
-            console.log("AFTER COOKIE");
-            console.log(res);
+          //  console.log("AFTER COOKIE");
+          //  console.log(res);
             res.status(200).send({ auth: true, csrf_token: csrf_token, user: user });
         } else {
             res.status(403).send({ auth: false, token: null });

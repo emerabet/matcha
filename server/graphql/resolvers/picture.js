@@ -62,7 +62,6 @@ module.exports = {
             if (await fs.existsSync(`${appRoot}/public${picture_src}`)){
                 await fs.unlink(`${appRoot}/public${picture_src}`, (err) => {
                     if (err) throw err;
-                    console.log('successfully deleted /tmp/hello');
                   });
             }
             

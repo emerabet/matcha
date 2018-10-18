@@ -13,6 +13,7 @@ export const login =(userName, password, socket) => {
             console.log("actions login test");
             console.log('data login', res.data.auth);
             if (res.data.auth){
+                console.log("EMITTING");
                 socket.emit('login', userName);
             }
             localStorage.setItem('csrf_token', res.data.csrf_token);

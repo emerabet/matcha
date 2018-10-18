@@ -33,28 +33,19 @@ const mergeResults = (parent, child, property, { parentCmp, childCmp }) => {
 
 module.exports = {
     addUser: async ({ user, address }) => {
-        console.log("ADDRESS", address);
-        console.log("user to add in db", user);
         var hash = bcrypt.hashSync(user.password, 10);
         let sql = "INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES (NULL, ?, ?, ?, ?, ?, 'sadas', 'asdad', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1', '0');"; 
         try {
             sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash]);
             const result = await db.conn.queryAsync(sql);
-            console.log("ID", result.insertId);
-            
             const add = await axios.get(`http://api.ipstack.com/${address.ip}?access_key=${config.IPSTACK_KEY}`);
-            console.log("LOCATION", add.data);
             sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
             sql = mysql.format(sql, [result.insertId, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
-            console.log("SQL", sql);
             let res = await db.conn.queryAsync(sql);
-            console.log("ID", res[0]);
             const insertId = result.insertId;
             sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES (?, "","Both","",0,NULL);';
             sql = mysql.format(sql, [insertId]);
-            console.log("SQL", sql);
             res = await db.conn.queryAsync(sql);
-            
 
             return insertId;
         } catch (err) {
@@ -65,15 +56,11 @@ module.exports = {
 
 
     getUser: async ({extended, user_id2 = 0}, context) => {
-        console.log("HERE", context, user_id2);
-        //const token = context.token;
         const token = context.token;
         try {
             
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            console.log("token", token);
-            console.log("verif token");
             const decoded = await jwt.verify(token, config.SECRET_KEY);
 
             console.log("ne doit pas pparaitre");
@@ -81,8 +68,6 @@ module.exports = {
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             
             const userId = user_id2 === 0 ? decoded.user_id: user_id2;
-            console.log("decoded", decoded);
-            console.log("user to get from db", userId);
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, 
                                 user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
                                 YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
@@ -91,7 +76,6 @@ module.exports = {
                         LEFT JOIN address on user.user_id = address.user_id
                         WHERE user.user_id = ?;`; 
             sql = mysql.format(sql, userId);
-            console.log(sql);
             const users = await db.conn.queryAsync(sql);
 
             if (extended === true) {
@@ -138,50 +122,38 @@ module.exports = {
     },
 
     updateUser: async ({ user, profile, address }, context) => {
-        console.log("user to update in db", user);
-        console.log("address", address);
         const token = context.token;
         try {
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
-            console.log("token", token);
             const decoded = await jwt.verify(token, config.SECRET_KEY);
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
                 let sql = 'SELECT `password` FROM `user` WHERE `user_id` = ?;'; 
                 sql = mysql.format(sql, decoded.user_id);
-                console.log("SQL", sql);
                 let result = await db.conn.queryAsync(sql);
-                console.log("ID", result[0]);
                 if (!bcrypt.compareSync(user.old_password, result[0].password))
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
                 if(user.password !== "") {
                     var hash = bcrypt.hashSync(user.password, 10);
-                    console.log("NEW PASSWORD", hash);
                     sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `password` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
                     sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, profile.share_location, decoded.user_id]);
                 } else {
                     sql = 'UPDATE `user` SET `login` = ?, `email` = ?, `last_name` = ?, `first_name` = ?, `share_location` = ? WHERE `user_id` = ?;'; 
                     sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, profile.share_location, decoded.user_id]);
                 }
-                console.log("SQL", sql);
                 result = await db.conn.queryAsync(sql);
-                console.log("ID", result[0]);
                 sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `birthdate`) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE `user_id` = ?, `gender` = ?, `orientation` = ?, `bio` = ?, `birthdate` = ?;';
                 sql = mysql.format(sql, [decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.birthdate, decoded.user_id, profile.gender, profile.orientation, profile.bio, profile.birthdate]);
-                console.log("SQL", sql);
                 result = await db.conn.queryAsync(sql);
-                console.log("ID", result[0]);
                 
                 sql = "";
                 for (let i in profile.new_tags) {
                     sql += 'INSERT INTO `interest` (`user_id`, `tag`) VALUES (?,?); ';
                     sql = mysql.format(sql, [decoded.user_id, profile.new_tags[i]]);
                 }
-                console.log("SQL", sql);
                 if (sql !== "") {
                     result = await db.conn.queryAsync(sql);
-                    console.log("ID", result[0]);
                 }
                 sql = "";
                 for (let i in profile.delete_tags) {
@@ -191,15 +163,12 @@ module.exports = {
                 
                 if (sql !== "") {
                     result = await db.conn.queryAsync(sql);
-                    console.log("ID", result[0]);
                 }
 
                 if (address.latitude == 0 || address.longitude == 0) {
                     const add = await axios.get(`http://api.ipstack.com/${address.ip}?access_key=${config.IPSTACK_KEY}`);
-                    console.log("LOCATION", add.data);
                     sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
                     sql = mysql.format(sql, [decoded.user_id, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
-                    console.log("SQL", sql);
                     result = await db.conn.queryAsync(sql);
                 } else {
                     geocoder.reverse({lat: address.latitude, lon: address.longitude}, function(err, res) {
