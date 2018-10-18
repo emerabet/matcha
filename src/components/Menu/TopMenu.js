@@ -6,6 +6,7 @@ import Activity from '../Activity/Activity';
 import { connect } from 'react-redux';
 import * as actions from './Actions';
 import axios from 'axios';
+import withSocket from '../../Hoc/Socket/SocketHOC';
 
 class TopMenu extends Component {
 
@@ -34,10 +35,12 @@ class TopMenu extends Component {
       }
     }
 
-    handleLogOut = (e, data) => {
-      localStorage.clear();
-      this.props.onClearStore();
-      axios.post('/logout');
+    handleLogOut = async (e, data) => {
+      await localStorage.clear();
+      await this.props.onClearStore();
+      await axios.post('/logout');
+      await this.props.socket.disconnect();
+      await this.props.socket.connect();
       this.props.history.push('/login');
     }
 
@@ -129,4 +132,4 @@ const mapDispatchToProps = (dispatch) => {
         onClearStore: () => dispatch(actions.clearStore())
     }
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TopMenu));
+export default withSocket(withRouter(connect(mapStateToProps, mapDispatchToProps)(TopMenu)));

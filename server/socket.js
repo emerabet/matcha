@@ -13,10 +13,16 @@ const parseCookies = async (cookies) => {
 }
 
 const mySocket = async (socket, connectedUsers) => {
+	console.log("CONNECTED TO THE SOCKET");
 	socket.on('login', async (user_id, user_name) => {
 	//	console.log("CCCCC", socket);
-	//	const c = await parseCookies(socket.handshake.headers.cookie);
-	//	const token = await c.get('sessionid');
+		const c = await parseCookies(socket.handshake.headers.cookie);
+		const cc = await parseCookies(socket.request.headers.cookie);
+
+		console.log("REQUEST", cc);
+		console.log("HANDSHAKE", c);
+
+		//	const token = await c.get('sessionid');
 	//	console.log("TOKEN SOCKET", token, c, c.get('sessionid'));
 	//	try {
 	//		const decoded = await jwt.verify(token, config.SECRET_KEY);
@@ -29,6 +35,8 @@ const mySocket = async (socket, connectedUsers) => {
 	//		}
 	//	} catch (err) { return ; }
 	});
+
+	socket.on('disconnect', () => console.log("SOCKET DISCONNECT"));
 };
 
 module.exports = mySocket;
