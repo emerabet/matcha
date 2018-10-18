@@ -94,7 +94,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 /*
 const mySocketMiddleware = mySocket();
-*/const connectedUsers = [];
+*/const connectedUsers = new Map();
 
 console.log('ici');
 io.on('connection', (socket) => mySocket(socket, connectedUsers));

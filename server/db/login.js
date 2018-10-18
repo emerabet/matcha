@@ -45,8 +45,8 @@ exports.login = async (req, res) => {
                 latitude: rows[0].latitude,
                 longitude: rows[0].longitude
             };
-
-            res.cookie('sessionid', token, { httpOnly: true/*, sameSite: "strict"*/ });
+            await res.clearCookie("sessionid");
+            await res.cookie('sessionid', token, { httpOnly: true/*, sameSite: "strict"*/ });
             
           //  console.log("AFTER COOKIE");
           //  console.log(res);
