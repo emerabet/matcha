@@ -9,12 +9,14 @@ export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const login =(userName, password, socket) => {
     return async dispatch => {
         try {
+            socket.disconnect();
             const res = await axios.post('/connect', { login: userName, password: password });
             console.log("actions login test");
             console.log('data login', res.data.auth);
             if (res.data.auth){
                 console.log("CONNECTED", res.data);
                 console.log("EMITTING");
+                socket.connect();
                 socket.emit('login', userName, res.data.user.user_id)
                 
             }

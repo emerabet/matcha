@@ -40,7 +40,6 @@ class TopMenu extends Component {
       await this.props.onClearStore();
       await axios.post('/logout');
       await this.props.socket.disconnect();
-      await this.props.socket.connect();
       this.props.history.push('/login');
     }
 
