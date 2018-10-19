@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from './Actions';
 import axios from 'axios';
 //import * as headers from '../Tools/Header';
+import withSocket from '../Hoc/Socket/SocketHOC';
 export const headers = {
     headers: {
     authorization: localStorage.getItem("token")
@@ -14,9 +15,7 @@ class Reload extends Component {
 
     constructor(props){
         super(props);
-        console.log("dlksdlds");
-        this.check(props);
-            
+        this.check(props);   
     }
 
     check = async (props) => {
@@ -28,12 +27,17 @@ class Reload extends Component {
             console.log("actions login");
             // console.log('data login', res.data);
             console.log("PROPS", props);
+
             if (this.props.user === undefined){
                 this.props.onRestoreStore();
             } else {
                     console.log("NO NEED TO RESTORE");
             }
-
+            // on se reconnecte a la socket
+            if (localStorage.getItem('login') && localStorage.getItem('login') !== undefined) {
+                this.props.socket.connect();
+                this.props.socket.emit('login', localStorage.getItem('login'));
+            }
         } catch (err) {
             console.log("EXPIRED TOKEN", err);
             localStorage.clear();
@@ -61,4 +65,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Reload);
+export default withSocket(connect(mapStateToProps, mapDispatchToProps)(Reload));

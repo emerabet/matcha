@@ -13,6 +13,7 @@ import axios from 'axios';
 import thunk from 'redux-thunk';
 import 'semantic-ui-css/semantic.min.css';
 import Reload from './Hoc/Reload';
+import SocketProvider from './Hoc/Socket/SocketProvider';
 
 axios.defaults.baseURL = 'http://localhost:4000';
 axios.defaults.withCredentials = true;
@@ -53,11 +54,13 @@ const store = createStore(
 
 ReactDOM.render(
     <Provider store={store}>
-        <Reload>
-            <BrowserRouter>
-                <App className="App"/>
-            </BrowserRouter>
-        </Reload>
+        <SocketProvider>
+            <Reload>
+                <BrowserRouter>
+                    <App className="App"/>
+                </BrowserRouter>
+            </Reload>
+        </SocketProvider>
     </Provider>
     , document.getElementById('root')
 );

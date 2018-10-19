@@ -5,10 +5,7 @@ export const RESTORE_STORE_FROM_SESSION_STORAGE = 'RESTORE_STORE_FROM_SESSION_ST
 export const restoreStore =() => {
     return async dispatch => {
         try {
-            //const res = await axios.post('/connect', { login: userName, password: password });
             console.log("actions restore");
-            //console.log('data update', res.data);
-            //localStorage.setItem('token', res.data.token);
             const user = {
                 lastName: localStorage.getItem('last_name'),
                 firstName: localStorage.getItem('first_name'),    

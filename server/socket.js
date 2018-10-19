@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('./config');
-
+const socketChat = require('./socketChat');
+const socketNotif = require('./socketNotif');
 
 const queryContact = require('./graphql/resolvers/chat');
 
@@ -88,6 +89,7 @@ const mySocket = async (io, socket, connectedUsers) => {
 			addContactToRooms(user, token.user_id, contacts);
 			connectedUsers.set(token.user_id, user);
 			console.log("LIST OF CONNECTED USERS", connectedUsers);
+			console.log("FRIENDS", connectedUsers.get(token.user_id).friends);
 
 		} catch (err) {
 			console.log('Error socket on login: ', err);
