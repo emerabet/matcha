@@ -117,6 +117,8 @@ const mySocket = async (io, socket, connectedUsers) => {
 		console.log("LIST OF CONNECTED USERS", connectedUsers);
 		console.log('********************** END DISCONNECT *********************************');
 	});
+
+	socketChat.newMessage(socket, connectedUsers, parseCookies);
 };
 
 module.exports = mySocket;

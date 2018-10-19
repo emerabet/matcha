@@ -95,8 +95,8 @@ class ChatBottom extends Component {
                         open: true});
     }
 
-    handleAddMessage = async (chat_id, message) => {
-        this.props.handleAddMessage(chat_id, message);
+    handleAddMessage = async (chat_id, to, message) => {
+        this.props.handleAddMessage(chat_id, to, message);
     }
 
     render () {

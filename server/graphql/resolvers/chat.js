@@ -52,8 +52,8 @@ module.exports = {
             sql = mysql.format(sql, [user_id, chat_id, message]);
 
             const result = await db.conn.queryAsync(sql); 
-
-            return true;
+            //console.log("RES MES", result);
+            return result.insertId;
         } catch (err) {
 
             throw (errors.errorTypes.BAD_REQUEST);

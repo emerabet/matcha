@@ -10,12 +10,14 @@ class Chat extends Component {
         isTyping: false
     }
 
-    handleSubmit = () => {
-        this.props.addMessage(this.props.chat_id, this.state.message);
+    handleSubmit = async () => {
+        console.log("SUBMIOT ", this.state.message);
+        await this.props.addMessage(this.props.chat_id, this.props.contact_id, this.state.message);
         this.setState({message: ""});
     }
 
     handleChange = async (e, data) => {
+        console.log(this.state);
             this.setState({ [e.target.name]: e.target.value });
     }
     
