@@ -4,6 +4,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import * as headers from '../../Tools/Header';
 import Activity from '../../components/Activity/Activity';
+import withSocket from '../../Hoc/Socket/SocketHOC';
 
 class Stalk extends Component {
 
@@ -110,6 +111,9 @@ class Stalk extends Component {
         const user = await res1;
         const resVisit = await res2;
         const isLikedReported = await res3;
+
+
+        this.props.socket.emit('visit', id);
 
         console.log("is reported or liked?");
         console.log(isLikedReported);
@@ -317,4 +321,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, null)(Stalk);
+export default withSocket(connect(mapStateToProps, null)(Stalk));
