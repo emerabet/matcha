@@ -195,6 +195,12 @@ class Stalk extends Component {
             user_id_to_like: idToLike
         }}, headers.headers());
 
+        if (res.data.data.likeUser === true) {
+            this.props.socket.emit('liked', idToLike);
+        } else if (res.data.data.likeUser === false) {
+            this.props.socket.emit('unliked', idToLike);
+        }
+
         this.setState({
             isLiked: res.data.data.likeUser,
             colorLike: res.data.data.likeUser === true ? 'red' : 'grey'
