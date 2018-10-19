@@ -130,15 +130,26 @@ export const receiveMessage =(chats, contacts, mes) => {
     }
 }
 
-export const contactIsTyping =(contacts, contact_id) => {
+export const contactIsTyping = (contacts, contact_id) => {
     return async dispatch => {
-        const updatedContacts = contacts.map(contact => {
+        const updatedContacts = await contacts.map(contact => {
             if (contact.contact_id === contact_id) {
                 contact.isTyping = true;
             }
             return contact;
         });
-        console.log("NEW CONTACT LIST", updatedContacts);
+        dispatch({ type: CONTACTS, data: updatedContacts });
+    }
+}
+
+export const contactStopTyping = (contacts, contact_id) => {
+    return async dispatch => {
+        const updatedContacts = await contacts.map(contact => {
+            if (contact.contact_id === contact_id) {
+                contact.isTyping = false;
+            }
+            return contact;
+        });
         dispatch({ type: CONTACTS, data: updatedContacts });
     }
 }

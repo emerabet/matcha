@@ -44,5 +44,26 @@ module.exports = {
                 console.log('Error socket on new message: ', err);
             }
         })
+    },
+
+    stopTyping : (io, socket, connectedUsers, parseCookies) => {
+        socket.on('stopTyping', async ({contact_id, chat_id}) => {
+            console.log("STOP TYPING", contact_id, chat_id);
+            const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
+		    const cookies = parseCookies(header);
+            try {
+                const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
+                if (token.err) {
+                    throw new Error('Decode failed on login');
+                }
+                const from = token.user_id;
+                const user = connectedUsers.get(token.user_id);
+                const contact = user.friends.get(contact_id);
+                console.log("HAS STOPPED TYPING EMITING TO");
+                io.to(contact.socketId).emit('stopTyping', from);
+            } catch (err) {
+                console.log('Error socket on new message: ', err);
+            }
+        })
     }
 }

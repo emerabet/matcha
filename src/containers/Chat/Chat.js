@@ -14,32 +14,37 @@ class Chat extends Component {
     }
 
     handleSubmit = async () => {
-        console.log("SUBMIOT ", this.state.message);
         await this.props.addMessage(this.props.chat_id, this.props.contact_id, this.state.message);
         this.setState({message: "", isTyping: false});
+        this.props.socket.emit('stopTyping', {contact_id: this.props.contact_id, chat_id: this.props.chat_id});
     }
 
     handleChange = async (e, data) => {
-        console.log(this.state);
             this.setState({ [e.target.name]: e.target.value });
-            console.log("TYPING", this.state.isTyping);
         if (!this.state.isTyping) {
             this.setState({isTyping: true});
-            console.log("EMITTING TYPING", this.props.socket);
             this.props.socket.emit('isTyping', {contact_id: this.props.contact_id, chat_id: this.props.chat_id});
         }
     }
     
-
-    render () {
-        console.log("ICI", this.props.contacts);
-        if (this.props.messages[0])
-        console.log("TEST", this.props.messages[0].messages);
-        const contact = this.props.contacts.filter(contact => {
+    async componentDidUpdate(prevProps, prevState) {
+        if (prevState.message === this.state.message && prevState.contactIsTyping === this.state.contactIsTyping
+        && prevState.isTyping === this.state.isTyping) {
+            const contact = await this.props.contacts.filter(contact => {
             console.log(contact.contact_id, this.props.contact_id);
             return contact.contact_id === this.props.contact_id;
         });
-        console.log("C", contact);
+        if (contact && contact !== undefined) {
+            if (contact[0] && this.state.contactIsTyping !== contact[0].isTyping)
+                this.setState({contactIsTyping: contact[0].isTyping});
+        }
+    }
+    }
+
+    render () {
+        console.log("ICI", this.props.contacts, "ID", this.props.contact_id);
+        if (this.props.messages[0])
+
         return (
 
             <div>
@@ -65,7 +70,7 @@ class Chat extends Component {
                 <Form onSubmit={this.handleSubmit}>
 
                     {
-                        contact && contact.isTyping &&
+                        this.state.contactIsTyping &&
                     <p> is typing ... </p>}
                     <TextArea onChange={this.handleChange} value={this.state.message} name="message" type="textarea" style={{ borderTopLeftRadius: "5px", borderTopRightRadius: "5px", borderBottomLeftRadius: "0px", borderBottomRightRadius: "0px"}} autoHeight placeholder='Write your message here...' required />
                     

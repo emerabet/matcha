@@ -119,6 +119,7 @@ const mySocket = async (io, socket, connectedUsers) => {
 
 	socketChat.newMessage(io, socket, connectedUsers, parseCookies);
 	socketChat.isTyping(io, socket, connectedUsers, parseCookies);
+	socketChat.stopTyping(io, socket, connectedUsers, parseCookies);
 	socketNotif.visited(io, socket, connectedUsers, parseCookies);
 	socketNotif.liked(io, socket, connectedUsers, parseCookies);
 	socketNotif.unliked(io, socket, connectedUsers, parseCookies);

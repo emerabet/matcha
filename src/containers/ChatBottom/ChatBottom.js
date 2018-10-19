@@ -42,10 +42,6 @@ class ChatBottom extends Component {
     }
 
     selectContact = async (user_id, user_name, chat_id, src) => {
-        console.log("user id", user_id);
-        console.log("user name", user_name);
-        console.log("CHAT ID", chat_id);
-       
         const c = this.state.contacts_active_chats.map((contact) => {
             return contact.contact_id;
         }).indexOf(user_id);
@@ -66,7 +62,6 @@ class ChatBottom extends Component {
             }),
             active_chat_selected: true,
             contacts_active_chats: cont}); 
-        console.log("STATE", this.state);
     }
 
     handleClickOpenClose = (e) => {
@@ -74,15 +69,13 @@ class ChatBottom extends Component {
     }
 
     handleClickBackToContactList = (e, data) => {
-        console.log("back to contact list", e, data);
         this.setState({active_chat_selected: false,
                         active_chat_list_display: false});
     }
 
     handleClickCloseCurrentChat = () => {
-        console.log("close current chat");
         const new_list = this.state.contacts_active_chats.filter(chat => {
-            return chat.chat_id != this.state.active_chat_id
+            return chat.chat_id !== this.state.active_chat_id
         })
         this.setState({active_chat_selected: false,
                         contacts_active_chats: new_list});

@@ -46,6 +46,11 @@ class Layout extends Component {
             //this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
         });
 
+        this.props.socket.on('stopTyping', (contact_id) => {
+            console.log("CONTACT HAS STOPPED TYPING", contact_id);
+            this.props.onContactStopTyping(this.props.contacts, contact_id);
+            //this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
+        });
 
     }
 
@@ -75,7 +80,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onLoadNotifications: (type) => dispatch(actionsActivity.load(type)),
         onReceiveMessage: (chats, contacts, mes) => dispatch(actionsChat.receiveMessage(chats, contacts, mes)),
-        onContactIsTyping: (contacts, contact_id) => dispatch(actionsChat.contactIsTyping(contacts, contact_id))
+        onContactIsTyping: (contacts, contact_id) => dispatch(actionsChat.contactIsTyping(contacts, contact_id)),
+        onContactStopTyping: (contacts, contact_id) => dispatch(actionsChat.contactStopTyping(contacts, contact_id))
     }
 }
 
