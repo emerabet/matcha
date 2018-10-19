@@ -18,6 +18,11 @@ const reducer = (state = initialState, action) => {
             nextState = { ...state,
                         contacts: action.data};
             break ;
+        case actions.UNREAD_CHAT:
+            console.log("from reducer unread chats", action);
+            nextState = { ...state,
+                        nb_unread_chats: action.data};
+            break ;
         case actions.CHATS:
         console.log("from reducer chats", action);
             nextState = { ...state,

@@ -4,7 +4,7 @@ import uniqid from 'uniqid';
 export const CONTACTS = 'CONTACTS';
 export const CHATS = 'CHATS';
 export const MESSAGE = 'MESSAGE';
-
+export const UNREAD_CHAT = 'UNREAD_CHAT';
 
 export const addContacts = () => {
     return async dispatch => {
@@ -23,11 +23,17 @@ export const addContacts = () => {
                         contact_src
                     }
                 }`;
-
+            
             const response = await axios.post(`/api`, { query: query }, headers.headers());
             console.log("CONTACTS", response.data.data.getContacts);
-
+            let nb_unread_chat = 0;
+            response.data.data.getContacts.forEach(contact => {
+                if (contact.user_id_sender !== localStorage.getItem("user_id") && contact.read_date === null)
+                nb_unread_chat++;
+            })
+            console.log("UNREAD CHATS", nb_unread_chat);
             dispatch({ type: CONTACTS, data: response.data.data.getContacts });
+            dispatch({ type: UNREAD_CHAT, data: nb_unread_chat });
         } catch (err) { console.log('Erro in dispatch addContact'); }
     }
 }

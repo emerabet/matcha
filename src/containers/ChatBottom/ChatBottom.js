@@ -5,6 +5,7 @@ import axios from 'axios';
 import * as headers from '../../Tools/Header';
 import Aux from '../../Hoc/Aux/Aux';
 import Chat from '../Chat/Chat';
+import { connect } from 'react-redux';
 
 const open_style = {
     position: "fixed",
@@ -107,7 +108,7 @@ class ChatBottom extends Component {
                                 <Icon name="users"/>
                                 Chat 
                       
-                                <Label color="blue" circular> 22 </Label>
+                                <Label color="blue" circular> {this.props.nb_unread_chats} </Label>
                                 
                             </Aux> }
                     </div>
@@ -153,4 +154,19 @@ class ChatBottom extends Component {
 )
     }}
 
-export default ChatBottom
+    const mapStateToProps = state => {
+        return {
+            nb_unread_chats: state.chat.nb_unread_chats
+        }
+    };
+    
+    const mapDispatchToProps = (dispatch) => {
+        return {
+     //       onAddContacts: () => dispatch(actions.addContacts()),
+       //     onAddChats: () => dispatch(actions.addChats()),
+         //   onAddMessage: (chat_id, login, from, to, message, chats, socket, contacts) => dispatch(actions.addMessage(chat_id, login, from, to, message, chats, socket, contacts))
+            
+        }
+    }
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatBottom);

@@ -29,6 +29,7 @@ class BigChat extends Component {
                             return (chat.chat_id === chat_id)
                         })});
         console.log("STATE", this.state);
+        // AXIOS UPDATE READ STATUS MESSAGE
     }
 
     handleAddMessage = async (chat_id, to, message) => {

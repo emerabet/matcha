@@ -89,7 +89,7 @@ class TopMenu extends Component {
             <Icon.Group size="large">
             <Icon size="large" name='wechat'> </Icon>
             <Label size="small" color='blue' horizontal circular >
-            22
+            {this.props.nb_unread_chats}
           </Label>
           </Icon.Group>
             Chat
@@ -124,7 +124,11 @@ class TopMenu extends Component {
   }
 }
 
-const mapStateToProps = null;
+const mapStateToProps = state => {
+  return {
+    nb_unread_chats: state.chat.nb_unread_chats
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
     return {
