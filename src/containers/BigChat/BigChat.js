@@ -31,8 +31,8 @@ class BigChat extends Component {
         console.log("STATE", this.state);
     }
 
-    handleAddMessage = async (chat_id, message) => {
-        this.props.handleAddMessage(chat_id, message);
+    handleAddMessage = async (chat_id, to, message) => {
+        this.props.handleAddMessage(chat_id, to, message);
     }
 
     render() {

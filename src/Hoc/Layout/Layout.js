@@ -8,6 +8,7 @@ import SuperChat from '../../containers/SuperChat/SuperChat';
 import withSocket from '../Socket/SocketHOC';
 
 import * as actionsActivity from '../../components/Activity/Actions';
+import * as actionsChat from '../../containers/SuperChat/Actions';
 
 import './Layout.css';
 
@@ -34,6 +35,11 @@ class Layout extends Component {
             this.props.onLoadNotifications('all');
         });
 
+        this.props.socket.on('newMessage', (mes) => {
+            console.log("NEW MESSAGE", mes);
+            this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
+        });
+
 
     }
 
@@ -52,11 +58,17 @@ class Layout extends Component {
 }
 
 
-const mapStateToProps = null;
+const mapStateToProps = state => {
+    return {
+        chats: state.chat.chats,
+        contacts: state.chat.contacts
+    }
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoadNotifications: (type) => dispatch(actionsActivity.load(type)),
+        onReceiveMessage: (chats, contacts, mes) => dispatch(actionsChat.receiveMessage(chats, contacts, mes))
     }
 }
 

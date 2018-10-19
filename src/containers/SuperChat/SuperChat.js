@@ -6,6 +6,7 @@ import ChatBottom from '../ChatBottom/ChatBottom';
 import BigChat from '../BigChat/BigChat';
 import { connect } from 'react-redux';
 import * as actions from './Actions';
+import withSocket from '../../Hoc/Socket/SocketHOC';
 
 class SuperChat extends Component {
 
@@ -18,23 +19,8 @@ class SuperChat extends Component {
         }
     }
 
-    handleAddMessage = async (chat_id, message) => {
-        console.log("ADDING MESSAGE", chat_id, message);
-        const query = `
-                        mutation addMessage($chat_id: Int!, $message: String!) {
-                            addMessage(chat_id: $chat_id, message: $message)
-                        }
-                    `;
-        
-        const response = await axios.post(`/api`,
-            {
-                query: query,
-                variables: {
-                    chat_id: chat_id,
-                    message: message
-                }
-            }, headers.headers());
-        console.log("MESSAGES", response.data.data.addMessage);
+    handleAddMessage = async (chat_id, to, message) => {
+        this.props.onAddMessage(chat_id, this.props.user.login, this.props.user.user_id, to, message, this.props.chats, this.props.socket, this.props.contacts);
     }
 
     render() {
@@ -54,15 +40,18 @@ class SuperChat extends Component {
 const mapStateToProps = state => {
     return {
         contacts: state.chat.contacts,
-        chats: state.chat.chats
+        chats: state.chat.chats,
+        user: state.login.user
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onAddContacts: () => dispatch(actions.addContacts()),
-        onAddChats: () => dispatch(actions.addChats())
+        onAddChats: () => dispatch(actions.addChats()),
+        onAddMessage: (chat_id, login, from, to, message, chats, socket, contacts) => dispatch(actions.addMessage(chat_id, login, from, to, message, chats, socket, contacts))
+        
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SuperChat);
+export default withSocket(connect(mapStateToProps, mapDispatchToProps)(SuperChat));
