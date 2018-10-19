@@ -398,7 +398,7 @@ module.exports = {
                         LEFT JOIN picture on notification.user_id_from = picture.user_id
                         WHERE user_id_to = ?
                         AND (priority = 1 OR priority IS NULL) 
-                        ${search == 'unread' ? 'AND is_read = 0 ORDER BY date, notification_id DESC;' : 'ORDER BY date, notification_id DESC;'}
+                        ${search == 'unread' ? 'AND is_read = 0 ORDER BY date DESC, notification_id DESC;' : 'ORDER BY date DESC, notification_id DESC;'}
                         `;
             sql = mysql.format(sql, [userId]);
             const result = await db.conn.queryAsync(sql);

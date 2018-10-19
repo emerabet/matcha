@@ -97,7 +97,6 @@ const mySocket = async (io, socket, connectedUsers) => {
 		console.log('********************** END CONNECT *********************************');
 	});
 
-
 	/*
 	/* **************************** Disconnect Event ****************************
 	*/
@@ -119,6 +118,9 @@ const mySocket = async (io, socket, connectedUsers) => {
 	});
 
 	socketChat.newMessage(socket, connectedUsers, parseCookies);
+	socketNotif.visited(io, socket, connectedUsers, parseCookies);
+	socketNotif.liked(io, socket, connectedUsers, parseCookies);
+	socketNotif.unliked(io, socket, connectedUsers, parseCookies);
 };
 
 module.exports = mySocket;
