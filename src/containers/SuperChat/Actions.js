@@ -129,3 +129,16 @@ export const receiveMessage =(chats, contacts, mes) => {
        
     }
 }
+
+export const contactIsTyping =(contacts, contact_id) => {
+    return async dispatch => {
+        const updatedContacts = contacts.map(contact => {
+            if (contact.contact_id === contact_id) {
+                contact.isTyping = true;
+            }
+            return contact;
+        });
+        console.log("NEW CONTACT LIST", updatedContacts);
+        dispatch({ type: CONTACTS, data: updatedContacts });
+    }
+}

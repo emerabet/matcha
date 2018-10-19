@@ -40,6 +40,12 @@ class Layout extends Component {
             this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
         });
 
+        this.props.socket.on('isTyping', (contact_id) => {
+            console.log("CONTACT IS TYPING", contact_id);
+            this.props.onContactIsTyping(this.props.contacts, contact_id);
+            //this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
+        });
+
 
     }
 
@@ -68,7 +74,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoadNotifications: (type) => dispatch(actionsActivity.load(type)),
-        onReceiveMessage: (chats, contacts, mes) => dispatch(actionsChat.receiveMessage(chats, contacts, mes))
+        onReceiveMessage: (chats, contacts, mes) => dispatch(actionsChat.receiveMessage(chats, contacts, mes)),
+        onContactIsTyping: (contacts, contact_id) => dispatch(actionsChat.contactIsTyping(contacts, contact_id))
     }
 }
 

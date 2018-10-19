@@ -117,7 +117,8 @@ const mySocket = async (io, socket, connectedUsers) => {
 		console.log('********************** END DISCONNECT *********************************');
 	});
 
-	socketChat.newMessage(socket, connectedUsers, parseCookies);
+	socketChat.newMessage(io, socket, connectedUsers, parseCookies);
+	socketChat.isTyping(io, socket, connectedUsers, parseCookies);
 	socketNotif.visited(io, socket, connectedUsers, parseCookies);
 	socketNotif.liked(io, socket, connectedUsers, parseCookies);
 	socketNotif.unliked(io, socket, connectedUsers, parseCookies);
