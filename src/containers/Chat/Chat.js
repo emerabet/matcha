@@ -24,6 +24,9 @@ class Chat extends Component {
         if (!this.state.isTyping) {
             this.setState({isTyping: true});
             this.props.socket.emit('isTyping', {contact_id: this.props.contact_id, chat_id: this.props.chat_id});
+        } else if (e.target.value === "") {
+            this.props.socket.emit('stopTyping', {contact_id: this.props.contact_id, chat_id: this.props.chat_id});
+            this.setState({isTyping: false});
         }
     }
     
