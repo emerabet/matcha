@@ -142,12 +142,18 @@ class AdvancedSearch extends Component {
                 return a.age-b.age
             });
         }
-
         else if (name === 'popularity') {
             filtered.sort(function(a, b){
                 return b.popularity-a.popularity
             });
         }
+        else if (name === 'popularity') {
+            filtered.sort(function(a, b){
+                return b.popularity-a.popularity
+            });
+        }
+
+
         const paged = this.paginate(filtered, this.state.itemsPerPage, 1);
 
         this.setState({ 
