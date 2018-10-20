@@ -61,7 +61,7 @@ class Layout extends Component {
                 <main>
                     {this.props.children}
                 </main>
-                {localStorage.getItem("logged") === null ? null : <SuperChat type="bottom" />}
+                {this.props.logged && <SuperChat type="bottom" />}
             </Aux>
         );
     }
