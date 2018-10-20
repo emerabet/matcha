@@ -48,7 +48,7 @@ const reducer = (state = initialState, action) => {
             break ;
         case reloadActions.RESTORE_STORE_FROM_SESSION_STORAGE:
             console.log("RELOAD REDUCER");
-            nextState = {...state, user: action.data, logged: true}
+            nextState = {...state, user: action.data.user, logged: action.data.logged}
             break ;
         default: return state;
     }
