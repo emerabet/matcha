@@ -21,7 +21,8 @@ module.exports = {
                 const online = connectedUsers.get(id);
                 if (online !== undefined) {
                     console.log('transmettre la notif à: ' + online.socketId);
-                    io.to(`${online.socketId}`).emit('visited', `${socket.id} visited you profil`);
+                    const user = connectedUsers.get(token.user_id);
+                    io.to(`${online.socketId}`).emit('visited', `${user.username} just visited your profil`);
                 }
             } catch (err) {
                 console.log('Error socket on visited: ', err);
@@ -45,7 +46,8 @@ module.exports = {
                 const online = connectedUsers.get(id);
                 if (online !== undefined) {
                     console.log('transmettre la notif à: ' + online.socketId);
-                    io.to(`${online.socketId}`).emit('liked', `${socket.id} liked your profil`);
+                    const user = connectedUsers.get(token.user_id);
+                    io.to(`${online.socketId}`).emit('liked', `${user.username} liked your profil`);
                 }
             } catch (err) {
                 console.log('Error socket on liked: ', err);
@@ -69,7 +71,8 @@ module.exports = {
                 const online = connectedUsers.get(id);
                 if (online !== undefined) {
                     console.log('transmettre la notif à: ' + online.socketId);
-                    io.to(`${online.socketId}`).emit('unliked', `${socket.id} unliked your profil`);
+                    const user = connectedUsers.get(token.user_id);
+                    io.to(`${online.socketId}`).emit('unliked', `${user.username} unliked your profil`);
                 }
             } catch (err) {
                 console.log('Error socket on unliked: ', err);

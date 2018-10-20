@@ -6,7 +6,7 @@ import Aux from '../Aux/Aux';
 import TopMenu from '../../components/Menu/TopMenu';
 import SuperChat from '../../containers/SuperChat/SuperChat';
 import withSocket from '../Socket/SocketHOC';
-
+import { toast } from 'react-toastify';
 import * as actionsActivity from '../../components/Activity/Actions';
 import * as actionsChat from '../../containers/SuperChat/Actions';
 
@@ -21,18 +21,19 @@ class Layout extends Component {
 
             console.log(data);
             this.props.onLoadNotifications('all');
+            toast(data);
         });
 
         this.props.socket.on('liked', (data) => {
-
             console.log(data);
             this.props.onLoadNotifications('all');
+            toast(data);
         });
 
         this.props.socket.on('unliked', (data) => {
-
             console.log(data);
             this.props.onLoadNotifications('all');
+            toast(data);
         });
 
         this.props.socket.on('newMessage', (mes) => {
