@@ -4,6 +4,8 @@ import Chat from '../Chat/Chat';
 import './BigChat.css';
 import axios from 'axios';
 import * as headers from '../../Tools/Header';
+import { connect } from 'react-redux';
+import * as actions from '../SuperChat/Actions';
 
 class BigChat extends Component {
 
@@ -30,6 +32,14 @@ class BigChat extends Component {
                         })});
         console.log("STATE", this.state);
         // AXIOS UPDATE READ STATUS MESSAGE
+        await this.props.contacts.map(async c => {
+            console.log("in map", c.chat_id, chat_id, c.user_id_sender, localStorage.getItem("user_id"), c.read_date);
+            if (c.chat_id === chat_id && c.user_id_sender !== parseInt(localStorage.getItem("user_id"), 10) && c.read_date === null) {
+                console.log("dispatching");
+                await this.props.onOpenChat(this.props.nb_unread_chats, chat_id, this.props.contacts);
+            }
+            return null;
+        })
     }
 
     handleAddMessage = async (chat_id, to, message) => {
@@ -51,4 +61,19 @@ class BigChat extends Component {
     }
 }
 
-export default BigChat;
+const mapStateToProps = state => {
+    return {
+        nb_unread_chats: state.chat.nb_unread_chats
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onOpenChat: (nb_unread_chats, chat_id, contacts) => dispatch(actions.openChat(nb_unread_chats, chat_id, contacts))
+   //     onAddChats: () => dispatch(actions.addChats()),
+     //   onAddMessage: (chat_id, login, from, to, message, chats, socket, contacts) => dispatch(actions.addMessage(chat_id, login, from, to, message, chats, socket, contacts))
+        
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BigChat);

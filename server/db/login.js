@@ -9,8 +9,6 @@ var uniqid = require('uniqid');
 
 exports.login = async (req, res) => {
     console.log("Connected");
-    console.log("login", req.body.login);
-    console.log("password", req.body.password);
     try {
         let sql =   `SELECT user.user_id, user.password, user.login, user.email, user.last_name, user.first_name, 
                             user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
@@ -22,11 +20,6 @@ exports.login = async (req, res) => {
         sql = mysql.format(sql, req.body.login);
         
         const rows = await db.conn.queryAsync(sql);
-        
-        console.log("row", rows);
-        console.log(rows[0].password);
-
-        console.log("compare", bcrypt.compareSync(req.body.password, rows[0].password));
         if (bcrypt.compareSync(req.body.password, rows[0].password)) {
             const csrf_token = uniqid();
             const token = jwt.sign({ user_id: rows[0].user_id, csrf_token: csrf_token}, config.SECRET_KEY, { expiresIn: 3600 });
@@ -47,22 +40,16 @@ exports.login = async (req, res) => {
                 longitude: rows[0].longitude
             };
             await res.clearCookie();
-            console.log("TOOOOO", token);
             res.header('Pragma', 'no-cache');
             await res.cookie('sessionid', token, { httpOnly: true/*, sameSite: "strict"*/ })
             .status(200).send({ auth: true, csrf_token: csrf_token, user: user });
         } else {
             res.status(403).send({ auth: false, token: null });
         }
-        //res.status(200).send(rows);
     } catch (err) {
         console.log(err);
         res.status(403).send({ auth: false, token: null });
-    }
-   
-    //console.log("token", token);
-    //res.status(200).send({ auth: true, token: token });
-    
+    }   
 }
 
 exports.checkToken = async (req, res) => {

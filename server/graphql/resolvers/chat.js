@@ -14,12 +14,20 @@ module.exports = {
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const user_id = decoded.user_id;
             console.log("USER ID GET CONTACT", user_id);
-            let sql = "SELECT chat.chat_id, `message_id`, `user_id_sender`, `message`, `date`, `read_date`, CASE WHEN user_id1 = ? THEN user_id2 ELSE user_id1 END AS contact_id, CASE WHEN user_id1 = ? THEN us2.login ELSE us.login END AS contact_login, CASE WHEN user_id1 = ? THEN p2.src ELSE p1.src END AS contact_src FROM `chat` LEFT JOIN `message` ON message.chat_id = chat.chat_id LEFT JOIN `user` us ON us.user_id = user_id1 && user_id1 != ? LEFT JOIN `user` us2 ON us2.user_id = user_id2 && user_id2 != ? LEFT JOIN `picture` p1 ON p1.user_id = user_id1 && user_id1 != ? &&p1.priority = 1 LEFT JOIN `picture` p2 ON p2.user_id = user_id2 && user_id2 != ? && p1.priority = 1 WHERE`user_id1` = ? OR `user_id2` = ? GROUP BY chat.chat_id ORDER BY `date` DESC, chat.chat_id";
+            let sql = "SELECT chat.chat_id, `message_id`, `user_id_sender`, `message`, `date`, `read_date`, CASE WHEN user_id1 = ? THEN user_id2 ELSE user_id1 END AS contact_id, CASE WHEN user_id1 = ? THEN us2.login ELSE us.login END AS contact_login, CASE WHEN user_id1 = ? THEN p2.src ELSE p1.src END AS contact_src FROM `chat` LEFT JOIN `message` ON message.chat_id = chat.chat_id LEFT JOIN `user` us ON us.user_id = user_id1 && user_id1 != ? LEFT JOIN `user` us2 ON us2.user_id = user_id2 && user_id2 != ? LEFT JOIN `picture` p1 ON p1.user_id = user_id1 && user_id1 != ? &&p1.priority = 1 LEFT JOIN `picture` p2 ON p2.user_id = user_id2 && user_id2 != ? && p1.priority = 1 WHERE`user_id1` = ? OR `user_id2` = ? ORDER BY chat.chat_id, `date` DESC";
             sql = mysql.format(sql, [user_id, user_id, user_id, user_id, user_id, user_id, user_id, user_id, user_id]);
 
-            const result = await db.conn.queryAsync(sql); 
-
-            return result;
+            const result = await db.conn.queryAsync(sql);
+            let last_chat_id = 0; 
+            let group_by = [];
+            await result.forEach(res => {
+                if (res.chat_id !== last_chat_id) {
+                    last_chat_id = res.chat_id;
+                    group_by.push(res);
+                }
+            })
+            await group_by.sort((a, b) => (a.date < b.date) ? 1 : (a.date > b.date) ? -1 : 0)
+            return group_by;
         } catch (err) {
             throw (errors.errorTypes.BAD_REQUEST);
         }
@@ -92,6 +100,25 @@ module.exports = {
             return all_chats;
         } catch (err) {
    
+            throw (errors.errorTypes.BAD_REQUEST);
+        }
+    },
+
+    readChat: async ({chat_id}, context) => {
+        const token = context.token;
+        try {
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const user_id = decoded.user_id;
+            let sql = "UPDATE `message` SET `read_date` = CURRENT_TIMESTAMP WHERE `user_id_sender` != ? AND `chat_id` = ?";
+            sql = mysql.format(sql, [user_id, chat_id]);
+    
+            const result = await db.conn.queryAsync(sql); 
+            //console.log("RES MES", result);
+            return true;
+        } catch (err) {
+    
             throw (errors.errorTypes.BAD_REQUEST);
         }
     }

@@ -2,7 +2,7 @@ import React from 'react'
 import { Image, List } from 'semantic-ui-react'
 import styles from './Styles';
 
-const Contact = ({isTyping, chat_id, user_id, selectContact, pos, profile_picture="/pictures/smoke_by.png", user_name, last_message = "onversation"}) => (
+const Contact = ({isTyping, read_date, chat_id, user_id, user_id_sender, selectContact, pos, profile_picture="/pictures/smoke_by.png", user_name, last_message = "onversation"}) => (
     <List.Item onClick={() => selectContact(user_id, user_name, chat_id, profile_picture)} style={{cursor: "pointer"}}>
       <Image avatar src={profile_picture} />
       <List.Content>
@@ -18,6 +18,10 @@ const Contact = ({isTyping, chat_id, user_id, selectContact, pos, profile_pictur
                                 ? `${last_message.substr(0, 18)} ...` 
                                 : last_message 
                             : "Start a conversation" }</span>}
+                {
+                    read_date === null && user_id_sender !== parseInt(localStorage.getItem("user_id"), 10) && <span> unread{user_id} {read_date}</span>
+
+                }
         </List.Content>
     </List.Item>
     

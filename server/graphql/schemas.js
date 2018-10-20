@@ -118,7 +118,8 @@ exports.registerSchema = buildSchema(`
         addVisit(user_id_visited: Int!): Boolean,
         removeNotification(notification_id: Int!): Boolean,
         checkNotification(notification_id: Int!): Boolean,
-        addMessage(chat_id: Int!, message: String!): Int
+        addMessage(chat_id: Int!, message: String!): Int,
+        readChat(chat_id: Int!): Boolean
     }
 
 

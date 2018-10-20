@@ -5,6 +5,8 @@ export const CONTACTS = 'CONTACTS';
 export const CHATS = 'CHATS';
 export const MESSAGE = 'MESSAGE';
 export const UNREAD_CHAT = 'UNREAD_CHAT';
+export const READ_CHAT = 'READ_CHAT';
+export const NEW_MESSAGE = 'NEW_MESSAGE';
 
 export const addContacts = () => {
     return async dispatch => {
@@ -27,11 +29,14 @@ export const addContacts = () => {
             const response = await axios.post(`/api`, { query: query }, headers.headers());
             console.log("CONTACTS", response.data.data.getContacts);
             let nb_unread_chat = 0;
-            response.data.data.getContacts.forEach(contact => {
-                if (contact.user_id_sender !== localStorage.getItem("user_id") && contact.read_date === null)
-                nb_unread_chat++;
+            await response.data.data.getContacts.forEach(contact => {
+                console.log("IN NB", contact.user_id_sender, localStorage.getItem("user_id"), contact.read_date);
+                if (contact.user_id_sender !== parseInt(localStorage.getItem("user_id"), 10) && contact.read_date === null){
+                    console.log("IN", contact.user_id_sender !== localStorage.getItem("user_id") && contact.read_date === null)
+                    nb_unread_chat++;
+                }
             })
-            console.log("UNREAD CHATS", nb_unread_chat);
+            console.log("UNREAD CHATS", response.data.data.getContacts);
             dispatch({ type: CONTACTS, data: response.data.data.getContacts });
             dispatch({ type: UNREAD_CHAT, data: nb_unread_chat });
         } catch (err) { console.log('Erro in dispatch addContact'); }
@@ -88,21 +93,23 @@ export const addMessage =(chat_id, login, from, to, message, chats, socket, cont
         console.log("MESSAGES", response.data.data.addMessage);
         const insertedId = response.data.data.addMessage;
         if (insertedId){
-            const updatedChats = chats.map(chat => {
+            const updatedChats = await chats.map(chat => {
                 if (chat.chat_id === chat_id) {
                     chat.messages.push({message_id: insertedId, user_id_sender: from, login: login, message: message, date: `${Date.now()}`});
                 }
                 return chat;
             });
-            const updatedContacts = contacts.map(contact => {
+            let updatedContacts = await contacts.map(contact => {
                 if (contact.chat_id === chat_id) {
                     contact.message_id = insertedId;
                     contact.user_id_sender = from;
                     contact.message = message;
                     contact.date = `${Date.now()}`;
+                    console.log("UPDATED SHOULD HAVE BEEN DONE")
                 }
                 return contact;
             });
+            await updatedContacts.sort((a, b) => (a.date < b.date) ? 1 : (a.date > b.date) ? -1 : 0)
             dispatch({ type: CONTACTS, data: updatedContacts });
             dispatch({ type: CHATS, data: updatedChats });
             socket.emit('newMessage', {chat_id: chat_id, login: login, to: to, message: message, messageId: insertedId});
@@ -112,27 +119,30 @@ export const addMessage =(chat_id, login, from, to, message, chats, socket, cont
     }
 }
 
-export const receiveMessage =(chats, contacts, mes) => {
+export const receiveMessage =(chats, contacts, mes, nb_unread_chats) => {
     return async dispatch => {
-        const updatedChats = chats.map(chat => {
+        let nb_update = nb_unread_chats;
+        const updatedChats = await chats.map(chat => {
             if (chat.chat_id === mes.chat_id) {
                 chat.messages.push({message_id: mes.message_id, user_id_sender: mes.user_id_sender, login: mes.login, message: mes.message, date: mes.date});
             }
             return chat;
         });
-        const updatedContacts = contacts.map(contact => {
+        const updatedContacts = await contacts.map(contact => {
             if (contact.chat_id === mes.chat_id) {
                 contact.message_id = mes.message_id;
                 contact.user_id_sender = mes.user_id_sender;
                 contact.message = mes.message;
                 contact.date = mes.date;
+                if (contact.read_date !== null) {
+                    nb_update++;
+                }
+                contact.read_date = null;
             }
             return contact;
         });
-        dispatch({ type: CONTACTS, data: updatedContacts });
-        
-        dispatch({ type: CHATS, data: updatedChats });
-       
+        console.log("NB", nb_unread_chats, nb_update)
+        dispatch({ type: NEW_MESSAGE, data: {contacts: updatedContacts, chats: updatedChats, nb_unread_chats: nb_update }});
     }
 }
 
@@ -157,5 +167,36 @@ export const contactStopTyping = (contacts, contact_id) => {
             return contact;
         });
         dispatch({ type: CONTACTS, data: updatedContacts });
+    }
+}
+
+export const openChat = (nb_unread_chats, chat_id, contacts) => {
+    console.log("in open chat");
+    return async dispatch => {
+        const updatedContacts = await contacts.map(contact => {
+            if (contact.chat_id === chat_id) {
+                contact.read_date = Date.now();
+            }
+            return contact;
+        });
+        const nb_updated = nb_unread_chats - 1;
+        console.log("NB2", nb_unread_chats, nb_updated)
+        dispatch({ type: READ_CHAT, data: {nb_unread_chats: nb_updated, contacts: updatedContacts} });
+        try {
+            const query = `
+                        mutation readChat($chat_id: Int!) {
+                            readChat(chat_id: $chat_id)
+                        }
+                    `;
+        
+        const response = await axios.post(`/api`,
+            {
+                query: query,
+                variables: {
+                    chat_id: chat_id
+                }
+            }, headers.headers());
+        console.log("READ CHAT", response.data.data.readChat);
+        } catch (err) {}
     }
 }

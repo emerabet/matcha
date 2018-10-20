@@ -37,7 +37,7 @@ class Layout extends Component {
 
         this.props.socket.on('newMessage', (mes) => {
             console.log("NEW MESSAGE", mes);
-            this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
+            this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes, this.props.nb_unread_chats);    
         });
 
         this.props.socket.on('isTyping', (contact_id) => {
@@ -57,7 +57,7 @@ class Layout extends Component {
     render() {
         return (
             <Aux>
-                <TopMenu/>
+                {localStorage.getItem("logged") && <TopMenu/>}
                 <main>
                     {this.props.children}
                 </main>
@@ -72,14 +72,15 @@ class Layout extends Component {
 const mapStateToProps = state => {
     return {
         chats: state.chat.chats,
-        contacts: state.chat.contacts
+        contacts: state.chat.contacts,
+        nb_unread_chats: state.chat.nb_unread_chats
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onLoadNotifications: (type) => dispatch(actionsActivity.load(type)),
-        onReceiveMessage: (chats, contacts, mes) => dispatch(actionsChat.receiveMessage(chats, contacts, mes)),
+        onReceiveMessage: (chats, contacts, mes, nb_unread_chats) => dispatch(actionsChat.receiveMessage(chats, contacts, mes, nb_unread_chats)),
         onContactIsTyping: (contacts, contact_id) => dispatch(actionsChat.contactIsTyping(contacts, contact_id)),
         onContactStopTyping: (contacts, contact_id) => dispatch(actionsChat.contactStopTyping(contacts, contact_id))
     }

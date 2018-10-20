@@ -6,6 +6,7 @@ import * as headers from '../../Tools/Header';
 import Aux from '../../Hoc/Aux/Aux';
 import Chat from '../Chat/Chat';
 import { connect } from 'react-redux';
+import * as actions from '../SuperChat/Actions';
 
 const open_style = {
     position: "fixed",
@@ -62,7 +63,15 @@ class ChatBottom extends Component {
                 return (chat.chat_id === chat_id)
             }),
             active_chat_selected: true,
-            contacts_active_chats: cont}); 
+            contacts_active_chats: cont});
+        await this.props.contacts.map(async c => {
+            console.log("in map", c.chat_id, chat_id, c.user_id_sender, localStorage.getItem("user_id"), c.read_date);
+            if (c.chat_id === chat_id && c.user_id_sender !== parseInt(localStorage.getItem("user_id"), 10) && c.read_date === null) {
+                console.log("dispatching");
+                await this.props.onOpenChat(this.props.nb_unread_chats, chat_id, this.props.contacts);
+            }
+            return null;
+        })
     }
 
     handleClickOpenClose = (e) => {
@@ -162,7 +171,7 @@ class ChatBottom extends Component {
     
     const mapDispatchToProps = (dispatch) => {
         return {
-     //       onAddContacts: () => dispatch(actions.addContacts()),
+            onOpenChat: (nb_unread_chats, chat_id, contacts) => dispatch(actions.openChat(nb_unread_chats, chat_id, contacts))
        //     onAddChats: () => dispatch(actions.addChats()),
          //   onAddMessage: (chat_id, login, from, to, message, chats, socket, contacts) => dispatch(actions.addMessage(chat_id, login, from, to, message, chats, socket, contacts))
             

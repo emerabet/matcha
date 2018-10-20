@@ -22,7 +22,6 @@ class Register extends Component{
 
     handleRegister = async (e) => {
         e.preventDefault();
-        console.log('in handle register');
         const ip = await publicIp.v4();
         const query = `
                         mutation addUser($user: AddUserInput!, $address: AddAddressInput!) {
@@ -47,14 +46,10 @@ class Register extends Component{
             const result = await axios.post(`/api`, {   query: query,
                                                         variables: { user: user, address: address }
                                             });
-            console.log("RES", result.data.errors);
-            console.log('data', result.data.data);
             if (!result.data.errors)
                 this.props.history.push('/login');
             else
                 console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].message);
-        console.log("here");
-       // this.props.history.push('/login');
     }
 
     handleChange = (e, data) => {
