@@ -57,7 +57,7 @@ class Layout extends Component {
     render() {
         return (
             <Aux>
-                {localStorage.getItem("logged") && <TopMenu/>}
+                {this.props.logged && <TopMenu/>}
                 <main>
                     {this.props.children}
                 </main>
@@ -73,7 +73,8 @@ const mapStateToProps = state => {
     return {
         chats: state.chat.chats,
         contacts: state.chat.contacts,
-        nb_unread_chats: state.chat.nb_unread_chats
+        nb_unread_chats: state.chat.nb_unread_chats,
+        logged: state.login.logged
     }
 };
 

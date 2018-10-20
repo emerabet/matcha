@@ -17,7 +17,7 @@ const reducer = (state = initialState, action) => {
             console.log("user", action.data.user);
             nextState = { ...state,
                         token: action.data.token,
-                        user: action.data.user };
+                        user: action.data.user, logged: true };
             break ;
         case clearActions.CLEAR_STORE:
             nextState = initialState;
