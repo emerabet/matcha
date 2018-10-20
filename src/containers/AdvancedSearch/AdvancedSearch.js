@@ -19,17 +19,23 @@ class AdvancedSearch extends Component {
         activePage:1, 
         nbPages: 60,
         tags: null,
-        lastDistanceChecked: 50
+        lastDistanceChecked: 50,
+        criteria: null
     }
 
     async componentDidMount () {
+        console.log('ComponentDidMount AdvSearch');
+        this.loadData();
+    }
+
+    loadData = async () => {
 
         console.log("test");
         console.log(this.props);
 
         const query = `
-                        query getUsers($extended: Boolean) {
-                            getUsers(extended:$extended){
+                        query getUsers($extended: Boolean, $orientation: String) {
+                            getUsers(extended:$extended, orientation:$orientation){
                                 user_id,
                                 login,
                                 first_name,
@@ -45,25 +51,27 @@ class AdvancedSearch extends Component {
                             }
                         }
                     `;
-                    
-        const users = await axios.post(`/api`, { query: query, variables: { extended: true } }, headers.headers());
+
+        const users = await axios.post(`/api`, { query: query, variables: { extended: true, orientation: localStorage.getItem('orientation') } }, headers.headers());
         const tags = await axios.post('/api', { query: `query getTags { getTags { tag } }`}, headers.headers());
 
         const nbPages = this.calculPagination(users.data.data.getUsers.length, this.state.itemsPerPage);
         const paged = this.paginate(users.data.data.getUsers, this.state.itemsPerPage, this.state.activePage); 
 
+        console.log("set state did update");
         await this.setState({ 
             users : users.data.data.getUsers, 
             filteredUsers : users.data.data.getUsers,
             pagedUsers: paged,
             tags: tags.data.data.getTags,
-            nbPages: nbPages
+            nbPages: nbPages,
         }); 
         console.log(users.data.data.getUsers);
         console.log("------------");
         console.log(this.state.users);
 
         this.withinArea(this.state.lastDistanceChecked);
+
     }
 
     withinArea = async (distance = 5) => {
@@ -90,6 +98,7 @@ class AdvancedSearch extends Component {
             }
         });
 
+        console.log("set state within area");
         await this.setState({
                         users: newUsers,
                         lastDistanceChecked: distance
@@ -102,24 +111,48 @@ class AdvancedSearch extends Component {
             this.withinArea(filters.distance);
         }
 
-        const filtered = this.state.users.filter((itm) => {
+        let filtered = this.state.users.filter((itm) => {
             if ((itm.age >= filters.age.min && itm.age <= filters.age.max)
             && (itm.popularity >= filters.popularity.min && itm.popularity <= filters.popularity.max)
             && (itm.inArea === true)
             && (filters.tag.every((value) => {
-                return itm.tags.some((v) => v.tag == value);
-            })))
+                return itm.tags.some((v) => v.tag === value);})))
                 return true;
+            return false;
         });
 
         console.log(filtered);
         const nbPages = this.calculPagination(filtered.length, this.state.itemsPerPage);
-        const paged = this.paginate(filtered, this.state.itemsPerPage, 1); 
+        const paged = this.paginate(filtered, this.state.itemsPerPage, 1);
 
+
+        console.log("Handle filter");
         this.setState({ 
             filteredUsers: filtered,
             pagedUsers: paged,
             nbPages: nbPages,
+            activePage: 1
+         });
+    }
+
+    handleOrder = (name) => {
+        let filtered = JSON.parse(JSON.stringify(this.state.filteredUsers));
+        if (name === 'age') {
+            filtered.sort(function(a, b){
+                return a.age-b.age
+            });
+        }
+
+        else if (name === 'popularity') {
+            filtered.sort(function(a, b){
+                return b.popularity-a.popularity
+            });
+        }
+        const paged = this.paginate(filtered, this.state.itemsPerPage, 1);
+
+        this.setState({ 
+            filteredUsers: filtered,
+            pagedUsers: paged,
             activePage: 1
          });
     }
@@ -132,13 +165,14 @@ class AdvancedSearch extends Component {
 
     paginate = (array, itemsPerPage, activePage) => {
         console.log("paginate");
-        const copy = JSON.parse(JSON.stringify(array));
-        return copy.slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage);
+        //const copy = JSON.parse(JSON.stringify(array));
+        return array.slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage);
     }
 
     handlePageChange = (e, data) => {
         console.log("pagechange");
         const paged = this.paginate(this.state.filteredUsers, this.state.itemsPerPage, data.activePage);
+        console.log("Set state handle page change");
         this.setState({
             pagedUsers: paged,
             activePage: data.activePage
@@ -147,10 +181,11 @@ class AdvancedSearch extends Component {
 
     render() {
         console.log("re-render");
+        console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
         return (
             <div>
-                { this.state.users && <Search tags={ this.state.tags } handleFilter={ this.handleFilter }/> }
-                { this.state.users &&  <Divider horizontal>Results</Divider> }
+                { this.state.users && <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} /> }
+                { this.state.users && <Divider horizontal>Results</Divider> }
                 { this.state.users && <Listview users={ this.state.pagedUsers } history={this.props.history} /> }
                 { this.state.users && <Pagination
                     activePage={this.state.activePage}

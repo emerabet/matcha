@@ -83,8 +83,6 @@ module.exports = {
                 users[0].tags = tags;
             }
 
-            
-
             const pictures = await queriesPicture.getPicture({token: token, user_id2: user_id2});
             users[0].pictures = pictures;
             if (user_id2 === decoded.user_id)
@@ -98,15 +96,31 @@ module.exports = {
         }
     },
 
-    getUsers: async ({ extended }) => {
+    getUsers: async ({ extended, orientation }) => {
         try {
+            console.log("****************************************************************************");
+            console.log("****************************************************************************");
             console.log("in get users");
+            console.log("Orientation: ", orientation);
+
+            let criteria = '';
+            switch(orientation) {
+                case 'female': criteria = `WHERE gender = 'Male' OR gender = 'Both'`
+                    break;
+                case 'male': criteria = `WHERE gender = 'Female' OR gender = 'Both'`
+                    break;
+                default: break;
+            }
+
+            console.log('criteria: ', criteria);
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, 
                                 user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
                                 YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
                         FROM user 
                         LEFT JOIN address on user.user_id = address.user_id
-                        LEFT JOIN profil on user.user_id = profil.user_id;`; 
+                        LEFT JOIN profil on user.user_id = profil.user_id
+                        ${criteria};`;
+            console.log(sql);
             const users = await db.conn.queryAsync(sql);
 
             if (extended === true) {

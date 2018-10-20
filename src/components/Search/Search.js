@@ -16,8 +16,7 @@ class Search extends Component {
 
     componentDidMount() {
         console.log("Component Search Did Mount");
-
-        console.log(this.props);
+        //this.props.handleFilter(this.state);
     }
 
     getTags = () => {
@@ -64,7 +63,12 @@ class Search extends Component {
             distance: value
         });
 
-        this.props.handleFilter(this.state);       
+        this.props.handleFilter(this.state);
+    }
+
+    handleOrdering = async (e, data) => {
+        console.log(data);
+        this.props.handleSort(data.name);
     }
 
     render () {
@@ -85,6 +89,11 @@ class Search extends Component {
                 <Form.Field>
                     <label>Tag</label>
                     <Dropdown onChange = { this.handleChangeTag } placeholder='Tags' fluid multiple search selection options={ this.getTags() } />
+                </Form.Field>
+                <Form.Field>
+                    <label>Order By</label>
+                    <Button name='age' onClick={this.handleOrdering}>Age</Button>
+                    <Button name='popularity' onClick={this.handleOrdering}>Popularity</Button>
                 </Form.Field>
                 <Button fluid>Search</Button>
             </Form>

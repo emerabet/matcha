@@ -125,7 +125,7 @@ exports.registerSchema = buildSchema(`
 
     type Query {
         getUser(extended: Boolean, user_id2: Int): User,
-        getUsers(extended: Boolean): [User],
+        getUsers(extended: Boolean, orientation: String): [User],
         getTags: [Tag],
         getAllTags: [Tag],
         getUserNotifications(search: String): [Notification],
