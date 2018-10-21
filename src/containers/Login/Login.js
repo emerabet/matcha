@@ -4,20 +4,21 @@ import { connect } from 'react-redux';
 import { Component } from 'react';
 import classes from './Login.css';
 import { Link } from 'react-router-dom';
+import { Divider, Input, Form, Button } from 'semantic-ui-react';
 import axios from 'axios';
 import withSocket from '../../Hoc/Socket/SocketHOC';
 
 class  Login extends Component {
    
     state = {
-        userName: '',
+        username: '',
         password: ''
     }
 
     handleLogin = async (e) => {
         e.preventDefault();
         console.log('in handle login');
-        await this.props.onLogin(this.state.userName, this.state.password, this.props.socket);
+        await this.props.onLogin(this.state.username, this.state.password, this.props.socket);
        
         this.props.history.push('/home');
     }
@@ -29,21 +30,20 @@ class  Login extends Component {
 
     render (){
         return (
-                <div className={classes.Container}>
-                    <form className={classes.Login} onSubmit={this.handleLogin}>
-                        <label htmlFor="userName">Username</label>
-                        <input type="text" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name"></input>
-                        <label htmlFor="password">Password</label>
-                        <input type="password" onChange={this.handleChange} name="password" value={ this.state.password } placeholder="Password"></input>
-                        <button type="submit">Login</button>
-                    </form>
-                    <Link to="/register"> Register </Link>
-                </div>
-                /*<Form onSubmit={this.handleLogin}>
-                    <Input icon="user" iconPosition="left" onChange={this.handleChange} name="userName" value={ this.state.userName } placeholder="User name" />
-                    <Input icon="lock" iconPosition="left" onChange={this.handleChange} name="password" placeholder="Password" />
-                    <Button primary> Login </Button>
-                </Form>*/
+            <Form onSubmit={this.handleLogin}>
+                <Form.Field>
+                    <label>Username</label>
+                    <input name="username" onChange={this.handleChange} placeholder='Username' />
+                </Form.Field>
+                <Form.Field>
+                    <label>Password</label>
+                    <input name="password" type='password' onChange={this.handleChange} placeholder='Password' />
+                </Form.Field>
+
+                <Button type='submit'>Login</Button>
+                <Divider hidden />
+                <Link to="/register"> Register </Link>
+            </Form>
         );
     }
 }
