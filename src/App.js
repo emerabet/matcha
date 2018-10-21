@@ -12,7 +12,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import AdvancedSearch from './containers/AdvancedSearch/AdvancedSearch';
-import Layout from './Hoc/Layout/Layout'
+import Layout from './Hoc/Layout/Layout';
+import Aux from './Hoc/Aux/Aux';
 
 
 class App extends Component {
@@ -23,31 +24,31 @@ class App extends Component {
        <Switch>
         <Route path="/login" exact component={ Login }/>
         <Route path="/register" exact component={ Register }/>
-
-        <Route path="/search" exact component={ AdvancedSearch }/>
         <Redirect from="/" to="/login"/>
       </Switch>
     );
 
     if (localStorage.getItem('logged')) {
       routes = (
-      <Switch>
-        <Route path="/home" exact component={ Home }/>
-        <Route path="/profile" exact component={ Profile }/>
-        <Route path="/search" exact component={ AdvancedSearch }/>
-        <Route path="/notifications" exact component={ Notification }/>
-        <Route path="/stalk/:id(\d+)" exact component={ Stalk }/>
-        <Route path="/chat" exact component={SuperChat}/>
-        <Redirect from="/" to="/home"/>
-      </Switch>
+        <Layout>
+          <Switch>
+            <Route path="/home" exact component={ Home }/>
+            <Route path="/profile" exact component={ Profile }/>
+            <Route path="/search" exact component={ AdvancedSearch }/>
+            <Route path="/notifications" exact component={ Notification }/>
+            <Route path="/stalk/:id(\d+)" exact component={ Stalk }/>
+            <Route path="/chat" exact component={SuperChat}/>
+            <Redirect from="/" to="/home"/>
+          </Switch>
+        </Layout>
       )
     }
 
     return (
-        <Layout>
+        <Aux>
           { routes }
           <ToastContainer />
-        </Layout>
+        </Aux>
     );
   }
 }

@@ -28,22 +28,29 @@ class  Login extends Component {
         this.setState({ [name]: value });
     }
 
+    handleRegister = () => {
+        this.props.history.push('/register');
+    }
+
     render (){
         return (
-            <Form onSubmit={this.handleLogin}>
-                <Form.Field>
-                    <label>Username</label>
-                    <input name="username" onChange={this.handleChange} placeholder='Username' />
-                </Form.Field>
-                <Form.Field>
-                    <label>Password</label>
-                    <input name="password" type='password' onChange={this.handleChange} placeholder='Password' />
-                </Form.Field>
+            <div className='Login__Container'>
+                <Form className='Login__Form' onSubmit={this.handleLogin}>
+                    <Form.Field>
+                        <label>Username</label>
+                        <input name="username" onChange={this.handleChange} placeholder='Username' />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Password</label>
+                        <input name="password" type='password' onChange={this.handleChange} placeholder='Password' />
+                    </Form.Field>
 
-                <Button type='submit'>Login</Button>
-                <Divider hidden />
-                <Link to="/register"> Register </Link>
-            </Form>
+                    <Button primary fluid type='submit'>Login</Button>
+                    <Divider horizontal>Or</Divider>
+                    <Button secondary fluid onClick={this.handleRegister}>Register</Button>
+                    
+                </Form>
+            </div>
         );
     }
 }

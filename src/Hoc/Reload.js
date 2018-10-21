@@ -4,11 +4,15 @@ import * as actions from './Actions';
 import axios from 'axios';
 //import * as headers from '../Tools/Header';
 import withSocket from '../Hoc/Socket/SocketHOC';
+import Aux from './Aux/Aux';
+
 export const headers = {
     headers: {
-    authorization: localStorage.getItem("token")
+        authorization: localStorage.getItem("token")
     }
 }
+
+
 class Reload extends Component {
 
   
@@ -47,7 +51,7 @@ class Reload extends Component {
 
     render(){
         return(
-            <div>{this.props.children}</div>
+            <Aux>{this.props.children}</Aux>
         )
     }
 
