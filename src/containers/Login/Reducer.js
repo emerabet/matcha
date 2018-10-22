@@ -46,6 +46,9 @@ const reducer = (state = initialState, action) => {
             console.log("TRYING TO UPDATE STORE WITH NEW PROFILE DATA");
                nextState = {...state, user: user_updated}
             break ;
+        case profileActions.UPDATE_USER_LOCATION:
+            nextState = {...state, user: {...state.user, share_location: action.data.location, address: action.data.address}}
+            break ;
         case reloadActions.RESTORE_STORE_FROM_SESSION_STORAGE:
             console.log("RELOAD REDUCER");
             nextState = {...state, user: action.data.user, logged: action.data.logged}

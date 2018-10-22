@@ -53,7 +53,8 @@ class Profile extends Component{
         emailAlreadyTaken: false,
         pictures: [],
         profile_picture: "/pictures/smoke_by.png",
-        profile_picture_id: 0
+        profile_picture_id: 0,
+        address: ""
     }
     
     handleChange = async (e, data) => {
@@ -111,11 +112,7 @@ class Profile extends Component{
                                 pictures {picture_id, user_id, src, priority}
                             }
                         }
-                    `;
-
-        const token = localStorage.getItem("token");
-        
-        
+                    `;        
         
         const response = await axios.post(`/api`,
             {
@@ -166,7 +163,8 @@ class Profile extends Component{
                 all_tags: all_tags,
                 pictures: response.data.data.getUser.pictures,
                 profile_picture: profile_picture,
-                profile_picture_id: profile_picture_id
+                profile_picture_id: profile_picture_id,
+                address: this.props.user.address
             });
                     
         } else {
@@ -352,6 +350,52 @@ class Profile extends Component{
         );
     }
 
+    updateLocation = async (ip, latitude = 0, longitude = 0) => {
+        const query = `
+                        mutation updateUserLocation($address: AddAddressInput!) {
+                            updateUserLocation(address: $address)
+                        }
+                    `;
+
+        const address = {
+            latitude: latitude,
+            longitude: longitude,
+            ip: ip
+        }
+
+        const result = await axios.post(`/api`, {   query: query,
+            variables: { 
+            address: address
+            }
+        }, headers.headers());
+
+        console.log("RET", result.data.data.updateUserLocation);
+        if (result.data.data.updateUserLocation !== "nok")
+            toast("Location successfully updated", {type: toast.TYPE.SUCCESS});
+        return (result.data.data.updateUserLocation);
+    }
+
+    handleUpdateLocation = async(e) => {
+        const ip = await publicIp.v4();
+        let r = "nok";
+        if (this.state.share_location === 1) {
+            geolocation = navigator.geolocation;
+            geolocation.getCurrentPosition(async (position) => {
+                console.log("WILL UPDATE");
+                r = await this.updateLocation(ip, position.coords.latitude, position.coords.longitude); 
+                console.log("R", r);
+                this.props.onUpdateLocation(this.state.share_location, r);
+            });
+        } else {
+            console.log("WILL UPDATE ONLY IP");
+            r = await this.updateLocation(ip);
+            console.log("R", r);
+            this.props.onUpdateLocation(this.state.share_location, r);
+        }
+        
+       // this.props.onUpdateLocation(this.state.share_location, r);
+    }
+
     render () {
         const gender_options = [
             { key: 'male', text: 'Male', value: 'male' },
@@ -435,7 +479,7 @@ class Profile extends Component{
                             {this.state.share_location &&
                             <Form.Field>
                                 <label htmlFor="current_location">Current location</label>
-                                <Input action={<Button type="button" onClick={() => console.log("update location")}> Upate current location </Button>} type="text" onChange={this.handleChange} name="current_location" value={ this.state.current_location } placeholder="Current location"></Input>
+                                <Input action={<Button type="button" onClick={this.handleUpdateLocation}> Upate current location </Button>} type="text" onChange={this.handleChange} name="current_location" value={ this.props.user.address } placeholder="Current location"></Input>
                             </Form.Field>
                             }
                             <Form.Field style={{display: "none"}}>
@@ -494,7 +538,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onUpdateProfile: (profileState) => dispatch(actions.updateProfile(profileState))
+        onUpdateProfile: (profileState) => dispatch(actions.updateProfile(profileState)),
+        onUpdateLocation: (location, address) => dispatch(actions.updateLocation(location, address))
     }
 }
 

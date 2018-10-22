@@ -34,6 +34,7 @@ export const login = (userName, password, socket, callBackLogin) => {
                 localStorage.setItem('latitude', res.data.user.latitude);
                 localStorage.setItem('longitude', res.data.user.longitude);
                 localStorage.setItem('login', res.data.user.login);
+                localStorage.setItem('address', res.data.user.address);
                 dispatch(actionsActivity.load('unread'));
                 dispatch({ type: LOGIN, data: res.data });
             } else callBackLogin("Authentification failed, maybe your account is not yet validated, check your email");

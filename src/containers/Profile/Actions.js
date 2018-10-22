@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 export const UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE';
+export const UPDATE_USER_LOCATION = 'UPDATE_USER_LOCATION';
+
 
 export const updateProfile =(profileState) => {
     return async dispatch => {
@@ -24,6 +26,22 @@ export const updateProfile =(profileState) => {
             localStorage.setItem('longitude', profileState.longitude);
             localStorage.setItem('login', profileState.login);
             dispatch({ type: UPDATE_USER_PROFILE, data: profileState });
+        } catch (err) {
+         /*   dispatch({
+                type: LOGIN_FAIL,
+                data: null
+            })*/
+            console.log("FAIL");
+        }
+    }
+}
+
+export const updateLocation =(location, address) => {
+    return async dispatch => {
+        try {
+            localStorage.setItem('share_location', location);
+            localStorage.setItem('address', address);
+            dispatch({ type: UPDATE_USER_LOCATION, data: {location: location, address: address} });
         } catch (err) {
          /*   dispatch({
                 type: LOGIN_FAIL,

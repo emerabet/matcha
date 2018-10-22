@@ -19,7 +19,7 @@ exports.login = async (req, res) => {
         if (!ret[0] || ret[0] === undefined || ret[0].register_token !== "validated")
             res.status(403).send({ auth: false, token: null });
 
-        sql =   `SELECT user.user_id, user.password, user.login, user.email, user.last_name, user.first_name, 
+        sql =   `SELECT CONCAT(address.zipcode, ' ', address.city, ' ', address.country) as address, user.user_id, user.password, user.login, user.email, user.last_name, user.first_name, 
                             user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
                             YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
                     FROM user 
@@ -46,7 +46,8 @@ exports.login = async (req, res) => {
                 birthdate: rows[0].birthdate,
                 popularity: rows[0].popularity,
                 latitude: rows[0].latitude,
-                longitude: rows[0].longitude
+                longitude: rows[0].longitude,
+                address: rows[0].address
             };
             await res.clearCookie();
             res.header('Pragma', 'no-cache');

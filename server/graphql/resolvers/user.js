@@ -215,7 +215,11 @@ module.exports = {
                     sql = mysql.format(sql, [decoded.user_id, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
                     result = await db.conn.queryAsync(sql);
                 } else {
-                    geocoder.reverse({lat: address.latitude, lon: address.longitude}, function(err, res) {
+                    geocoder.reverse({lat: address.latitude, lon: address.longitude}, async function(err, res) {
+                        console.log("FROM NAV INFO");
+                        sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
+                        sql = mysql.format(sql, [decoded.user_id, address.latitude, address.longitude, res[0].zipcode, res[0].city, res[0].country, address.latitude, address.longitude, res[0].zipcode, res[0].city, res[0].country]);
+                        result = await db.conn.queryAsync(sql);
                         console.log("GOOGLE", res);
                       });
                 }
@@ -583,5 +587,48 @@ module.exports = {
             return true;
         else
             return false;
+    },
+
+    updateUserLocation: async ({address}, context) => {
+        console.log("UPDATING USER LOCATION");
+        try {
+            const token = context.token;
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                    throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const userId = decoded.user_id;
+            let sql = "";
+            let result = "";
+                sql = 'UPDATE `user` SET `share_location` = 1 WHERE `user_id` = ?';               
+                sql = mysql.format(sql, [userId]);
+                result = await db.conn.queryAsync(sql);
+            
+                sql = 'UPDATE `address` SET `latitude` = ?, `longitude` = ? WHERE `user_id` = ?';               
+                sql = mysql.format(sql, [address.latitude, address.longitude, userId]);
+                result = await db.conn.queryAsync(sql);
+                const t = await geocoder.reverse({lat: address.latitude, lon: address.longitude});
+                    console.log("FROM NAV INFO", t);
+                    sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
+                    sql = mysql.format(sql, [decoded.user_id, address.latitude, address.longitude, t[0].zipcode, t[0].city, t[0].country, address.latitude, address.longitude, t[0].zipcode, t[0].city, t[0].country]);
+                    result = await db.conn.queryAsync(sql);
+                   
+                    if (result.affectedRows > 0) {
+                        console.log("IwwwfwN");
+                        sql = 'SELECT CONCAT(address.zipcode, " ", address.city, " ", address.country) as address from `address` WHERE `user_id` = ?';               
+                        sql = mysql.format(sql, [userId]);
+                        result = await db.conn.queryAsync(sql);
+                        console.log("RESSSS", result)
+                        return (result[0].address);
+                    }
+                else
+                    return "nok";
+                  
+            
+        } catch (err) {
+            console.log("ERR", err);
+            throw (errors.errorTypes.BAD_REQUEST);
+        }
     }
 }
