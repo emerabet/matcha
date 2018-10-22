@@ -2,8 +2,6 @@ import React from 'react';
 import * as actions from './Actions';
 import { connect } from 'react-redux';
 import { Component } from 'react';
-import classes from './Login.css';
-import { Link } from 'react-router-dom';
 import { Divider, Input, Form, Button } from 'semantic-ui-react';
 import axios from 'axios';
 import withSocket from '../../Hoc/Socket/SocketHOC';
@@ -34,8 +32,8 @@ class  Login extends Component {
 
     render (){
         return (
-            <div className='Login__Container'>
-                <Form className='Login__Form' onSubmit={this.handleLogin}>
+            <div className='Login_Register__Container'>
+                <Form className='Login_Register__Form' onSubmit={this.handleLogin}>
                     <Form.Field>
                         <label>Username</label>
                         <input name="username" onChange={this.handleChange} placeholder='Username' />

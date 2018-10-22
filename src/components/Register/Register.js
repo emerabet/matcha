@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import classes from './Register.css';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Card, Input, Form, Button } from 'semantic-ui-react';
+import { Divider, Input, Form, Button } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import publicIp from 'public-ip';
 import { handleBlur } from '../../Tools/Form';
@@ -43,13 +41,15 @@ class Register extends Component{
             ip: ip
         }
         
-            const result = await axios.post(`/api`, {   query: query,
-                                                        variables: { user: user, address: address }
-                                            });
-            if (!result.data.errors)
-                this.props.history.push('/login');
-            else
-                console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].message);
+        const result = await axios.post(`/api`, { query: query, variables: { user: user, address: address } });
+        if (!result.data.errors)
+            this.props.history.push('/login');
+        else
+            console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].message);
+    }
+
+    handleLogin = () => {
+        this.props.history.push('/login');
     }
 
     handleChange = (e, data) => {
@@ -57,6 +57,7 @@ class Register extends Component{
     }
 
     handleBlur = async (e, data) => {
+        console.log('HANDLE BLUR');
         this.setState(await handleBlur(e, data));
     }
 
@@ -66,12 +67,15 @@ class Register extends Component{
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const emailOK = emailRegex.test(String(this.state.email).toLowerCase()) && this.state.email !== "";
 
+
+        console.log('**********************');
+        console.log(emailOK);
+        console.log(this.state.emailAlreadyTaken);
+        console.log('**********************');
+
        return (
-            <div className="Register_Container">
-            <Card style={styles.card} centered>
-                    <Card.Content header={`Register`} />
-                    <Card.Content description={
-                <Form className={classes.Register} onSubmit={this.handleRegister}>
+            <div className='Login_Register__Container'>
+                <Form className='Login_Register__Form' onSubmit={this.handleRegister}>
                     <Form.Field>
                     <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor='userName'>Username {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
                         <Input type='text' onChange={this.handleChange} onBlur={this.handleBlur} name='userName' value={ this.state.userName } placeholder='User name' required></Input>
@@ -85,7 +89,7 @@ class Register extends Component{
                         <Input type='text' onChange={this.handleChange} name='lastName' value={ this.state.lastName } placeholder='Last name' required></Input>
                     </Form.Field>
                     <Form.Field>
-                        <label style={(emailOK && !this.state.emailAlreadyTaken) ? styles.ok : styles.nok} htmlFor='email'>Email {this.state.emailAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
+                        <label style={(emailOK && !this.state.emailAlreadyTaken) || (this.state.email == '') ? null : styles.nok} htmlFor='email'>Email {this.state.emailAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
                         <Input type='email' onChange={this.handleChange} onBlur={this.handleBlur} name='email' value={ this.state.email } placeholder='Email' required></Input>
                     </Form.Field>
                     <Form.Field>
@@ -96,14 +100,10 @@ class Register extends Component{
                         <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor='password2'>Confirm password</label>
                         <Input type='password' onChange={this.handleChange} name='password2' value={ this.state.password2 } placeholder='Confirm password' required></Input>
                     </Form.Field>
-                    <Button type='submit' disabled = {this.state.userNameAlreadyTaken || this.state.emailAlreadyTaken || (!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && emailOK))}>Register</Button>
+                    <Button type='submit' primary fluid disabled = {this.state.userNameAlreadyTaken || this.state.emailAlreadyTaken || (!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && emailOK))}>Register</Button>
+                    <Divider horizontal>Or</Divider>
+                    <Button secondary fluid onClick={this.handleLogin}>Login</Button>
                 </Form>
-                } />
-                <Card.Content extra>
-                <Link to='/login'> Login </Link>
-                </Card.Content>
-            </Card>
-                
             </div>
         )
     }
