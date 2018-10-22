@@ -6,6 +6,22 @@ const bcrypt = require('bcrypt');
 const config = require('../../config');
 const axios = require('axios');
 const NodeGeocoder = require('node-geocoder');
+const nodemailer = require('nodemailer');
+const uniqid = require('uniqid');
+
+let smtpConfig = {
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+        user: config.USER,
+        pass: config.PASSWORD
+    },
+    rejectUnauthorized: false
+};
+
+let transporter = nodemailer.createTransport(smtpConfig);
 
 const options = {
     provider: 'google',
@@ -33,10 +49,11 @@ const mergeResults = (parent, child, property, { parentCmp, childCmp }) => {
 
 module.exports = {
     addUser: async ({ user, address }) => {
+        const register_token = uniqid();
         var hash = bcrypt.hashSync(user.password, 10);
-        let sql = "INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES (NULL, ?, ?, ?, ?, ?, 'sadas', 'asdad', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1', '0');"; 
+        let sql = "INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES (NULL, ?, ?, ?, ?, ?, ?, 'asdad', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1', '0');"; 
         try {
-            sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash]);
+            sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, register_token]);
             const result = await db.conn.queryAsync(sql);
             const add = await axios.get(`http://api.ipstack.com/${address.ip}?access_key=${config.IPSTACK_KEY}`);
             sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
@@ -47,6 +64,20 @@ module.exports = {
             sql = mysql.format(sql, [insertId]);
             res = await db.conn.queryAsync(sql);
 
+            var mailData = {
+                from: config.USER,
+                to: user.email,
+                subject: 'Your Matcha\'s account has been successfully created',
+                text: `Please click on this link to activate your account: http://localhost:3000/${register_token}`,
+                html: `Please click on this link to activate your account: http://localhost:3000/${register_token}`
+            };
+
+            transporter.sendMail(mailData, function(error, info){
+                if(error){
+                    return console.log(error);
+                }
+                console.log('Message sent: ' + info.response);
+            });
             return insertId;
         } catch (err) {
             console.log("ERR", err);
@@ -372,10 +403,10 @@ module.exports = {
             if (user_id_visited !== decoded.user_id) {
                 let sql = 'INSERT INTO `visit` (`visit_id`, `user_id_visitor`, `user_id_visited`, `date`) VALUES(NULL,?,?,CURRENT_TIMESTAMP);';
                 sql = mysql.format(sql, [decoded.user_id, user_id_visited]);
-                const result = await db.conn.queryAsync(sql);
+                await db.conn.queryAsync(sql);
                 
-                module.exports.addNotification({type: "visit", user_id_from: decoded.user_id, user_id_to: user_id_visited});
-                return true;
+                const ret = await module.exports.addNotification({type: "visit", user_id_from: decoded.user_id, user_id_to: user_id_visited});
+                return ret;
             }
             return false;
         } catch (err) {
@@ -386,13 +417,20 @@ module.exports = {
     },
 
     addNotification: async ({type, user_id_from, user_id_to}) => {
-        
-        let sql = 'INSERT INTO `notification` (`notification_id`, `type`, `user_id_from`, `user_id_to`, `date`, `is_read`) VALUES(NULL,?,?,?,CURRENT_TIMESTAMP, 0);';
+        let sql = 'SELECT COUNT(user_id_blocked) as nb FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
+        sql = mysql.format(sql, [user_id_from, user_id_to]);
+        let result = await db.conn.queryAsync(sql);
+        console.log("TEST NOTIF", result[0].nb);
+        if (result[0].nb > 0)
+            return false
+
+        sql = 'INSERT INTO `notification` (`notification_id`, `type`, `user_id_from`, `user_id_to`, `date`, `is_read`) VALUES(NULL,?,?,?,CURRENT_TIMESTAMP, 0);';
         sql = mysql.format(sql, [type, user_id_from, user_id_to]);
-        const result = await db.conn.queryAsync(sql);
+        result = await db.conn.queryAsync(sql);
         
         if (result.insertId)
-            return result.insertId;
+            return true;
+        return false;
     },
 
     getUserNotifications: async ({ search }, context) => {
