@@ -5,19 +5,35 @@ import { Component } from 'react';
 import { Divider, Input, Form, Button } from 'semantic-ui-react';
 import axios from 'axios';
 import withSocket from '../../Hoc/Socket/SocketHOC';
+import { toast } from 'react-toastify';
 
 class  Login extends Component {
    
     state = {
         username: '',
-        password: ''
+        password: ''/*,
+        validated: 'log'*/
+    }
+
+    componentDidMount() {
+        if (this.props.location.state && this.props.location.state !== undefined && this.props.location.state.validated) {
+            console.log("DIDMOINT", this.props.location.state.validated);
+            //this.setState({validated: this.props.location.state.validated})
+            if (this.props.location.state.validated === "validated")
+                toast("Your account has been successfully validated", {type: toast.TYPE.SUCCESS});
+            else
+                toast("This link has already been used or it is invalid", {type: toast.TYPE.ERROR});
+            this.props.history.push('/login');
+        }
+    }
+
+    callBackLogin = (res) => {
+        toast(res, {type: toast.TYPE.ERROR});
     }
 
     handleLogin = async (e) => {
         e.preventDefault();
-        console.log('in handle login');
-        await this.props.onLogin(this.state.username, this.state.password, this.props.socket);
-       
+        await this.props.onLogin(this.state.username, this.state.password, this.props.socket, this.callBackLogin);
         this.props.history.push('/home');
     }
 
@@ -58,7 +74,7 @@ const mapStateToProps = null;
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLogin: (userName, password, socket) => dispatch(actions.login(userName, password, socket))
+        onLogin: (userName, password, socket, callBackLogin) => dispatch(actions.login(userName, password, socket, callBackLogin))
     }
 }
 

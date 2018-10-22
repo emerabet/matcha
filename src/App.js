@@ -8,6 +8,7 @@ import Profile from './containers/Profile/Profile';
 import Stalk from './containers/Stalk/Stalk';
 import SuperChat from './containers/SuperChat/SuperChat';
 import Notification from './containers/Notification/Notification';
+import Verif from './components/Verif/Verif';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -24,6 +25,7 @@ class App extends Component {
        <Switch>
         <Route path="/login" exact component={ Login }/>
         <Route path="/register" exact component={ Register }/>
+        <Route path="/verif/:registration_token" component={Verif}/>
         <Redirect from="/" to="/login"/>
       </Switch>
     );
