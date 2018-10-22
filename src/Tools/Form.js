@@ -15,6 +15,7 @@ export const handleBlur = async (e, data) => {
             });
             return ({emailAlreadyTaken: result ? result.data.data.getEmail : null});
         case 'userName':
+        case 'username':
         case 'login':
             query = `
             query getLogin($login: String!) {

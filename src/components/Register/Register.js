@@ -93,7 +93,7 @@ class Register extends Component{
                         <Input type='email' onChange={this.handleChange} onBlur={this.handleBlur} name='email' value={ this.state.email } placeholder='Email' required></Input>
                     </Form.Field>
                     <Form.Field>
-                        <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor='password1'>Password</label>
+                        <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor='password1'>Password (must contains at least 8 characters including a lower letter, a capital letter and a number)</label>
                         <Input type='password' onChange={this.handleChange} name='password1' value={ this.state.password1 } placeholder='Password' required></Input>
                     </Form.Field>
                     <Form.Field>

@@ -48,7 +48,9 @@ const mdw = async (req, res, next) => {
         if (req.body.query.replace(/\s/g, '') === "querygetLogin($login:String!){getLogin(login:$login)}"
             || req.body.query.replace(/\s/g, '') === "querygetEmail($email:String!){getEmail(email:$email)}"
             || req.body.query.replace(/\s/g, '') === "mutationaddUser($user:AddUserInput!,$address:AddAddressInput!){addUser(user:$user,address:$address)}"
-            || req.body.query.replace(/\s/g, '') === "mutationconfirmAccount($registration_token:String!){confirmAccount(registration_token:$registration_token)}") {
+            || req.body.query.replace(/\s/g, '') === "mutationconfirmAccount($registration_token:String!){confirmAccount(registration_token:$registration_token)}"
+            || req.body.query.replace(/\s/g, '') === "mutationresetPassword($login:String!){resetPassword(login:$login)}"
+            || req.body.query.replace(/\s/g, '') === "mutationcheckResetToken($reset_token:String!,$password:String!){checkResetToken(reset_token:$reset_token,password:$password)}") {
             console.log("OK", req.body.query.replace(/\s/g, ''));
             next();
         } else {

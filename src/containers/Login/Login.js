@@ -11,16 +11,15 @@ class  Login extends Component {
    
     state = {
         username: '',
-        password: ''/*,
-        validated: 'log'*/
+        password: ''
     }
 
     componentDidMount() {
         if (this.props.location.state && this.props.location.state !== undefined && this.props.location.state.validated) {
-            console.log("DIDMOINT", this.props.location.state.validated);
-            //this.setState({validated: this.props.location.state.validated})
             if (this.props.location.state.validated === "validated")
                 toast("Your account has been successfully validated", {type: toast.TYPE.SUCCESS});
+            else if (this.props.location.state.validated === "reset")
+                toast("Your password has been successfully changed", {type: toast.TYPE.SUCCESS});
             else
                 toast("This link has already been used or it is invalid", {type: toast.TYPE.ERROR});
             this.props.history.push('/login');
@@ -46,6 +45,11 @@ class  Login extends Component {
         this.props.history.push('/register');
     }
 
+    resetPassword = (e) => {
+        e.preventDefault();
+        this.props.history.push('/reset_password');
+    }
+
     render (){
         return (
             <div className='Login_Register__Container'>
@@ -63,7 +67,8 @@ class  Login extends Component {
                     <Button primary fluid type='submit'>Login</Button>
                     <Divider horizontal>Or</Divider>
                     <Button secondary fluid onClick={this.handleRegister}>Register</Button>
-                    
+                    <Divider horizontal>Or</Divider>
+                    <a style={{cursor: "pointer"}} onClick={this.resetPassword}>Password forgotten</a>
                 </Form>
             </div>
         );

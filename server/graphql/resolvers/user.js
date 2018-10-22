@@ -50,7 +50,7 @@ const mergeResults = (parent, child, property, { parentCmp, childCmp }) => {
 module.exports = {
     addUser: async ({ user, address }) => {
         const register_token = uniqid();
-        var hash = bcrypt.hashSync(user.password, 10);
+        const hash = bcrypt.hashSync(user.password, 10);
         let sql = "INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES (NULL, ?, ?, ?, ?, ?, ?, 'asdad', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1', '0');"; 
         try {
             sql = mysql.format(sql, [user.user_name, user.email, user.last_name, user.first_name, hash, register_token]);
@@ -536,6 +536,47 @@ module.exports = {
     confirmAccount: async ({registration_token}) => {
         let sql = 'UPDATE `user` SET `register_token` = "validated" WHERE `register_token` = ?';
         sql = mysql.format(sql, [registration_token]);
+        const result = await db.conn.queryAsync(sql);
+        console.log("RESISTRATION", result.affectedRows);
+        if (result.affectedRows > 0)
+            return true;
+        else
+            return false;
+    },
+    resetPassword: async ({login}) => {
+        console.log("RESET PASSWORD");
+        const reset_token = uniqid();
+        let sql = 'UPDATE `user` SET `reset_token` =  ? WHERE `login` = ?';
+        sql = mysql.format(sql, [reset_token, login]);
+        let result = await db.conn.queryAsync(sql);
+        console.log("RESET PASSWORD", result.affectedRows);
+        if (result.affectedRows > 0) {
+            sql = 'SELECT `email` FROM `user` WHERE `login` = ?';
+            sql = mysql.format(sql, [login]);
+            result = await db.conn.queryAsync(sql);
+            if (result[0]) {
+                var mailData = {
+                    from: config.USER,
+                    to: result[0].email,
+                    subject: 'Matcha\'s password reset',
+                    text: `Please click on this link to reset your password: http://localhost:3000/new_password/${reset_token}`,
+                    html: `Please click on this link to reset your password: http://localhost:3000/new_password/${reset_token}`
+                };
+    
+                transporter.sendMail(mailData, function(error, info){
+                    if(error){
+                        return console.log(error);
+                    }
+                    console.log('Message sent: ' + info.response);
+                });
+            }
+        }
+    },
+
+    checkResetToken: async ({reset_token, password}) => {
+        const hash = bcrypt.hashSync(password, 10);
+        let sql = 'UPDATE `user` SET `reset_token` = "reset", `password` = ? WHERE `reset_token` = ?';
+        sql = mysql.format(sql, [hash, reset_token]);
         const result = await db.conn.queryAsync(sql);
         console.log("RESISTRATION", result.affectedRows);
         if (result.affectedRows > 0)

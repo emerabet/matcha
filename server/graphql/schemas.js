@@ -120,7 +120,9 @@ exports.registerSchema = buildSchema(`
         checkNotification(notification_id: Int!): Boolean,
         addMessage(chat_id: Int!, message: String!): Int,
         readChat(chat_id: Int!): Boolean,
-        confirmAccount(registration_token: String!): Boolean
+        confirmAccount(registration_token: String!): Boolean,
+        checkResetToken(reset_token: String!, password: String!): Boolean,
+        resetPassword(login: String!): Boolean
     }
 
 
