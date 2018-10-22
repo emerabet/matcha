@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Search from './../../components/Search/Search';
 import Listview from './../../components/Listview/Listview';
+import Aux from '../../Hoc/Aux/Aux';
 import { Divider, Icon, Pagination  } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -78,8 +79,15 @@ class AdvancedSearch extends Component {
         if (!this.props.user || !this.props.user.latitude || !this.props.user.longitude)
             return ;
 
-        const pt = point([this.props.user.latitude, this.props.user.longitude]);
-        const buffered = buffer(pt, distance, {units: 'kilometers'});
+        const pt = point([parseFloat(this.props.user.latitude), parseFloat(this.props.user.longitude)]);
+        console.log("mmmmmmmmmmmmmmmmmmmmmmmmmm");
+        console.log(pt);
+        console.log(distance);
+
+
+        console.log(pt);
+
+        const buffered = buffer(pt, parseInt(distance, 10), {units: 'kilometers'});
 
         /* Copie en profondeur du tableau d'objets */
         const newUsers = JSON.parse(JSON.stringify(this.state.users));
@@ -189,11 +197,11 @@ class AdvancedSearch extends Component {
         console.log("re-render");
         console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
         return (
-            <div>
+            <Aux>
                 { this.state.users && <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} /> }
                 { this.state.users && <Divider horizontal>Results</Divider> }
                 { this.state.users && <Listview users={ this.state.pagedUsers } history={this.props.history} /> }
-                { this.state.users && <Pagination
+                { this.state.users && <Pagination className='Pagination__Container'
                     activePage={this.state.activePage}
                     ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
                     firstItem={{ content: <Icon name='angle double left' />, icon: true }}
@@ -203,7 +211,7 @@ class AdvancedSearch extends Component {
                     totalPages={this.state.nbPages} 
                     onPageChange= {this.handlePageChange}
                 /> }
-            </div>
+            </Aux>
         );
     }
 }

@@ -47,6 +47,10 @@
   box-shadow: 1px 1px 12px #ffffff;
 }
 
+.Pagination__Container {
+  margin-top: 20px !important;
+}
+
 /* Smartphones (portrait and landscape) ----------- */
 @media screen and (max-width : 768px) {
   .Login_Register__Form {

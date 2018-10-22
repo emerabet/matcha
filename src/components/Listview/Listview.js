@@ -9,6 +9,7 @@ class Listview extends Component {
     }
 
     handleClick = (e, data) => {
+        console.log(this.props.history);
         this.props.history.push(`/stalk/${data.id}`);
     }
 
@@ -22,7 +23,6 @@ class Listview extends Component {
 
         const array = users.map(user => {
             const meta = `${user.age} ans`;
-            const href = `/stalk/${user.user_id}`;
             return <Card key={ user.user_id } raised header={user.first_name } 
                          meta = {meta}
                          description='Elliot is a sound engineer living in Nashville who enjoys playing guitar and hanging with his cat.'

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import TopMenu from '../../components/Menu/TopMenu';
 import classes from './Home.css';
 import './Home.css';
+import AdvancedSearch from '../AdvancedSearch/AdvancedSearch';
 
 
 class Home extends Component {
@@ -15,7 +16,7 @@ class Home extends Component {
     const { activeItem } = this.state
 
     return (
-      <div>Empty</div>
+        <AdvancedSearch history={this.props.history} type='home'></AdvancedSearch>
     )
   }
 

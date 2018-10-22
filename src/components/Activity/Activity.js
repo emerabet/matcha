@@ -4,6 +4,8 @@ import * as actions from './Actions';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 
+import { createBrowserHistory } from 'history';
+
 class Activity extends Component {
 
     componentDidMount() {
@@ -66,13 +68,14 @@ class Activity extends Component {
                              <img src={ itm.src } />
                         </Feed.Label>
                     <Feed.Content>
-                        
+                    
                         <Feed.Summary style={ itm.is_read ? mystyle : null }>
-                            <Feed.Date>{ date.toDateString() }</Feed.Date> <Link to={`/stalk/${itm.user_id_from}`}>{itm.login}</Link> {obj[itm.type]} your profile.
+                            <Feed.Date>{ date.toDateString() }</Feed.Date> <a href={`/stalk/${itm.user_id_from}`}>{itm.login}</a> {obj[itm.type]} your profile.
                             {itm.is_read === false && <Icon id='chk' link onClick={() => this.handleReadNotificationClicked(itm.notification_id)} name='check' />}
                         </Feed.Summary>
                     </Feed.Content>
                 </Feed.Event>
+                // <Link to={`/stalk/${itm.user_id_from}`}>{itm.login}</Link>
                // <Icon onClick={() => this.handleRemoveNotificationClicked(itm.notification_id)} name='close' />
             );
         });

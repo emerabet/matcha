@@ -112,8 +112,8 @@ class Stalk extends Component {
         const resVisit = await res2;
         const isLikedReported = await res3;
 
-
-        this.props.socket.emit('visit', id);
+        if (resVisit.data.data.addVisit === true)
+            this.props.socket.emit('visit', id);
 
         console.log("is reported or liked?");
         console.log(isLikedReported);
