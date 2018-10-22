@@ -37,11 +37,11 @@ class  Login extends Component {
                 <Form className='Login_Register__Form' onSubmit={this.handleLogin}>
                     <Form.Field>
                         <label>Username</label>
-                        <input name="username" onChange={this.handleChange} placeholder='Username' />
+                        <input name="username" onChange={this.handleChange} placeholder='Username' required />
                     </Form.Field>
                     <Form.Field>
                         <label>Password</label>
-                        <input name="password" type='password' onChange={this.handleChange} placeholder='Password' />
+                        <input name="password" type='password' onChange={this.handleChange} placeholder='Password' required />
                     </Form.Field>
 
                     <Button primary fluid type='submit'>Login</Button>
