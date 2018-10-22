@@ -251,6 +251,7 @@ module.exports = {
     likeUser: async ({user_id_to_like}, context) => {
         const token = context.token;
         try {
+            let ret = false;
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             
@@ -272,7 +273,9 @@ module.exports = {
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
                     
-                    module.exports.addNotification({type: "like", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                    ret = await module.exports.addNotification({type: "like", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                    if (ret === false)
+                        return ret;
                     if (flag_liked > 0) {
                         sql = 'INSERT INTO `matched` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
@@ -290,8 +293,9 @@ module.exports = {
                     sql = 'DELETE FROM `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
-                    module.exports.addNotification({type: "unlike", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
-                    
+                    ret = await module.exports.addNotification({type: "unlike", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                    if (ret === false)
+                        return ret;
                     if (flag_liked > 0) {
                         sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
@@ -305,10 +309,10 @@ module.exports = {
                         module.exports.addNotification({type: "unmatch", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                         console.log("MISMATCHED", result);
                     }
-                    return false;
+                   // return false;
                 }
             }
-            return false;
+            return ret;
         } catch (err) {
             console.log("ERROR LIKED", err.message);
             throw err.message;
@@ -319,6 +323,7 @@ module.exports = {
     addToBlackList: async ({user_id_to_black_list}, context) => {
         const token = context.token;
         try {
+            let ret = false;
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
                 
@@ -335,15 +340,15 @@ module.exports = {
                     sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
                     
-                    module.exports.addNotification({type: "black_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
-                    return true;
+                    ret = await module.exports.addNotification({type: "black_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
+                    return ret;
                 } else {
                     sql = 'DELETE FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
                     sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
                     
-                    module.exports.addNotification({type: "unblack_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
-                    return false;
+                    ret = await module.exports.addNotification({type: "unblack_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
+                    return ret;
                 }
             }
             return false;
@@ -357,6 +362,7 @@ module.exports = {
     addToReport: async ({user_id_to_report}, context) => {
         const token = context.token;
         try {
+            let ret = false;
             if (!token)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
                 
@@ -373,15 +379,15 @@ module.exports = {
                     sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
                     
-                    module.exports.addNotification({type: "report", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
-                    return true;
+                    ret = await module.exports.addNotification({type: "report", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
+                    return ret;
                 } else {
                     sql = 'DELETE FROM `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;';
                     sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
                     
-                    module.exports.addNotification({type: "unreport", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
-                    return false;
+                    ret = await module.exports.addNotification({type: "unreport", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
+                    return ret;
                 }
             }
             return false;
