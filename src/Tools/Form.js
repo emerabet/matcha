@@ -13,7 +13,7 @@ export const handleBlur = async (e, data) => {
             result = await axios.post(`/api`, {   query: query,
                 variables: { email: e.target.value }
             });
-            return ({emailAlreadyTaken: result.data.data.getEmail});
+            return ({emailAlreadyTaken: result ? result.data.data.getEmail : null});
         case 'userName':
         case 'login':
             query = `
@@ -24,7 +24,7 @@ export const handleBlur = async (e, data) => {
             result = await axios.post(`/api`, {   query: query,
                 variables: { login: e.target.value }
             });
-            return ({userNameAlreadyTaken: result.data.data.getLogin});
+            return ({userNameAlreadyTaken: result ? result.data.data.getLogin : null});
             case 'login':
             query = `
             query getLogin($login: String!) {
@@ -34,7 +34,7 @@ export const handleBlur = async (e, data) => {
             result = await axios.post(`/api`, {   query: query,
                 variables: { login: e.target.value }
             });
-            return ({userNameAlreadyTaken: result.data.data.getLogin});
+            return ({userNameAlreadyTaken: result ? result.data.data.getLogin : null});
         default:
             console.log("DEFAULT");
     }
