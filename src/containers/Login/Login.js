@@ -27,11 +27,13 @@ class  Login extends Component {
         }
     }
 
+    callBackLogin = (res) => {
+        toast(res, {type: toast.TYPE.ERROR});
+    }
+
     handleLogin = async (e) => {
         e.preventDefault();
-        console.log('in handle login');
-        await this.props.onLogin(this.state.username, this.state.password, this.props.socket);
-       
+        await this.props.onLogin(this.state.username, this.state.password, this.props.socket, this.callBackLogin);
         this.props.history.push('/home');
     }
 
@@ -72,7 +74,7 @@ const mapStateToProps = null;
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLogin: (userName, password, socket) => dispatch(actions.login(userName, password, socket))
+        onLogin: (userName, password, socket, callBackLogin) => dispatch(actions.login(userName, password, socket, callBackLogin))
     }
 }
 

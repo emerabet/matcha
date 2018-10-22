@@ -10,7 +10,16 @@ var uniqid = require('uniqid');
 exports.login = async (req, res) => {
     console.log("Connected");
     try {
-        let sql =   `SELECT user.user_id, user.password, user.login, user.email, user.last_name, user.first_name, 
+        let sql = 'SELECT `register_token` FROM `user` WHERE `login` = ?';
+        sql = mysql.format(sql, [req.body.login]);
+        
+        const ret = await db.conn.queryAsync(sql);
+        
+        console.log("RET", ret[0]);
+        if (!ret[0] || ret[0] === undefined || ret[0].register_token !== "validated")
+            res.status(403).send({ auth: false, token: null });
+
+        sql =   `SELECT user.user_id, user.password, user.login, user.email, user.last_name, user.first_name, 
                             user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
                             YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
                     FROM user 
