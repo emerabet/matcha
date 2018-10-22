@@ -68,8 +68,8 @@ module.exports = {
                 from: config.USER,
                 to: user.email,
                 subject: 'Your Matcha\'s account has been successfully created',
-                text: `Please click on this link to activate your account: http://localhost:3000/${register_token}`,
-                html: `Please click on this link to activate your account: http://localhost:3000/${register_token}`
+                text: `Please click on this link to activate your account: http://localhost:3000/verif/${register_token}`,
+                html: `Please click on this link to activate your account: http://localhost:3000/verif/${register_token}`
             };
 
             transporter.sendMail(mailData, function(error, info){
@@ -84,7 +84,6 @@ module.exports = {
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
-
 
     getUser: async ({extended, user_id2 = 0}, context) => {
         const token = context.token;
@@ -532,5 +531,16 @@ module.exports = {
         } catch (err) {
             throw (errors.errorTypes.BAD_REQUEST);
         }
+    },
+
+    confirmAccount: async ({registration_token}) => {
+        let sql = 'UPDATE `user` SET `register_token` = "validated" WHERE `register_token` = ?';
+        sql = mysql.format(sql, [registration_token]);
+        const result = await db.conn.queryAsync(sql);
+        console.log("RESISTRATION", result.affectedRows);
+        if (result.affectedRows > 0)
+            return true;
+        else
+            return false;
     }
 }

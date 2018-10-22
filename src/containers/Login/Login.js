@@ -5,12 +5,26 @@ import { Component } from 'react';
 import { Divider, Input, Form, Button } from 'semantic-ui-react';
 import axios from 'axios';
 import withSocket from '../../Hoc/Socket/SocketHOC';
+import { toast } from 'react-toastify';
 
 class  Login extends Component {
    
     state = {
         username: '',
-        password: ''
+        password: ''/*,
+        validated: 'log'*/
+    }
+
+    componentDidMount() {
+        if (this.props.location.state && this.props.location.state !== undefined && this.props.location.state.validated) {
+            console.log("DIDMOINT", this.props.location.state.validated);
+            //this.setState({validated: this.props.location.state.validated})
+            if (this.props.location.state.validated === "validated")
+                toast("Your account has been successfully validated", {type: toast.TYPE.SUCCESS});
+            else
+                toast("This link has already been used or it is invalid", {type: toast.TYPE.ERROR});
+            this.props.history.push('/login');
+        }
     }
 
     handleLogin = async (e) => {
