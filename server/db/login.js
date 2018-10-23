@@ -68,6 +68,7 @@ exports.login = async (req, res) => {
             .status(200).send({ auth: true, csrf_token: csrf_token, user: user/*, reported_users: result */});
             return ;
         } else {
+            console.log("wrong password");
             res.status(403).send({ auth: false, token: null });
             return ;
         }

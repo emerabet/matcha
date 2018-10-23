@@ -1,5 +1,4 @@
 import React from 'react';
-import * as actions from './Actions';
 import { connect } from 'react-redux';
 import { Component } from 'react';
 import { Divider, Input, Form, Button } from 'semantic-ui-react';

@@ -44,7 +44,6 @@ class TopMenu extends Component {
     }
 
     render (){
-      console.log("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", this.props.user);
       return (
         <Menu stackable icon='labeled' className='test' >
           <Menu.Item name='home' active={this.state.activeItem === 'home'} onClick={this.handleItemClick}>
@@ -118,12 +117,12 @@ class TopMenu extends Component {
           {this.props.role === 2
           &&
           <Menu.Item
-          name='log_out'
-          active={this.state.activeItem === 'log_out'}
-          onClick={this.handleLogOut}
+          name='admin'
+          active={this.state.activeItem === 'admin'}
+          onClick={this.handleItemClick}
         >
-          <Icon name='log out' />
-          Log out
+          <Icon name='desktop' />
+          Admin
         </Menu.Item>
           }
 
