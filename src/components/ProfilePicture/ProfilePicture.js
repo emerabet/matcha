@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { Range } from 'rc-slider';
-import Slider from 'rc-slider';
-import { Button, Form, Dropdown, Modal, Image, Header } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import { Modal, Image } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import axios from 'axios';
 import * as headers from '../../Tools/Header';
@@ -17,7 +14,6 @@ class ProfilePicture extends Component {
 
         const data = new FormData();
         data.append('filename', "test.png");
-       // data.append('token', localStorage.getItem("token"));
         data.append('type', e.target.name);
         data.append('picture_id', this.props.picture_id);
         data.append('src', this.props.picture_src);
@@ -71,7 +67,7 @@ class ProfilePicture extends Component {
                                 <Modal.Content image>
                                     <Image wrapped size='massive' src={this.props.picture_src} rounded/>
                                     <Modal.Description>            
-                                        <input type="file" style={styles.hiddenInput} onChange={this.handleUpload} name="profile_picture" className="inputfile" onChange={this.handleUpload} id="upload_other_picture" />
+                                        <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="profile_picture" className="inputfile" onChange={this.handleUpload} id="upload_other_picture" />
                                         <label style={{width: "350px"}}  className="ui huge gray right floated button" htmlFor="upload_other_picture">
                                             Upload an other picture
                                         </label>

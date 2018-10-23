@@ -11,7 +11,7 @@ import Notification from './containers/Notification/Notification';
 import Verif from './components/Verif/Verif';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import Admin from './containers/Admin/Admin';
 import ResetPassword from './components/ResetPassword/ResetPassword';
 import AdvancedSearch from './containers/AdvancedSearch/AdvancedSearch';
 import Layout from './Hoc/Layout/Layout';
@@ -45,6 +45,7 @@ class App extends Component {
             <Route path="/notifications" exact component={ Notification }/>
             <Route path="/stalk/:id(\d+)" exact component={ Stalk }/>
             <Route path="/chat" exact component={SuperChat}/>
+            <Route path="/admin" exact component={ Admin }/>
             <Redirect from="/" to="/home"/>
           </Switch>
         </Layout>

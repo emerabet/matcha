@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { Range } from 'rc-slider';
-import Slider from 'rc-slider';
-import { Button, Form, Dropdown, Modal, Image, Header } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import { Modal, Image } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import axios from 'axios';
 import * as headers from '../../Tools/Header';
@@ -30,23 +27,6 @@ class SidePicture extends Component {
         console.log("SIZE", res.data.pictures.length);
         if (res)
             this.props.handleRefresh(res.data.pictures);
-        /*
-        if (res.data.pictures.length > 0){
-            if (res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1).length > 0) {
-                this.setState({pictures: res.data.pictures, profile_picture: res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].src,
-                    profile_picture_id: res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].picture_id}
-                    );
-            }
-            else {
-                this.setState({pictures: res.data.pictures, profile_picture: "/pictures/smoke_by.png",
-                    profile_picture_id: 0}
-                    );
-            }
-        } else {
-            this.setState({pictures: [], profile_picture: "/pictures/smoke_by.png",
-                    profile_picture_id: 0}
-                    );
-        }*/
     }
 
     handleDelete = async (e) => {
@@ -85,7 +65,7 @@ class SidePicture extends Component {
                                 <Modal.Content image>
                                     <Image wrapped size='massive' src={this.props.pic.src} rounded/>
                                     <Modal.Description>            
-                                        <input type="file" style={styles.hiddenInput} onChange={this.handleUpload} name="side_picture" className="inputfile" onChange={this.handleUpload} id="upload_other_picture" />
+                                        <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="side_picture" className="inputfile" onChange={this.handleUpload} id="upload_other_picture" />
                                         <label style={{width: "350px"}}  className="ui huge gray right floated button" htmlFor="upload_other_picture">
                                             Upload an other picture
                                         </label>

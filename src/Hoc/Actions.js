@@ -20,7 +20,8 @@ export const restoreStore =() => {
                 latitude: localStorage.getItem('latitude'),
                 longitude: localStorage.getItem('longitude'),
                 login: localStorage.getItem('login'),
-                address: localStorage.getItem('address')
+                address: localStorage.getItem('address'),
+                role: localStorage.getItem('role')
             }
             const logged = localStorage.getItem("logged");
             dispatch({ type: RESTORE_STORE_FROM_SESSION_STORAGE, data: {user: user, logged: logged }});
