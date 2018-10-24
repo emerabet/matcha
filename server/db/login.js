@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
             };
            /* let result = null;
             if (rows[0].role === 2) {
-                sql =   'SELECT reported.user_id_reported, user_reported.login as user_reported_login, reported.user_id_reporter, user_reporter.login as user_reporter_login, reported.date FROM `reported` LEFT JOIN `user` as user_reported ON reported.user_id_reported = user_reported.user_id LEFT JOIN `user` as user_reporter ON reported.user_id_reporter = user_reporter.user_id'
+                sql =   'SELECT reported.user_id_reported, user_reported.login as user_reported_login, user_reported.email as user_reported_email, reported.user_id_reporter, user_reporter.login as user_reporter_login, user_reporter.email as user_reporter_email, reported.date FROM `reported` LEFT JOIN `user` as user_reported ON reported.user_id_reported = user_reported.user_id LEFT JOIN `user` as user_reporter ON reported.user_id_reporter = user_reporter.user_id'
                 sql = mysql.format(sql, req.body.login);
                 result = await db.conn.queryAsync(sql);
                 console.log("RES REPORTED", result);

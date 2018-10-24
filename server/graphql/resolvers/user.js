@@ -630,5 +630,28 @@ module.exports = {
             console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
+    },
+
+    getReported: async ({}, context) => {
+        const token = context.token;
+        try {
+            
+            if (!token) 
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            
+            if (decoded.role !== 2)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const sql = 'SELECT reported.user_id_reported, user_reported.login as user_reported_login, user_reported.email as user_reported_email, reported.user_id_reporter, user_reporter.login as user_reporter_login, user_reporter.email as user_reporter_email, reported.date FROM `reported` LEFT JOIN `user` as user_reported ON reported.user_id_reported = user_reported.user_id LEFT JOIN `user` as user_reporter ON reported.user_id_reporter = user_reporter.user_id'; 
+            const reported = await db.conn.queryAsync(sql);
+            
+            return reported;
+        } catch (err) {
+            console.log("catch get user");
+            throw new Error(errors.errorTypes.UNAUTHORIZED);
+        }
     }
 }
