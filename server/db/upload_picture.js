@@ -1,11 +1,35 @@
 const queriesPicture = require('../graphql/resolvers/picture');
+var fs = require('fs');
+const sharp = require('sharp');
 
 exports.upload = async (req, res) => {
-    console.log("QUERIES", req.body);
-    console.log("file", req.file);
-    const result = {
-        pictures: await queriesPicture.getPicture({token: req.headers.authorization}),
-        insertId: req.body.insertId
+    let insertId = -1;
+    try {
+        if (await fs.existsSync(`${appRoot}/public/pictures/${req.body.src}`)){
+            await sharp(`public/pictures/tmp/${req.body.file_name}`)
+            .resize(450, 450)
+            .toFile(`public/pictures/${req.body.user_id}/${req.body.file_name}`)
+            if (await fs.existsSync(`${appRoot}/public/pictures/tmp/${req.body.file_name}`)){
+                await fs.unlink(`${appRoot}/public/pictures/tmp/${req.body.file_name}`, (err) => {
+                    if (err) throw err;
+                  });
+            }
+            const r = await queriesPicture.addPicture({token: req.body.token, picture_id: req.body.picture_id, url: `/pictures/${req.body.user_id}/${req.body.file_name}`, type: req.body.type, delete_url: req.body.src});
+            insertId = r.insertId;
+        }
+    } catch (err) {
+        console.log("ERR", err);
+        res.status(400).send();
     }
-    res.status(200).send(result);
+
+    if (insertId !== -1) {
+        const result = {
+            pictures: await queriesPicture.getPicture({token: req.cookies['sessionid']}),
+            insertId: req.body.insertId
+        }
+        res.status(200).send(result);
+        return ;
+    } else {
+        res.status(400).send();
+    }
 }

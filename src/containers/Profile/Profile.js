@@ -322,6 +322,11 @@ class Profile extends Component{
         const res = await axios.post('/upload_picture', data, headers.headers());
         console.log("res", res);
         console.log("UPLOADED");
+        if (!res || res === undefined) {
+            toast("Something went wrong, maybe the file you are trying to upload is not a picture", {type: toast.TYPE.ERROR});
+            return ;
+        }
+
         console.log("SIZE", res.data.pictures.length);
         if (res.data.pictures.length > 0){
             if (res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1).length > 0) {

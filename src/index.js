@@ -29,9 +29,10 @@ axios.interceptors.response.use(function (response) {
 
     return response;
   }, function (error) {
-    console.log("AXIOS ERROR");
+    console.log(error.response.status);
     // Do something with response error
-    localStorage.clear();
+    if (error.response.status === 403)
+        localStorage.clear();
     //return Promise.reject(error);
   });
 const rootReducer = combineReducers({

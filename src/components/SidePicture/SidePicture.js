@@ -21,12 +21,14 @@ class SidePicture extends Component {
         data.append('file', e.target.files[0], localStorage.getItem('token'));
         
         const res = await axios.post('/upload_picture', data, headers.headers());
+        if (res) {
         console.log("res", res);
         console.log("INSERT ID", res.insertId);
         console.log("UPLOADED");
         console.log("SIZE", res.data.pictures.length);
         if (res)
             this.props.handleRefresh(res.data.pictures);
+        }
     }
 
     handleDelete = async (e) => {
@@ -42,7 +44,7 @@ class SidePicture extends Component {
                             }
                         }
                     `;
-                   
+                   console.log("PICTURE TO DELETE", this.props.pic.picture_id)
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
             token: localStorage.getItem("token"), 
@@ -65,7 +67,7 @@ class SidePicture extends Component {
                                 <Modal.Content image>
                                     <Image wrapped size='massive' src={this.props.pic.src} rounded/>
                                     <Modal.Description>            
-                                        <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="side_picture" className="inputfile" onChange={this.handleUpload} id="upload_other_picture" />
+                                        <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="side_picture" className="inputfile" id="upload_other_picture" />
                                         <label style={{width: "350px"}}  className="ui huge gray right floated button" htmlFor="upload_other_picture">
                                             Upload an other picture
                                         </label>
