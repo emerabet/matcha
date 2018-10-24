@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Checkbox, Card, Input, Select, Form, Button, TextArea, Image } from 'semantic-ui-react';
+import { Popup, Checkbox, Card, Input, Select, Form, Button, TextArea, Image } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import TopMenu from '../../components/Menu/TopMenu';
 import { ToastContainer, toast } from 'react-toastify';
@@ -438,55 +438,74 @@ class Profile extends Component{
                             {
                                 this.state.pictures.reduce(function (n, pic) {
                                     return n + (pic.priority === 0);
-                                }, 0) < 4 && <div>
+                                }, 0) < 4 && <Aux>
                                 <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} name="side_picture" className="inputfile" onChange={this.handleUpload} id="empty_picture" />
                                     <label htmlFor="empty_picture">
                                         <Image id={0} name="empty_picture" src="/pictures/upload.png" size='tiny' rounded />
                                     </label>
-                                </div>
+                                </Aux>
                             }
 
                         </div>
                         <ProfilePicture picture_src={this.state.profile_picture} picture_id={this.state.profile_picture_id} old_login={this.state.oldLogin} popularity={this.state.popularity} handleRefresh={this.handleRefresh} />
                          <Form onSubmit= {this.handleUpdate}>
-                            <Form.Field>
-                                <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor="login">User name {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
-                                <Input type="text" onChange={this.handleChange} onBlur={this.handleBlur} name="login" value={ this.state.login } placeholder="User name" required></Input>
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="first_name">First name</label>
-                                <Input type="text" onChange={this.handleChange} name="first_name" value={ this.state.first_name } placeholder="First name" required></Input>
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="last_name">Last name</label>
-                                <Input type="text" onChange={this.handleChange} name="last_name" value={ this.state.last_name } placeholder="Last name" required></Input>                   
-                            </Form.Field>
-                            <Form.Field>
-                                <label style={!this.state.emailAlreadyTaken && emailOK ? styles.ok : styles.nok} htmlFor="email">Email {this.emailAlreadyTaken && `(An account has already been created with this email)`}</label>
-                                <Input type="email" onChange={this.handleChange} onBlur={this.handleBlur} name="email" value={ this.state.email } placeholder="Email" required></Input>
-                            </Form.Field>
-                            <Form.Field>
-                                <label style={oldPassOK ? styles.ok : styles.nok} htmlFor="old_password">Current password (your must enter your current password to update your profile)</label>
-                                <Input type="password" onChange={this.handleChange} name="old_password" value={ this.state.old_password } placeholder="Current password" required></Input>                   
-                            </Form.Field>
-                            <Form.Field>
-                                <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password1">New password (must contains at least 8 characters including a lower letter, a capital letter and a number)</label>
-                                <Input type="password" onChange={this.handleChange} name="password1" value={ this.state.password1 } placeholder="New password"></Input>                   
-                            </Form.Field>
-                            <Form.Field>
-                                <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password2">New password confirmation</label>
-                                <Input type="password" onChange={this.handleChange} name="password2" value={ this.state.password2 } placeholder="New password confirmation"></Input>                   
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="share_location">Share current location?</label>
-                                <Checkbox toggle onChange={this.handleChange} name="share_location" checked={this.state.share_location === 1 ? true : false}/>
-                            </Form.Field>
-                            {this.state.share_location &&
-                            <Form.Field>
-                                <label htmlFor="current_location">Current location</label>
-                                <Input action={<Button type="button" onClick={this.handleUpdateLocation}> Upate current location </Button>} type="text" onChange={this.handleChange} name="current_location" value={ this.props.user.address } placeholder="Current location"></Input>
-                            </Form.Field>
-                            }
+                            <Form.Group>
+                                <Form.Field width={6}>
+                                    <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor="login">User name {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
+                                    <Input type="text" onChange={this.handleChange} onBlur={this.handleBlur} name="login" value={ this.state.login } placeholder="User name" required></Input>
+                                </Form.Field>
+                                <Form.Field width={6}>
+                                    <label style={!this.state.emailAlreadyTaken && emailOK ? styles.ok : styles.nok} htmlFor="email">Email {this.emailAlreadyTaken && `(An account has already been created with this email)`}</label>
+                                    <Input type="email" onChange={this.handleChange} onBlur={this.handleBlur} name="email" value={ this.state.email } placeholder="Email" required></Input>
+                                </Form.Field>
+                            </Form.Group>
+                            <Form.Group>    
+                                <Form.Field width={6}>
+                                    <label htmlFor="first_name">First name</label>
+                                    <Input type="text" onChange={this.handleChange} name="first_name" value={ this.state.first_name } placeholder="First name" required></Input>
+                                </Form.Field>
+                                <Form.Field width={6}>
+                                    <label htmlFor="last_name">Last name</label>
+                                    <Input type="text" onChange={this.handleChange} name="last_name" value={ this.state.last_name } placeholder="Last name" required></Input>                   
+                                </Form.Field>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Field width={6}>
+                                        <label style={oldPassOK ? styles.ok : styles.nok} htmlFor="old_password">Current password (required)</label>
+                                        <Input type="password" onChange={this.handleChange} name="old_password" value={ this.state.old_password } placeholder="Current password" required></Input>                   
+                                </Form.Field>
+                                <Form.Field width={6}>
+                                    <label htmlFor="birthdate">Birthdate</label>
+                                    <Input type="date" onChange={this.handleChange} name="birthdate" value={ this.state.birthdate } placeholder="Birthdate" required></Input>                   
+                                </Form.Field>
+                            </Form.Group>
+                            <Form.Group>
+                                <Popup trigger={
+                                    <Form.Field width={6}>
+                                        <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password1">New password</label>
+                                        <Input type="password" onChange={this.handleChange} name="password1" value={ this.state.password1 } placeholder="New password"></Input>                   
+                                    </Form.Field>
+                                    }
+                                    header="Password requirement"
+                                    content="must contains at least 8 characters including a lower letter, a capital letter and a number"
+                                    />
+                                <Form.Field width={6}>
+                                    <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor="password2">New password confirmation</label>
+                                    <Input type="password" onChange={this.handleChange} name="password2" value={ this.state.password2 } placeholder="New password confirmation"></Input>                   
+                                </Form.Field>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Field width={4}>
+                                    <label htmlFor="share_location">Share current location?</label>
+                                    <Checkbox toggle onChange={this.handleChange} name="share_location" checked={this.state.share_location === 1 ? true : false}/>
+                                </Form.Field>
+                                {this.state.share_location !== 0 &&
+                                <Form.Field width={8}>
+                                    <label htmlFor="current_location">Current location</label>
+                                    <Input action={<Button type="button" onClick={this.handleUpdateLocation}> Upate current location </Button>} type="text" onChange={this.handleChange} name="current_location" value={ this.props.user.address } placeholder="Current location"></Input>
+                                </Form.Field>
+                                }
+                            </Form.Group>
                             <Form.Field style={{display: "none"}}>
                                 <label htmlFor="Latitude">Latitude</label>
                                 <Input type="text" onChange={this.handleChange} name="latitude" value={ this.state.latitude } placeholder="Latitude" required></Input>                   
@@ -499,36 +518,38 @@ class Profile extends Component{
                                 <label htmlFor="Ip">Ip</label>
                                 <Input type="text" onChange={this.handleChange} name="ip" value={ this.state.ip } placeholder="Ip" required></Input>                   
                             </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="gender">Gender</label>
-                                <Select compact options={gender_options} onChange={this.handleChange} name="gender" value={ this.state.gender } text={ this.state.gender } required></Select>                   
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="Orientation">Orientation</label>
-                                <Select compact options={orientation_options} onChange={this.handleChange} name="orientation" value={ this.state.orientation } text={ this.state.orientation } required></Select>                   
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="bio">Bio</label>
-                                <TextArea type="textArea" onChange={this.handleChange} name="bio" value={ this.state.bio } placeholder="Bio" required></TextArea>                   
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="interest">Interest (Please press tab to add an interest)</label>
-                                <Chips
-                                    value={[...this.state.tags.filter(elem => {
-                                        return this.state.delete_tags.indexOf(elem) === -1;
-                                    }), ...this.state.new_tags]}
-                                    onChange={this.onTagChange}
-                                    suggestions={this.state.all_tags}
-                                />
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="birthdate">Birthdate</label>
-                                <Input type="date" onChange={this.handleChange} name="birthdate" value={ this.state.birthdate } placeholder="Birthdate" required></Input>                   
-                            </Form.Field>
+                            <Form.Group>
+                                <Form.Field width={6}>
+                                    <label htmlFor="gender">Gender</label>
+                                    <Select compact options={gender_options} onChange={this.handleChange} name="gender" value={ this.state.gender } text={ this.state.gender } required></Select>                   
+                                </Form.Field>
+                                <Form.Field width={6}>
+                                    <label htmlFor="Orientation">Orientation</label>
+                                    <Select compact options={orientation_options} onChange={this.handleChange} name="orientation" value={ this.state.orientation } text={ this.state.orientation } required></Select>                   
+                                </Form.Field>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Field width={12}>
+                                    <label htmlFor="bio">Bio</label>
+                                    <TextArea type="textArea" onChange={this.handleChange} name="bio" value={ this.state.bio } placeholder="Bio" required></TextArea>                   
+                                </Form.Field>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Field width={12}>
+                                    <label htmlFor="interest">Interest (Please press tab to add an interest)</label>
+                                    <Chips
+                                        value={[...this.state.tags.filter(elem => {
+                                            return this.state.delete_tags.indexOf(elem) === -1;
+                                        }), ...this.state.new_tags]}
+                                        onChange={this.onTagChange}
+                                        suggestions={this.state.all_tags}
+                                    />
+                                </Form.Field>
+                            </Form.Group>
                             <Button type='submit' disabled = {!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && !this.state.userNameAlreadyTaken && !this.emailAlreadyTaken && emailOK && oldPassOK)}>Update profile information</Button>
                        </Form>
              
-                        Last visit: {new Date(this.state.last_visit / 1).toDateString()}
+                        Last visit: {this.state.last_visit.substr(0, 10) }
           
                 </Aux>
         )

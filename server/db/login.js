@@ -21,7 +21,10 @@ exports.login = async (req, res) => {
             res.status(403).send({ auth: false, token: null });
             return ;
         }
-
+        sql = 'UPDATE `user`  SET `last_visit` = CURRENT_TIMESTAMP WHERE `login` = ?';
+        sql = mysql.format(sql, [req.body.login]);
+        await db.conn.queryAsync(sql);
+        
         sql =   `SELECT CONCAT(address.zipcode, ' ', address.city, ' ', address.country) as address, user.role, user.user_id, user.password, user.login, user.email, user.last_name, user.first_name, 
                             user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
                             YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude

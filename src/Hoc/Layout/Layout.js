@@ -9,7 +9,7 @@ import withSocket from '../Socket/SocketHOC';
 import { toast } from 'react-toastify';
 import * as actionsActivity from '../../components/Activity/Actions';
 import * as actionsChat from '../../containers/SuperChat/Actions';
-
+import Footer from '../../components/Footer/Footer';
 import './Layout.css';
 
 
@@ -73,6 +73,7 @@ class Layout extends Component {
                     {this.props.children}
                 </main>
                 {this.props.logged && <SuperChat type="bottom" />}
+                <Footer />
             </Aux>
         );
     }
