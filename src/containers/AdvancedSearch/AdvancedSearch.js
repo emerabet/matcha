@@ -8,6 +8,7 @@ import axios from 'axios';
 import * as headers from '../../Tools/Header';
 
 import { buffer, point, polygon, pointsWithinPolygon, points } from '@turf/turf';
+import distance from '@turf/distance';
 
 
 class AdvancedSearch extends Component {
@@ -86,19 +87,54 @@ class AdvancedSearch extends Component {
         this.withinArea(this.state.lastDistanceChecked);
     }
 
-    withinArea = async (distance = 5) => {
+    handleFilter = async (filters) => {
+
+        if (filters.distance !== this.state.lastDistanceChecked) {
+            await this.withinArea(filters.distance);
+        }
+
+        let filtered = this.state.users.filter((itm) => {
+            if ((itm.age >= filters.age.min && itm.age <= filters.age.max)
+            && (itm.popularity >= filters.popularity.min && itm.popularity <= filters.popularity.max)
+            && (itm.inArea === true)
+            && (filters.tag.every((value) => {
+                return itm.tags.some((v) => v.tag === value);}))) {
+                return true;
+            } else {
+            return false; }
+        });
+
+        console.log('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
+        console.log(filtered);
+        console.log(this.state.users);
+        const nbPages = this.calculPagination(filtered.length, this.state.itemsPerPage);
+        const paged = this.paginate(filtered, this.state.itemsPerPage, 1);
+
+
+        console.log("Handle filter");
+        this.setState({ 
+            filteredUsers: filtered,
+            pagedUsers: paged,
+            nbPages: nbPages,
+            activePage: 1
+        });
+    }
+
+    withinArea = async (dist = 5) => {
         if (!this.props.user || !this.props.user.latitude || !this.props.user.longitude)
             return ;
 
-        const pt = point([parseFloat(this.props.user.latitude), parseFloat(this.props.user.longitude)]);
+        const lat = parseFloat(this.props.user.latitude);
+        const lng = parseFloat(this.props.user.longitude);
+        const pt = point([lat, lng]);
         console.log("mmmmmmmmmmmmmmmmmmmmmmmmmm");
         console.log(pt);
-        console.log(distance);
+        console.log(dist);
 
 
         console.log(pt);
 
-        const buffered = buffer(pt, parseInt(distance, 10), {units: 'kilometers'});
+        const buffered = buffer(pt, parseInt(dist, 10), {units: 'kilometers'});
 
         /* Copie en profondeur du tableau d'objets */
         const newUsers = JSON.parse(JSON.stringify(this.state.users));
@@ -111,6 +147,15 @@ class AdvancedSearch extends Component {
 
                 if (ptsWithin.features.length > 0) {
                     element.inArea = true;
+
+                    // Check distance whith more precision
+                    if (element.disance === undefined) {
+                        var from = point([lat, lng]);
+                        var to = point([element.latitude, element.longitude]);
+                        var options = {units: 'kilometers'};
+
+                        element.distance = distance(from, to, options);
+                    }
                 }
             } else {
                 element.inArea = false;
@@ -122,36 +167,6 @@ class AdvancedSearch extends Component {
                         users: newUsers,
                         lastDistanceChecked: distance
                     });
-    }
-
-    handleFilter = (filters) => {
-
-        if (filters.distance !== this.state.lastDistanceChecked) {
-            this.withinArea(filters.distance);
-        }
-
-        let filtered = this.state.users.filter((itm) => {
-            if ((itm.age >= filters.age.min && itm.age <= filters.age.max)
-            && (itm.popularity >= filters.popularity.min && itm.popularity <= filters.popularity.max)
-            && (itm.inArea === true)
-            && (filters.tag.every((value) => {
-                return itm.tags.some((v) => v.tag === value);})))
-                return true;
-            return false;
-        });
-
-        console.log(filtered);
-        const nbPages = this.calculPagination(filtered.length, this.state.itemsPerPage);
-        const paged = this.paginate(filtered, this.state.itemsPerPage, 1);
-
-
-        console.log("Handle filter");
-        this.setState({ 
-            filteredUsers: filtered,
-            pagedUsers: paged,
-            nbPages: nbPages,
-            activePage: 1
-         });
     }
 
     handleOrder = (name) => {
@@ -190,7 +205,6 @@ class AdvancedSearch extends Component {
 
     paginate = (array, itemsPerPage, activePage) => {
         console.log("paginate");
-        //const copy = JSON.parse(JSON.stringify(array));
         return array.slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage);
     }
 

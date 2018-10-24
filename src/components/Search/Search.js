@@ -10,13 +10,13 @@ class Search extends Component {
     state = {
         age: { min: 26, max: 38 },
         popularity: { min: 60, max: 85 },
-        distance: 30,
+        distance: 100,
         tag: []
     }
 
     componentDidMount() {
         console.log("Component Search Did Mount");
-        //this.props.handleFilter(this.state);
+        this.props.handleFilter(this.state);
     }
 
     getTags = () => {
@@ -84,7 +84,7 @@ class Search extends Component {
                 </Form.Field>
                 <Form.Field>
                     <label>Distance</label>
-                    <Slider onChange = { this.handleChangeDistance } min={ 5 } max={ 100 } defaultValue={ 30 } />
+                    <Slider onChange = { this.handleChangeDistance } min={ 5 } max={ 500 } defaultValue={ 100 } />
                 </Form.Field>
                 <Form.Field>
                     <label>Tag</label>

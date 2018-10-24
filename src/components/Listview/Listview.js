@@ -20,19 +20,19 @@ class Listview extends Component {
             const status = this.props.socket.connectedUsersMatcha.includes(user.user_id) ? 'Online' : 'Offline';
             const color = status === 'Online' ? 'green' : 'red';
             const meta = `${user.age} ans - ${user.city} (${user.country}) : ${status}`;
-            const extra = `${user.popularity} pts`;
+            const extra = `${user.popularity} pts | ${parseInt(user.distance, 10)} km from you`;
 
             return <Card 
-                         key={ user.user_id } raised header={user.first_name } 
-                         meta = {meta}
-                         image = { user.src != null && user.src }
-                         description= {user.bio}
-                         extra={extra}
-                         id={user.user_id}
-                         as='span'
-                         onClick={ this.handleClick }
-                         className='Listview__Card'
-                         color={color}
+                        key={ user.user_id } raised header={user.first_name } 
+                        meta = {meta}
+                        image = { user.src != null && user.src }
+                        description= {user.bio}
+                        extra={extra}
+                        id={user.user_id}
+                        as='span'
+                        onClick={ this.handleClick }
+                        className='Listview__Card'
+                        color={color}
                     />
         });
        return (<Card.Group className='Listview__Container' itemsPerRow={4} stackable> { array } </Card.Group>);
