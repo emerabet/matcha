@@ -1,62 +1,86 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Component } from 'react';
-import { Divider, Input, Form, Button } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import axios from 'axios';
-import withSocket from '../../Hoc/Socket/SocketHOC';
 import { toast } from 'react-toastify';
+import * as headers from '../../Tools/Header';
+import ReportedUser from '../../components/ReportedUser/ReportedUser';
 
 class  Admin extends Component {
-   
+
     state = {
-        username: '',
-        password: '',
-        logged: false
+        reported_users: [],
+        admin: false
     }
 
-    handleLogin = async (e) => {
-        e.preventDefault();
-       // await this.props.onAdminLogin(this.state.username, this.state.password, this.props.socket, this.callBackLogin);
-        //this.props.history.push('/home');
-    }
-
-    callBackLogin = () => {
-
-    }
-
-    handleChange = (e) => {
-        const { name, value } = e.target;
-        this.setState({ [name]: value });
+    async componentDidMount() {
+        const query = `
+                        query getReported {
+                            getReported{
+                                    user_id_reported,
+                                    user_reported_login,
+                                    user_reported_email,
+                                    user_id_reporter,
+                                    user_reporter_login,
+                                    user_reporter_email,
+                                    date
+                            }
+                        }
+                    `;        
+        
+        const response = await axios.post(`/api`,
+            {
+                query: query,
+                variables: {
+                    extended: true
+                }
+            }, headers.headers());
+            if (response.data.data.getReported)
+                this.setState({reported_users: response.data.data.getReported, admin: true});
+            else {
+                toast("You are not authorised to see this page", {type: toast.TYPE.ERROR});
+                this.props.history.push("/home");
+            }
     }
 
     render (){
-
-        return ( 
+        return (<div>
+           {this.state.admin
+            ?
             <div className='Login_Register__Container'>
-                <h2> Login as an admin </h2>
-                <Form className='Login_Register__Form' onSubmit={this.handleLogin}>
-                    <Form.Field>
-                        <label>Username</label>
-                        <input name="username" onChange={this.handleChange} placeholder='Username' required />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Password</label>
-                        <input name="password" type='password' onChange={this.handleChange} placeholder='Password' required />
-                    </Form.Field>
+                <h2> Reported users </h2>
+                <Table celled>
+                    <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell colSpan='3'>Reported user</Table.HeaderCell>
+                        <Table.HeaderCell colSpan='3'>User reporting</Table.HeaderCell>
+                        <Table.HeaderCell rowSpan='2'>Date</Table.HeaderCell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.HeaderCell>User id</Table.HeaderCell>
+                        <Table.HeaderCell>Login</Table.HeaderCell>
+                        <Table.HeaderCell>Email</Table.HeaderCell>
+                        <Table.HeaderCell>User id</Table.HeaderCell>
+                        <Table.HeaderCell>Login</Table.HeaderCell>
+                        <Table.HeaderCell>Email</Table.HeaderCell>
+                    </Table.Row>
+                    </Table.Header>
 
-                    <Button primary fluid type='submit'>Login</Button>
-                </Form>
+                    <Table.Body>
+                        {
+                            this.state.reported_users.map(reported => {
+                                return <ReportedUser key={`${reported.user_id_reported}-${reported.user_id_reporter}`} reported={reported} />
+                            })
+                        }
+                    </Table.Body>
+                </Table>
             </div>
+        :   
+        <div> unauthosrised user </div>
+        }
+        </div>
         );
     }
 }
 
-const mapStateToProps = null;
-
-const mapDispatchToProps = null /*(dispatch) => {
-    return {
-        onAdminLogin: (userName, password, socket, callBackLogin) => dispatch(actions.adminLogin(userName, password, socket, callBackLogin))
-    }
-}*/
-
-export default withSocket(connect(mapStateToProps, mapDispatchToProps)(Admin));
+export default Admin;

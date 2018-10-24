@@ -84,6 +84,16 @@ exports.registerSchema = buildSchema(`
         read_date: String
     }
 
+    type Reported {
+        user_id_reported: String
+        user_reported_login: String
+        user_reported_email: String
+        user_id_reporter: String
+        user_reporter_login: String
+        user_reporter_email: String
+        date: String
+    }
+
     type IsLikedReported {
         liked: String,
         reported: String
@@ -139,6 +149,7 @@ exports.registerSchema = buildSchema(`
         getContacts: [Contact],
         getMessages(chat_id: Int!): [Message],
         getStatusLikedReported(user_id2: Int!): IsLikedReported,
-        getAllMessagesFromUser: [Chat]
+        getAllMessagesFromUser: [Chat],
+        getReported: [Reported]
     }
 `);

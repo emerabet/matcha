@@ -44,6 +44,7 @@ class TopMenu extends Component {
     }
 
     render (){
+      console.log("USER MESNU", this.props.user);
       return (
         <Menu stackable icon='labeled' className='test' >
           <Menu.Item name='home' active={this.state.activeItem === 'home'} onClick={this.handleItemClick}>
@@ -114,7 +115,7 @@ class TopMenu extends Component {
             Log out
           </Menu.Item>
 
-          {this.props.role === 2
+          {parseInt(this.props.user.role, 10) === 2
           &&
           <Menu.Item
           name='admin'
@@ -138,7 +139,7 @@ class TopMenu extends Component {
 const mapStateToProps = state => {
   return {
     nb_unread_chats: state.chat.nb_unread_chats,
-    role: state.login.user.role,
+    //role: state.login.user.role,
     user: state.login.user
   }
 }
