@@ -44,8 +44,15 @@ class AdvancedSearch extends Component {
                                 email,
                                 age,
                                 popularity,
+                                bio,
                                 latitude,
                                 longitude,
+                                city,
+                                country,
+                                src, 
+                                pictures {
+                                    src
+                                }
                                 tags { 
                                     tag
                                 }
@@ -54,6 +61,11 @@ class AdvancedSearch extends Component {
                     `;
 
         const users = await axios.post(`/api`, { query: query, variables: { extended: true, orientation: localStorage.getItem('orientation') } }, headers.headers());
+
+        if (users === undefined || users === null)
+            return ;
+        
+        
         const tags = await axios.post('/api', { query: `query getTags { getTags { tag } }`}, headers.headers());
 
         const nbPages = this.calculPagination(users.data.data.getUsers.length, this.state.itemsPerPage);
@@ -72,7 +84,6 @@ class AdvancedSearch extends Component {
         console.log(this.state.users);
 
         this.withinArea(this.state.lastDistanceChecked);
-
     }
 
     withinArea = async (distance = 5) => {

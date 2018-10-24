@@ -36,6 +36,16 @@ class Layout extends Component {
             toast(data);
         });
 
+        this.props.socket.on('onlineChanged', (data) => {
+            console.log("///////////////////////////////////");
+            console.log("Connected users changed");
+            console.log(data);
+            this.props.socket.connectedUsersMatcha = null;
+            this.props.socket.connectedUsersMatcha = JSON.parse(data);
+            console.log(this.props.socket);
+            console.log("///////////////////////////////////");
+        });
+
         this.props.socket.on('newMessage', (mes) => {
             console.log("NEW MESSAGE", mes);
             this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes, this.props.nb_unread_chats);    

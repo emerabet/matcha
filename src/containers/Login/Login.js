@@ -67,7 +67,7 @@ class  Login extends Component {
                     <Button primary fluid type='submit'>Login</Button>
                     <Divider horizontal>Or</Divider>
                     <Button secondary fluid onClick={this.handleRegister}>Register</Button>
-                    <Divider horizontal>Or</Divider>
+                    <Divider horizontal></Divider>
                     <a style={{cursor: "pointer"}} onClick={this.resetPassword}>Password forgotten</a>
                 </Form>
             </div>

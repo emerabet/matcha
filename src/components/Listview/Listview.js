@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Card } from 'semantic-ui-react';
+import Aux from '../../Hoc/Aux/Aux';
+import withSocket from '../../Hoc/Socket/SocketHOC';
 import { Link } from 'react-router-dom';
 
 class Listview extends Component {
@@ -14,37 +16,39 @@ class Listview extends Component {
     }
 
     FillUsers = (users) => {
-
-        const extra = (
-            <a>
-              16 Friends
-            </a>
-          );
-
         const array = users.map(user => {
-            const meta = `${user.age} ans`;
-            return <Card key={ user.user_id } raised header={user.first_name } 
+            const status = this.props.socket.connectedUsersMatcha.includes(user.user_id) ? 'Online' : 'Offline';
+            const color = status === 'Online' ? 'green' : 'red';
+            const meta = `${user.age} ans - ${user.city} (${user.country}) : ${status}`;
+            const extra = `${user.popularity} pts`;
+
+            return <Card 
+                         key={ user.user_id } raised header={user.first_name } 
                          meta = {meta}
-                         description='Elliot is a sound engineer living in Nashville who enjoys playing guitar and hanging with his cat.'
+                         image = { user.src != null && user.src }
+                         description= {user.bio}
                          extra={extra}
                          id={user.user_id}
                          as='span'
                          onClick={ this.handleClick }
+                         className='Listview__Card'
+                         color={color}
                     />
         });
-       return (<Card.Group itemsPerRow={4} stackable> { array } </Card.Group>);
+       return (<Card.Group className='Listview__Container' itemsPerRow={4} stackable> { array } </Card.Group>);
     };
 
     render () {
         console.log("count:", this.props.users.length);
+        console.log("sockett:", this.props.socket);
         return (
-            <div>
+            <Aux>
                 { this.FillUsers(this.props.users) }
-            </div>
+            </Aux>
         );
     }
 }
 
 
 
-export default Listview;
+export default withSocket(Listview);

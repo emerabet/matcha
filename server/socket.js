@@ -90,7 +90,9 @@ const mySocket = async (io, socket, connectedUsers) => {
 			connectedUsers.set(token.user_id, user);
 			console.log("LIST OF CONNECTED USERS", connectedUsers);
 			console.log("FRIENDS", connectedUsers.get(token.user_id).friends);
-
+			let keys =[ ...connectedUsers.keys() ];
+			io.emit('onlineChanged', JSON.stringify(keys));
+			console.log('emitted');
 		} catch (err) {
 			console.log('Error socket on login: ', err);
 		}
@@ -114,6 +116,10 @@ const mySocket = async (io, socket, connectedUsers) => {
 		connectedUsers.delete(token.user_id);
 
 		console.log("LIST OF CONNECTED USERS", connectedUsers);
+
+		let keys =[ ...connectedUsers.keys() ];
+		io.emit('onlineChanged', JSON.stringify(keys));
+
 		console.log('********************** END DISCONNECT *********************************');
 	});
 
