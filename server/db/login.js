@@ -102,5 +102,5 @@ exports.checkToken = async (req, res) => {
 
 exports.logout = async (req, res) => {
     console.log("LOGGING OUT CLEAR COOKIES");
-    res.clearCookie("sessionid").status(200).send();
+    res.clearCookie("sessionid").status(200).send({ auth: false, token: null });
 }

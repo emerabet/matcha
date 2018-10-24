@@ -38,8 +38,8 @@ class TopMenu extends Component {
     handleLogOut = async (e, data) => {
       await localStorage.clear();
       await this.props.onClearStore();
-      await axios.post('/logout');
-      await this.props.socket.disconnect();
+      this.props.socket.disconnect();
+      axios.post('/logout');
       this.props.history.push('/login');
     }
 
