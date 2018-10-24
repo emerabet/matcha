@@ -19,17 +19,11 @@ module.exports = {
                 priority = 0;
             else
                 priority = 1;
-                /*let sql = "SELECT COUNT(`picture_id`) as nb FROM `picture` WHERE `user_id` = ? AND `priority` = 0;";
-                sql = mysql.format(sql, user_id);
-                let result = await db.conn.queryAsync(sql);
-                console.log("INSERTED", result[0].nb);
-                if (result[0].nb < 4) {*/
                 if (Number.parseInt(picture_id, 10) !== 0)
                     module.exports.deletePicture({picture_id: picture_id, picture_src: delete_url}, {token: token});
                     sql = "INSERT INTO `picture` (`picture_id`, `user_id`, `src`, `priority`) VALUES (NULL,?,?,?)";
                     sql = mysql.format(sql, [user_id, url, priority]);
                     result = await db.conn.queryAsync(sql); 
-                /*}*/
                 return result;
         } catch (err) {
             throw (errors.errorTypes.BAD_REQUEST);
@@ -67,7 +61,7 @@ module.exports = {
             
             let sql = "DELETE FROM `picture` WHERE `user_id` = ? AND `picture_id` = ?";
             sql = mysql.format(sql, [user_id, picture_id]);
-            const result = await db.conn.queryAsync(sql);
+            await db.conn.queryAsync(sql);
             return module.exports.getPicture({token: token});
         } catch (err) {
             throw (errors.errorTypes.BAD_REQUEST);
