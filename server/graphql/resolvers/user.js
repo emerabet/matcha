@@ -126,18 +126,25 @@ module.exports = {
         }
     },
 
-    getUsers: async ({ extended, orientation }) => {
+    getUsers: async ({ extended, orientation }, context) => {
         try {
+            const token = context.token;
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+
             console.log("****************************************************************************");
             console.log("****************************************************************************");
             console.log("in get users");
             console.log("Orientation: ", orientation);
+            console.log('********************');
+            console.log('********************');
 
             let criteria = '';
             switch(orientation) {
-                case 'female': criteria = `WHERE gender = 'Male' OR gender = 'Both'`
+                case 'female': criteria = `AND gender = 'Male' OR gender = 'Both'`
                     break;
-                case 'male': criteria = `WHERE gender = 'Female' OR gender = 'Both'`
+                case 'male': criteria = `AND gender = 'Female' OR gender = 'Both'`
                     break;
                 default: break;
             }
@@ -145,10 +152,12 @@ module.exports = {
             console.log('criteria: ', criteria);
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, 
                                 user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
-                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
+                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude, address.city, address.country, picture_id, priority, picture.src
                         FROM user 
-                        LEFT JOIN address on user.user_id = address.user_id
-                        LEFT JOIN profil on user.user_id = profil.user_id
+                        LEFT JOIN address on user.user_id = address.user_id 
+                        LEFT JOIN profil on user.user_id = profil.user_id 
+                        LEFT JOIN picture on user.user_id = picture.user_id 
+                        WHERE (picture.priority = 1 OR picture.priority IS NULL) 
                         ${criteria};`;
             console.log(sql);
             const users = await db.conn.queryAsync(sql);
@@ -161,6 +170,7 @@ module.exports = {
 
             return users;
         } catch (err) {
+            console.log(err);
             throw err.message;
         }
     },

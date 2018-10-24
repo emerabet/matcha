@@ -29,9 +29,10 @@ exports.registerSchema = buildSchema(`
         orientation: String
         bio: String
         birthdate: String
-        popularity: Int,
-        tags: [Tag],
-        pictures: [Picture],
+        popularity: Int
+        src: String
+        tags: [Tag] 
+        pictures: [Picture] 
         isMyProfile: Boolean
     }
 
