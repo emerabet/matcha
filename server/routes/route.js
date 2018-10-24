@@ -7,36 +7,44 @@ var fs = require('fs');
 var uniqid = require('uniqid');
 var axios = require('axios');
 const queriesPicture = require('../graphql/resolvers/picture');
+const sharp = require('sharp');
 
 const storage = multer.diskStorage({
     destination: './public/pictures',
+    fileFilter: (req, file, cb) => {
+        const picture_types = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+        let type = file.mimetype;
+            console.log("TYPE", type);
+            let i = type.lastIndexOf('/') + 1;
+            if (i !== -1)
+                type = type.substr(i);
+        if (picture_types.includes(type)) {
+          return cb(null, true);
+        } else {
+        return cb(null, false);}
+      },
     async filename(req, file, cb) {
-        const token = req.headers.authorization;
-        console.log("HEADER", req.headers.authorization)
-        console.log("BODY", req.body);
+        console.log("ICI", file);
+        const token = req.cookies['sessionid'];
         await jwt.verify(token, config.SECRET_KEY, async (err, decoded) => {
             if (await !fs.existsSync(`${appRoot}/public/pictures/${decoded.user_id}/`)){
                 await fs.mkdirSync(`${appRoot}/public/pictures/${decoded.user_id}/`);
             }
+            if (await !fs.existsSync(`${appRoot}/public/pictures/tmp/`)){
+                await fs.mkdirSync(`${appRoot}/public/pictures/tmp/`);
+            }
             let type = file.mimetype;
+            console.log("TYPE", type);
             let i = type.lastIndexOf('/') + 1;
             if (i !== -1)
                 type = type.substr(i);
-            const file_name = `${uniqid()}.${type}`;
-            cb(null, `/${decoded.user_id}/${file_name}`);
-            const url = `${appRoot}/public/pictures/${decoded.user_id}/${file_name}`;
-            console.log("body token", token);
-            const src = `/pictures/${decoded.user_id}/${file_name}`;
-            const r = await queriesPicture.addPicture({token: token, picture_id: req.body.picture_id, url: src, type: req.body.type, delete_url: req.body.src});
-            console.log("ADDPICTURE", r.insertId);
-            req.body.insertId = r.insertId;
-       /* if (!result.data.errors)
-            toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
-        else
-            toast("Error updating your profile information, please check that the password you put is correct !", {type: toast.TYPE.ERROR});
-    */
+                const file_name = `${uniqid()}.${type}`;
+                req.body.src = `/tmp/${file_name}`;
+                req.body.file_name = file_name;
+                req.body.user_id = decoded.user_id;
+                req.body.token = token;
+                cb(null, `/tmp/${file_name}`);
         });
-      
     },
   });
   

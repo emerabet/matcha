@@ -3,6 +3,7 @@ import { Modal, Image } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import axios from 'axios';
 import * as headers from '../../Tools/Header';
+import { toast } from 'react-toastify';
 
 class ProfilePicture extends Component {
     
@@ -20,12 +21,15 @@ class ProfilePicture extends Component {
         data.append('file', e.target.files[0], localStorage.getItem('token'));
         
         const res = await axios.post('/upload_picture', data, headers.headers());
+        if (res) {
         console.log("res", res);
         console.log("INSERT ID", res.insertId);
         console.log("UPLOADED");
         console.log("SIZE", res.data.pictures.length);
         if (res)
             this.props.handleRefresh(res.data.pictures);
+        } else
+        toast("Somethign went wrong, maybe the picture has a wrong format", {type: toast.TYPE.ERROR});
     }
 
     handleDelete = async (e) => {
@@ -57,17 +61,17 @@ class ProfilePicture extends Component {
  
     render () {
         return (
-            <Modal trigger={<div style={{marginLeft: "10px"}} >
-                                <label style={{display: "flex", flexDirection: "column"}} className="ui huge red left floated button">
+            <div >
+                                <label style={{display: "flex", flexDirection: "column", padding: "10px"}}>
+
+            <Modal trigger={
                                     <Image name="profile_picture" style={{marginBottom: "5px"}} src={this.props.picture_src} size='medium' rounded />
-                                        {` ${this.props.old_login} (${ this.props.popularity } pts)`}
-                                </label>                            
-                            </div>}>
+                                        }>
                             <Modal.Header>Display picture</Modal.Header>
                                 <Modal.Content image>
                                     <Image wrapped size='massive' src={this.props.picture_src} rounded/>
                                     <Modal.Description>            
-                                        <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="profile_picture" className="inputfile" onChange={this.handleUpload} id="upload_other_picture" />
+                                        <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="profile_picture" className="inputfile" id="upload_other_picture" />
                                         <label style={{width: "350px"}}  className="ui huge gray right floated button" htmlFor="upload_other_picture">
                                             Upload an other picture
                                         </label>
@@ -77,6 +81,9 @@ class ProfilePicture extends Component {
                                     </Modal.Description>
                                 </Modal.Content>
             </Modal>
+            {` ${this.props.old_login} (${ this.props.popularity } pts)`}
+                                </label>                            
+                            </div>
         );
     }
 }
