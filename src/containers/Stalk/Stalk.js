@@ -217,7 +217,7 @@ class Stalk extends Component {
 
     render() {
 
-        let loaded = null;
+        let loaded = <Segment basic tertiary loading className='Segment__Loading'></Segment>;
         let tags = [];
         
         if (this.state.user) {

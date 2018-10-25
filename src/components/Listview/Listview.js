@@ -18,15 +18,6 @@ class Listview extends Component {
 
     interactiveView = (users) => {
 
-    /*   <List divided selection>
-        <List.Item>
-        <Label color='red' horizontal>
-                Fruit
-            </Label>
-            Kumquats
-            </List.Item>
-    </List>*/
-
     const array = users.map(user => {
 
         const status = this.props.socket.connectedUsersMatcha !== undefined && this.props.socket.connectedUsersMatcha.includes(user.user_id) ? 'Online' : 'Offline';

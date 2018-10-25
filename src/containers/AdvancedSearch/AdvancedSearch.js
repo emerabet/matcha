@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Divider, Icon, Pagination, Grid  } from 'semantic-ui-react';
+import { Divider, Icon, Pagination, Grid, Loader, Dimmer, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { buffer, point, polygon, pointsWithinPolygon, points } from '@turf/turf';
 import distance from '@turf/distance';
@@ -21,7 +21,8 @@ class AdvancedSearch extends Component {
         nbPages: 60,
         tags: null,
         lastDistanceChecked: 50,
-        criteria: null
+        criteria: null,
+        loaded: false
     }
 
     async componentDidMount () {
@@ -80,6 +81,7 @@ class AdvancedSearch extends Component {
             pagedUsers: paged,
             tags: tags.data.data.getTags,
             nbPages: nbPages,
+            loaded: true
         }); 
         console.log(users.data.data.getUsers);
         console.log("------------");
@@ -246,7 +248,6 @@ class AdvancedSearch extends Component {
 
         return (
             <Aux>
-
                 <Grid stackable>
                     <Grid.Column width={5}>
                         <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} />
@@ -266,14 +267,7 @@ class AdvancedSearch extends Component {
                     <Grid.Column width={11}>
                         <MapSearch lat={this.props.user.latitude} lng={this.props.user.longitude} users={this.state.pagedUsers} height='800px' />
                     </Grid.Column>
-                </Grid>
-
-
-
-
-                
-                
-                
+                </Grid>                
             </Aux>
         );
     }
@@ -285,6 +279,7 @@ class AdvancedSearch extends Component {
         console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
         return (
             <Aux>
+                { this.state.loaded === false &&  <Segment basic tertiary loading className='Segment__Loading'></Segment>}
                 { this.props.mode === 'map' && this.state.users && this.interactiveView() }
                 { this.props.mode === 'classic' && this.state.users && this.classicView() }
             </Aux>

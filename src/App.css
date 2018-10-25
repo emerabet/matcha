@@ -67,12 +67,34 @@
   margin-top: 20px !important;
 }
 
+.Listview__Card {
+  cursor: pointer;
+}
+
+.Segment__Loading {
+  height: 80vh;
+}
+
+.Footer__Title {
+  color: white;
+  font-family: 'Chewy', cursive;
+  font-weight: 700;
+  font-size: 3vw;
+  position: relative;
+  bottom:0px;
+}
 
 footer {
     border-top: 10px solid #e64280;
     margin-top: 2vh;
     background-color: #4b003d;
+    color: white;
+    font-family: 'Chewy', cursive;
+    font-weight: 300;
+    font-size: 1vw;
     height: 100px;
+    padding-top: 30px;
+    text-align: center;
 }
 
 /* Smartphones (portrait and landscape) ----------- */

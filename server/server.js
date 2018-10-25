@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-
+const fs = require('fs');
 const mySocket = require('./socket');
 const port = 4000;
 const bodyParser = require('body-parser');
@@ -97,6 +97,17 @@ const io = require('socket.io')(http);
 /*
 const mySocketMiddleware = mySocket();
 */const connectedUsers = new Map();
+
+
+/*const https = require('https');
+
+const httpsOptions = {
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./server.crt')
+  }
+const server = https.createServer(httpsOptions, app).listen(port, () => {
+    console.log('server running at ' + port)
+  })*/
 
 console.log('ici');
 io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
