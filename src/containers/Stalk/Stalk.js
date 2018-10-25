@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as headers from '../../Tools/Header';
 import Activity from '../../components/Activity/Activity';
 import withSocket from '../../Hoc/Socket/SocketHOC';
+import MapSearch from '../../components/MapSearch/MapSearch';
 
 class Stalk extends Component {
 
@@ -142,16 +143,6 @@ class Stalk extends Component {
             colorLike: colorLike,
             colorBlacklist: colorBlacklist,
         })
-
-        console.log("is reported or liked?");
-        console.log(isLikedReported);
-
-        // * verifier si y'a deja un match
-
-        // * envoyer une socket de notification
-        
-        // Sinon charger le module de notifications ???
-
     }
 
     handleNextPhoto  = async (e, data) => {
@@ -178,7 +169,6 @@ class Stalk extends Component {
     getActivePicture = (user) => {
         if (!user || !user.pictures || user.pictures.length === 0)
             return '/pictures/smoke_by.png';
-        console.log("kkkijiij");
         console.log(user);
         return user.pictures[this.state.activeImage].src;
     }
@@ -254,7 +244,7 @@ class Stalk extends Component {
                             </Button.Group>
                         </Grid.Column>
                         <Grid.Column>
-                            <Card>
+                            <Card fluid>
                                 <Card.Content>
                                     <Card.Header>{this.state.user.login} {this.state.user.age}</Card.Header>
                                     <Card.Meta>{this.state.user.country} ({this.state.user.city})</Card.Meta>
@@ -280,7 +270,10 @@ class Stalk extends Component {
                                     </div>
                                 </Card.Content>
                             </Card>
-                            { this.state.isMyProfile &&  <Card>
+                            <Card fluid>
+                                <MapSearch lat={this.state.user.latitude} lng={this.state.user.longitude} height='250px' users={[this.state.user]}></MapSearch>
+                            </Card>
+                            { this.state.isMyProfile &&  <Card fluid>
                                                             <Card.Content>
                                                                 <Card.Header>Recent Activity</Card.Header>
                                                             </Card.Content>

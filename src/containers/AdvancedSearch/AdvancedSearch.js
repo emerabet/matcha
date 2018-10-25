@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Search from './../../components/Search/Search';
 import Listview from './../../components/Listview/Listview';
+import MapSearch from './../../components/MapSearch/MapSearch';
 import Aux from '../../Hoc/Aux/Aux';
 import { Divider, Icon, Pagination  } from 'semantic-ui-react';
 import { connect } from 'react-redux';
@@ -165,7 +166,7 @@ class AdvancedSearch extends Component {
         console.log("set state within area");
         await this.setState({
                         users: newUsers,
-                        lastDistanceChecked: distance
+                        lastDistanceChecked: dist
                     });
     }
 
@@ -226,6 +227,9 @@ class AdvancedSearch extends Component {
                 { this.state.users && <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} /> }
                 { this.state.users && <Divider horizontal>Results</Divider> }
                 { this.state.users && <Listview users={ this.state.pagedUsers } history={this.props.history} /> }
+
+                { this.state.users && <MapSearch lat={this.props.user.latitude} lng={this.props.user.longitude} users={this.state.pagedUsers} height='800px' /> }
+
                 { this.state.users && <Pagination className='Pagination__Container'
                     activePage={this.state.activePage}
                     ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}

@@ -17,6 +17,7 @@ import AdvancedSearch from './containers/AdvancedSearch/AdvancedSearch';
 import Layout from './Hoc/Layout/Layout';
 import Aux from './Hoc/Aux/Aux';
 import NewPassword from './components/NewPassword/NewPassword';
+import map from './components/MapSearch/MapSearch';
 
 
 class App extends Component {
@@ -39,6 +40,7 @@ class App extends Component {
         <Layout>
           <Switch>
             <Route path="/home" exact component={ Home }/>
+            <Route path="/map" exact component={ map }/>
             <Route path="/profile" exact component={ Profile }/>
             <Route path="/verif/:registration_token" component={Verif}/>
             <Route path="/search" exact component={ AdvancedSearch }/>
