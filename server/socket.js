@@ -50,8 +50,6 @@ const mySocket = async (io, socket, connectedUsers) => {
 			}
 		});
 	}
-
-
 	
 	/*
 	/* **************************** Login Event ****************************
@@ -92,6 +90,7 @@ const mySocket = async (io, socket, connectedUsers) => {
 			console.log("FRIENDS", connectedUsers.get(token.user_id).friends);
 			let keys =[ ...connectedUsers.keys() ];
 			io.emit('onlineChanged', JSON.stringify(keys));
+			socket.to(`${token.user_id}`).emit("connected", token.user_id, connectedUsers.get(token.user_id).username);
 			console.log('emitted');
 		} catch (err) {
 			console.log('Error socket on login: ', err);
@@ -113,6 +112,8 @@ const mySocket = async (io, socket, connectedUsers) => {
 			throw new Error('Decode failed on login');
 		}
 
+		socket.to(`${token.user_id}`).emit("disconnected", token.user_id, connectedUsers.get(token.user_id).username);
+		
 		connectedUsers.delete(token.user_id);
 
 		console.log("LIST OF CONNECTED USERS", connectedUsers);
