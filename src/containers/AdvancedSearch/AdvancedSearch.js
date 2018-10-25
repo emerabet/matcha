@@ -228,7 +228,7 @@ class AdvancedSearch extends Component {
                 <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} />
                 <Divider horizontal>Results</Divider> 
                 <Listview users={ this.state.pagedUsers } history={this.props.history} mode={this.props.mode} />
-                <Pagination className='Pagination__Container'
+                <Pagination fluid className='Pagination__Container'
                     activePage={this.state.activePage}
                     ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
                     firstItem={{ content: <Icon name='angle double left' />, icon: true }}
@@ -247,12 +247,12 @@ class AdvancedSearch extends Component {
         return (
             <Aux>
 
-                <Grid>
+                <Grid stackable>
                     <Grid.Column width={5}>
                         <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} />
                         <Divider horizontal>Results</Divider> 
                         <Listview users={ this.state.pagedUsers } history={this.props.history} mode={this.props.mode} />
-                        <Pagination className='Pagination__Container'
+                        <Pagination fluid className='Pagination__Container'
                             activePage={this.state.activePage}
                             ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
                             firstItem={{ content: <Icon name='angle double left' />, icon: true }}

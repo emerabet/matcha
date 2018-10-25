@@ -4,7 +4,7 @@ main {
 }
 
 /* Smartphones (portrait and landscape) ----------- */
-@media only screen and (min-device-width : 280px) and (max-device-width : 480px) {
+@media screen and (max-width : 768px) {
     main {
         width:95%;
     }

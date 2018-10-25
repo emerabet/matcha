@@ -22,10 +22,16 @@
   font-size: large;
 }
 
+#root {
+  background-color: #f7f4f3;
+}
 
 
-
-
+.Menu__Container {
+  margin-bottom: 3vh;
+  background-color: #fff;;
+  border-bottom: 10px solid #e64280;
+}
 
 .Login_Register__Container {
   width: 100%;
@@ -49,6 +55,14 @@
 
 .Pagination__Container {
   margin-top: 20px !important;
+}
+
+
+footer {
+    border-top: 10px solid #e64280;
+    margin-top: 2vh;
+    background-color: #4b003d;
+    height: 100px;
 }
 
 /* Smartphones (portrait and landscape) ----------- */
