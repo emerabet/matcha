@@ -11,7 +11,8 @@ import * as actions from '../SuperChat/Actions';
 const open_style = {
     position: "fixed",
     bottom: "0",
-    right: "5%"
+    right: "5%",
+    zIndex: "80000"
 }
 
 const closed_style = {

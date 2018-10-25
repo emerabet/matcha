@@ -205,8 +205,11 @@ export const openChat = (nb_unread_chats, chat_id, contacts) => {
 
 export const contactConnected= (connectedList = [], contact_id) => {
     return async dispatch => {
-        const updatedconnectedList = [...connectedList, contact_id];
-        dispatch({ type: CONTACT_CONNECTED, data: updatedconnectedList });
+        if (contact_id) {
+            const updatedconnectedList = [...connectedList, contact_id];
+            dispatch({ type: CONTACT_CONNECTED, data: updatedconnectedList });
+        } else
+        dispatch({ type: CONTACT_CONNECTED, data: connectedList });
     }
 }
 

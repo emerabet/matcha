@@ -42,6 +42,8 @@ class Layout extends Component {
             console.log(data);
             this.props.socket.connectedUsersMatcha = null;
             this.props.socket.connectedUsersMatcha = JSON.parse(data);
+            if (this.props.connectedList.length === 0)
+            this.props.onContactConnected(this.props.socket.connectedUsersMatcha, null);
             console.log(this.props.socket);
             console.log("///////////////////////////////////");
         });
