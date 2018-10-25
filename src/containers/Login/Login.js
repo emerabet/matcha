@@ -53,7 +53,7 @@ class  Login extends Component {
     render (){
         return (
             <div className='Login_Register__Container'>
-                
+                <span className='Login__Title'>MATCHA</span>
                 <Form className='Login_Register__Form' onSubmit={this.handleLogin}>
                     <Form.Field>
                         <label>Username</label>

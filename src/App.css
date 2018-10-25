@@ -41,7 +41,7 @@
   justify-content: center;
   flex-direction: column;
   flex-wrap: wrap;
-  background-image: linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%);
+  background-image: linear-gradient(-20deg, #e64280 0%, #303030 100%);
 }
 
 .Login_Register__Form {
@@ -50,7 +50,17 @@
   width: 40%;
   padding: 3vw;
   background-color: #ffffff;
-  box-shadow: 1px 1px 12px #ffffff;
+  -webkit-box-shadow:inset 0px 0px 0px 12px #dedede66;
+    -moz-box-shadow:inset 0px 0px 0px 12px #dedede66;
+    box-shadow:inset 0px 0px 0px 12px #dedede66;
+}
+
+.Login__Title {
+  color: white;
+  font-family: 'Chewy', cursive;
+  font-weight: 700;
+  font-size: 3vw;
+  margin-bottom:20px;
 }
 
 .Pagination__Container {
