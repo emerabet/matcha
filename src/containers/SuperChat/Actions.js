@@ -7,6 +7,8 @@ export const MESSAGE = 'MESSAGE';
 export const UNREAD_CHAT = 'UNREAD_CHAT';
 export const READ_CHAT = 'READ_CHAT';
 export const NEW_MESSAGE = 'NEW_MESSAGE';
+export const CONTACT_CONNECTED = 'CONTACT_CONNECTED';
+export const CONTACT_DISCONNECTED = 'CONTACT_DISCONNECTED';
 
 export const addContacts = () => {
     return async dispatch => {
@@ -198,5 +200,24 @@ export const openChat = (nb_unread_chats, chat_id, contacts) => {
             }, headers.headers());
         console.log("READ CHAT", response.data.data.readChat);
         } catch (err) {}
+    }
+}
+
+export const contactConnected= (connectedList = [], contact_id) => {
+    return async dispatch => {
+        const updatedconnectedList = [...connectedList, contact_id];
+        dispatch({ type: CONTACT_CONNECTED, data: updatedconnectedList });
+    }
+}
+
+export const contactDisconnected= (connectedList, contact_id) => {
+    return async dispatch => {
+        const updatedconnectedList = await connectedList.filter(contact => {
+            if (contact === contact_id)
+                return false;
+            else
+                return true;
+        });
+        dispatch({ type: CONTACT_DISCONNECTED, data: updatedconnectedList });
     }
 }

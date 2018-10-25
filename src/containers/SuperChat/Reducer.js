@@ -3,7 +3,8 @@ import * as clearActions from '../../components/Menu/Actions';
 
 const initialState = {
     contacts: [],
-    chats: []
+    chats: [],
+    connectedList: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -37,6 +38,16 @@ const reducer = (state = initialState, action) => {
         console.log("from reducer chats", action);
             nextState = { ...state,
                 chats: action.data };     
+            break ;
+        case actions.CONTACT_CONNECTED:
+            console.log("from reducer chats connected", action);
+                nextState = { ...state,
+                    connectedList: action.data };     
+            break ;
+        case actions.CONTACT_DISCONNECTED:
+            console.log("from reducer chats connected", action);
+                nextState = { ...state,
+                    connectedList: action.data };     
             break ;
         default: return state;
     }

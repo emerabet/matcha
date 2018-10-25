@@ -140,9 +140,9 @@ class ChatBottom extends Component {
                 ?
                     this.state.active_chat_list_display === false
                         ?
-                            <ContactList pos="bottom" selectContact={this.selectContact} contacts={this.props.contacts}/>
+                            <ContactList pos="bottom" connectedList={this.props.connectedList} selectContact={this.selectContact} contacts={this.props.contacts}/>
                         :
-                            <ContactList pos="main" selectContact={this.selectContact} contacts={this.state.contacts_active_chats}/>
+                            <ContactList pos="main" connectedList={this.props.connectedList} selectContact={this.selectContact} contacts={this.state.contacts_active_chats}/>
                 :
                     <Chat contacts={this.props.contacts} pos="bottom" addMessage={this.handleAddMessage} chat_id={this.state.active_chat_id} messages={this.state.active_chat_messages} contact_login={this.state.active_chat_contact_login} contact_id={this.state.active_chat_contact_id} contact_src={this.state.active_chat_contact_src} />
                 }

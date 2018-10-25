@@ -28,9 +28,9 @@ class SuperChat extends Component {
             <Aux>
                 {this.props.type === "bottom"
                 ?
-                    <ChatBottom handleAddMessage={this.handleAddMessage} contacts={this.props.contacts} chats={this.props.chats}/>
+                    <ChatBottom connectedList={this.props.connectedList} handleAddMessage={this.handleAddMessage} contacts={this.props.contacts} chats={this.props.chats}/>
                 :
-                    <BigChat handleAddMessage={this.handleAddMessage} contacts={this.props.contacts} chats={this.props.chats} />
+                    <BigChat connectedList={this.props.connectedList} handleAddMessage={this.handleAddMessage} contacts={this.props.contacts} chats={this.props.chats} />
                 }
             </Aux>
         )
@@ -41,7 +41,8 @@ const mapStateToProps = state => {
     return {
         contacts: state.chat.contacts,
         chats: state.chat.chats,
-        user: state.login.user
+        user: state.login.user,
+        connectedList: state.chat.connectedList
     }
 };
 

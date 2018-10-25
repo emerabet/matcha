@@ -13,6 +13,18 @@ class Chat extends Component {
         contactIsTyping: false
     }
 
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+      }
+      
+      componentDidMount() {
+        this.scrollToBottom();
+      }
+      
+      componentDidUpdate() {
+        this.scrollToBottom();
+      }
+
     handleSubmit = async () => {
         await this.props.addMessage(this.props.chat_id, this.props.contact_id, this.state.message);
         this.setState({message: "", isTyping: false});
@@ -61,7 +73,7 @@ class Chat extends Component {
                         </div>
                     </div>
                 }
-                <div className="chat-messages">
+                <div className="chat-messages" ref={(el) => { this.messagesEnd = el; }}>
                 {
                     this.props.messages[0].messages.map((message) => {
                     return ( 

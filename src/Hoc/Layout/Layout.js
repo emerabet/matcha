@@ -63,6 +63,19 @@ class Layout extends Component {
             //this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
         });
 
+        this.props.socket.on('disconnected', (user_id_disconnected, login) => {
+            console.log("has just disconnected", user_id_disconnected);
+            toast(`${login} has just disconnected`);
+            this.props.onContactDisconnected(this.props.connectedList, user_id_disconnected);
+        })
+
+        this.props.socket.on('connected', (user_id_connected, login) => {
+            console.log("has just connected", user_id_connected);
+            toast(`${login} has just connected`);
+            this.props.onContactConnected(this.props.connectedList, user_id_connected);
+        })
+
+
     }
 
     render() {
@@ -86,7 +99,8 @@ const mapStateToProps = state => {
         chats: state.chat.chats,
         contacts: state.chat.contacts,
         nb_unread_chats: state.chat.nb_unread_chats,
-        logged: state.login.logged
+        logged: state.login.logged,
+        connectedList: state.chat.connectedList
     }
 };
 
@@ -95,7 +109,9 @@ const mapDispatchToProps = (dispatch) => {
         onLoadNotifications: (type) => dispatch(actionsActivity.load(type)),
         onReceiveMessage: (chats, contacts, mes, nb_unread_chats) => dispatch(actionsChat.receiveMessage(chats, contacts, mes, nb_unread_chats)),
         onContactIsTyping: (contacts, contact_id) => dispatch(actionsChat.contactIsTyping(contacts, contact_id)),
-        onContactStopTyping: (contacts, contact_id) => dispatch(actionsChat.contactStopTyping(contacts, contact_id))
+        onContactStopTyping: (contacts, contact_id) => dispatch(actionsChat.contactStopTyping(contacts, contact_id)),
+        onContactConnected: (connectedList, contact_id) => dispatch(actionsChat.contactConnected(connectedList, contact_id)),
+        onContactDisconnected: (connectedList, contact_id) => dispatch(actionsChat.contactDisconnected(connectedList, contact_id))
     }
 }
 
