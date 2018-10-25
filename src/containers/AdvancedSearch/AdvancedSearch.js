@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
+import { Divider, Icon, Pagination, Grid  } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { buffer, point, polygon, pointsWithinPolygon, points } from '@turf/turf';
+import distance from '@turf/distance';
+import axios from 'axios';
 import Search from './../../components/Search/Search';
 import Listview from './../../components/Listview/Listview';
 import MapSearch from './../../components/MapSearch/MapSearch';
 import Aux from '../../Hoc/Aux/Aux';
-import { Divider, Icon, Pagination  } from 'semantic-ui-react';
-import { connect } from 'react-redux';
-import axios from 'axios';
 import * as headers from '../../Tools/Header';
-
-import { buffer, point, polygon, pointsWithinPolygon, points } from '@turf/turf';
-import distance from '@turf/distance';
-
 
 class AdvancedSearch extends Component {
 
@@ -28,6 +26,8 @@ class AdvancedSearch extends Component {
 
     async componentDidMount () {
         console.log('ComponentDidMount AdvSearch');
+        console.log(this.props);
+        console.log('azzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz');
         this.loadData();
     }
 
@@ -219,18 +219,16 @@ class AdvancedSearch extends Component {
         });
     }
 
-    render() {
-        console.log("re-render");
-        console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+
+
+    classicView = () => {
+
         return (
             <Aux>
-                { this.state.users && <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} /> }
-                { this.state.users && <Divider horizontal>Results</Divider> }
-                { this.state.users && <Listview users={ this.state.pagedUsers } history={this.props.history} /> }
-
-                { this.state.users && <MapSearch lat={this.props.user.latitude} lng={this.props.user.longitude} users={this.state.pagedUsers} height='800px' /> }
-
-                { this.state.users && <Pagination className='Pagination__Container'
+                <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} />
+                <Divider horizontal>Results</Divider> 
+                <Listview users={ this.state.pagedUsers } history={this.props.history} mode={this.props.mode} />
+                <Pagination className='Pagination__Container'
                     activePage={this.state.activePage}
                     ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
                     firstItem={{ content: <Icon name='angle double left' />, icon: true }}
@@ -239,7 +237,56 @@ class AdvancedSearch extends Component {
                     nextItem={{ content: <Icon name='angle right' />, icon: true }}
                     totalPages={this.state.nbPages} 
                     onPageChange= {this.handlePageChange}
-                /> }
+                />
+            </Aux>
+        );
+    }
+
+    interactiveView = () => {
+
+        return (
+            <Aux>
+
+                <Grid>
+                    <Grid.Column width={5}>
+                        <Search tags={ this.state.tags } handleFilter={ this.handleFilter } handleSort={this.handleOrder} />
+                        <Divider horizontal>Results</Divider> 
+                        <Listview users={ this.state.pagedUsers } history={this.props.history} mode={this.props.mode} />
+                        <Pagination className='Pagination__Container'
+                            activePage={this.state.activePage}
+                            ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
+                            firstItem={{ content: <Icon name='angle double left' />, icon: true }}
+                            lastItem={{ content: <Icon name='angle double right' />, icon: true }}
+                            prevItem={{ content: <Icon name='angle left' />, icon: true }}
+                            nextItem={{ content: <Icon name='angle right' />, icon: true }}
+                            totalPages={this.state.nbPages} 
+                            onPageChange= {this.handlePageChange}
+                        />
+                    </Grid.Column>
+                    <Grid.Column width={11}>
+                        <MapSearch lat={this.props.user.latitude} lng={this.props.user.longitude} users={this.state.pagedUsers} height='800px' />
+                    </Grid.Column>
+                </Grid>
+
+
+
+
+                
+                
+                
+            </Aux>
+        );
+    }
+
+
+
+    render() {
+        console.log("re-render");
+        console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+        return (
+            <Aux>
+                { this.props.mode === 'map' && this.state.users && this.interactiveView() }
+                { this.props.mode === 'classic' && this.state.users && this.classicView() }
             </Aux>
         );
     }

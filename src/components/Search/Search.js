@@ -95,7 +95,6 @@ class Search extends Component {
                     <Button name='age' onClick={this.handleOrdering}>Age</Button>
                     <Button name='popularity' onClick={this.handleOrdering}>Popularity</Button>
                 </Form.Field>
-                <Button fluid>Search</Button>
             </Form>
         );
     }

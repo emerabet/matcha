@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import { Card, List, Image } from 'semantic-ui-react';
 import Aux from '../../Hoc/Aux/Aux';
 import withSocket from '../../Hoc/Socket/SocketHOC';
 import { Link } from 'react-router-dom';
@@ -15,9 +15,39 @@ class Listview extends Component {
         this.props.history.push(`/stalk/${data.id}`);
     }
 
+
+    interactiveView = (users) => {
+
+    /*   <List divided selection>
+        <List.Item>
+        <Label color='red' horizontal>
+                Fruit
+            </Label>
+            Kumquats
+            </List.Item>
+    </List>*/
+
+    const array = users.map(user => {
+
+        const status = this.props.socket.connectedUsersMatcha !== undefined && this.props.socket.connectedUsersMatcha.includes(user.user_id) ? 'Online' : 'Offline';
+        const color = status === 'Online' ? 'green' : 'red';
+        const meta = `${user.age} ans - ${user.city} (${user.country}) : ${status}`;
+        const extra = `${user.popularity} pts | ${parseInt(user.distance, 10)} km from you`;
+
+        return  <List.Item key={ user.user_id }>
+                    <Image avatar src={ user.src != null && user.src } />
+                    <List.Content>
+                        <List.Header>{user.first_name }</List.Header>
+                    </List.Content>
+                </List.Item>
+        });
+        return (<List divided selection>{ array }</List>);
+    }
+
     FillUsers = (users) => {
         const array = users.map(user => {
-            const status = this.props.socket.connectedUsersMatcha.includes(user.user_id) ? 'Online' : 'Offline';
+
+            const status = this.props.socket.connectedUsersMatcha !== undefined && this.props.socket.connectedUsersMatcha.includes(user.user_id) ? 'Online' : 'Offline';
             const color = status === 'Online' ? 'green' : 'red';
             const meta = `${user.age} ans - ${user.city} (${user.country}) : ${status}`;
             const extra = `${user.popularity} pts | ${parseInt(user.distance, 10)} km from you`;
@@ -35,7 +65,7 @@ class Listview extends Component {
                         color={color}
                     />
         });
-       return (<Card.Group className='Listview__Container' itemsPerRow={4} stackable> { array } </Card.Group>);
+        return (<Card.Group className='Listview__Container' itemsPerRow={4} stackable> { array } </Card.Group>);
     };
 
     render () {
@@ -43,7 +73,8 @@ class Listview extends Component {
         console.log("sockett:", this.props.socket);
         return (
             <Aux>
-                { this.FillUsers(this.props.users) }
+                { this.props.mode === 'classic' && this.FillUsers(this.props.users) }
+                { this.props.mode === 'map' && this.interactiveView(this.props.users) }
             </Aux>
         );
     }

@@ -40,10 +40,9 @@ class App extends Component {
         <Layout>
           <Switch>
             <Route path="/home" exact component={ Home }/>
-            <Route path="/map" exact component={ map }/>
             <Route path="/profile" exact component={ Profile }/>
             <Route path="/verif/:registration_token" component={Verif}/>
-            <Route path="/search" exact component={ AdvancedSearch }/>
+            <Route path="/search" exact render={() => <AdvancedSearch mode='map' />}/>
             <Route path="/notifications" exact component={ Notification }/>
             <Route path="/stalk/:id(\d+)" exact component={ Stalk }/>
             <Route path="/chat" exact component={SuperChat}/>

@@ -16,7 +16,7 @@ class Home extends Component {
     const { activeItem } = this.state
 
     return (
-        <AdvancedSearch history={this.props.history} type='home'></AdvancedSearch>
+        <AdvancedSearch history={this.props.history} mode='classic'></AdvancedSearch>
     )
   }
 
