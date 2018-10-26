@@ -4,7 +4,7 @@ import Chat from '../Chat/Chat';
 import './BigChat.css';
 import { connect } from 'react-redux';
 import * as actions from '../SuperChat/Actions';
-import { Button } from 'semantic-ui-react';
+import { Button, Grid, Segment } from 'semantic-ui-react';
 import Aux from '../../Hoc/Aux/Aux';
 import SimplePeer from 'simple-peer';
 import withSocket from '../../Hoc/Socket/SocketHOC';
@@ -179,8 +179,8 @@ class BigChat extends Component {
 
     render() {
         return (
-            <div className="big-chat-container">
-                <div className="contact-list">
+            <Grid stackable columns={2}>
+                <Grid.Column width={6}>
                 {
                     this.state.active_chat_id !== 0
                 &&
@@ -221,11 +221,12 @@ class BigChat extends Component {
                     </Aux>
                 }
                     <ContactList pos="main" connectedList={this.props.connectedList} selectContact={this.selectContact} contacts={this.props.contacts}/>    
-                </div>
-                <div className="big-chat">
+                </Grid.Column>
+                <Grid.Column width={10}>
                     <Chat contacts={this.props.contacts} pos="main" addMessage={this.handleAddMessage} chat_id={this.state.active_chat_id} messages={this.state.active_chat_messages} contact_login={this.state.active_chat_contact_login} contact_id={this.state.active_chat_contact_id} contact_src={this.state.active_chat_contact_src} />
-                </div>
-            </div>
+                </Grid.Column>
+
+            </Grid>
         )
     }
 }

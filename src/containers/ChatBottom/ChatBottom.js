@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { Card, Icon, Button, Image, Label, Statistic } from 'semantic-ui-react'
+import { Card, Icon, Image, Label } from 'semantic-ui-react'
 import ContactList from '../ContactList/ContactList';
-import axios from 'axios';
-import * as headers from '../../Tools/Header';
 import Aux from '../../Hoc/Aux/Aux';
 import Chat from '../Chat/Chat';
 import { connect } from 'react-redux';
@@ -17,16 +15,6 @@ const open_style = {
 
 const closed_style = {
     display: "none"
-}
-
-const no_button = {
-    display: "none"
-}
-
-const display_button = {
-    position: "fixed",
-    bottom: "0",
-    right: "5%"
 }
 
 class ChatBottom extends Component {

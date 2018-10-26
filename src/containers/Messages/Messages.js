@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Message from '../../components/Message/Message';
+import Aux from '../../Hoc/Aux/Aux';
+import { Grid, GridColumn } from 'semantic-ui-react';
 
 class Messages extends Component {
     
@@ -17,15 +19,22 @@ class Messages extends Component {
 
     render() {
         return (
-            <div className={this.props.pos === "main" ? "chat-messages" : "chat-messages_s"} ref={(el) => { this.messagesEnd = el; }}>
+            <Aux>
+                
+                <div className={this.props.pos === "main" ? "chat-messages" : "chat-messages_s"} ref={(el) => { this.messagesEnd = el; }}>
+                    <Grid stackable columns={1}>
                     {
                         this.props.messages.messages.map((message) => {
                         return ( 
-                            <Message key={message.message_id} pos={this.props.pos} type={this.props.contact_id === message.user_id_sender ? "message-from-contact" : "message-from-user"} msg={message.message} from={this.props.contact_id === message.user_id_sender ? message.login : "Me"} date={message.date}/>
+                            
+                                    <Message key={message.message_id} pos={this.props.pos} type={this.props.contact_id === message.user_id_sender ? "message-from-contact" : "message-from-user"} msg={message.message} from={this.props.contact_id === message.user_id_sender ? message.login : "Me"} date={message.date}/>
+                           
                         )
                     })
                     }
-            </div>
+                    </Grid>
+                </div>
+            </Aux>
         )
     }
 }
