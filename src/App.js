@@ -56,7 +56,11 @@ class App extends Component {
     return (
         <Aux>
           { routes }
-          <ToastContainer />
+          <ToastContainer
+            className='toast-container'
+            toastClassName="dark-toast"
+            progressClassName="dark-toast"
+          />
         </Aux>
     );
   }
