@@ -15,7 +15,8 @@ import 'semantic-ui-css/semantic.min.css';
 import Reload from './Hoc/Reload';
 import SocketProvider from './Hoc/Socket/SocketProvider';
 
-axios.defaults.baseURL = 'http://localhost:4000';
+//axios.defaults.baseURL = 'http://localhost:4000';
+axios.defaults.baseURL = 'https://10.18.201.85:4000';
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {
     // Do something with response data

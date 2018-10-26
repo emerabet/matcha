@@ -9,6 +9,8 @@ export const READ_CHAT = 'READ_CHAT';
 export const NEW_MESSAGE = 'NEW_MESSAGE';
 export const CONTACT_CONNECTED = 'CONTACT_CONNECTED';
 export const CONTACT_DISCONNECTED = 'CONTACT_DISCONNECTED';
+export const START_VIDEO_CHAT = 'START_VIDEO_CHAT';
+export const CLOSE_VIDEO_CHAT = 'CLOSE_VIDEO_CHAT';
 
 export const addContacts = () => {
     return async dispatch => {
@@ -222,5 +224,34 @@ export const contactDisconnected= (connectedList, contact_id) => {
                 return true;
         });
         dispatch({ type: CONTACT_DISCONNECTED, data: updatedconnectedList });
+    }
+}
+
+export const startVideoChat = (videoChats, from, data) => {
+    return async dispatch => {
+        const updatedVideoChats = [...videoChats, {from: from, offer: "initiated", data: data}];
+        
+        console.log("VVV", videoChats, updatedVideoChats);
+        dispatch({ type: START_VIDEO_CHAT, data: updatedVideoChats})
+    }
+}
+
+export const acceptVideoChat = (videoChats, from, data) => {
+    return async dispatch => {
+        const updatedVideoChats = [...videoChats, {from: from, offer: "accepted", data: data}];
+        
+        console.log("VVV", videoChats, updatedVideoChats);
+        dispatch({ type: START_VIDEO_CHAT, data: updatedVideoChats})
+    }
+}
+
+export const closeVideoChat = (videoChats, contact_id) => {
+    return async dispatch => {
+        const updatedVideoChats = videoChats.filter(videoChat => {
+            return videoChat.from !== contact_id
+        })
+        
+        console.log("VVV", videoChats, updatedVideoChats);
+        dispatch({ type: START_VIDEO_CHAT, data: updatedVideoChats})
     }
 }

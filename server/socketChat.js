@@ -65,5 +65,51 @@ module.exports = {
                 console.log('Error socket on new message: ', err);
             }
         })
+    },
+
+    initiateVideoChat : (io, socket, connectedUsers, parseCookies) => {
+        socket.on('initiateVideoChat', async ({to, data}) => {
+            //console.log("VIDEO CHAT INITIATED", to, data);
+            console.log("INITIATED VIDEO CHAT")
+            const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
+		    const cookies = parseCookies(header);
+            try {
+                const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
+                if (token.err) {
+                    console.log("ERROR TOKEN")
+                    throw new Error('Decode failed on login');
+                }
+                
+
+                const from = token.user_id;
+                const user = connectedUsers.get(from);
+                const contact = user.friends.get(to);
+                console.log("CONTACT ID", to, connectedUsers.get(from));
+                io.to(contact.socketId).emit('initiateVideoChat', {from :from, data: data});
+            } catch (err) {
+                console.log('Error socket on new message: ', err);
+            }
+        })
+    },
+
+    acceptVideoChat : (io, socket, connectedUsers, parseCookies) => {
+        socket.on('acceptVideoChat', async ({to, data}) => {
+            console.log("VIDEO CHAT ACCEPTED", to, data);
+            const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
+		    const cookies = parseCookies(header);
+            try {
+                const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
+                if (token.err) {
+                    throw new Error('Decode failed on login');
+                }
+                const from = token.user_id;
+                const user = connectedUsers.get(from);
+                const contact = user.friends.get(to);
+                io.to(contact.socketId).emit('acceptVideoChat', {from :from, data: data});
+            } catch (err) {
+                console.log('Error socket on new message: ', err);
+            }
+        })
     }
+
 }

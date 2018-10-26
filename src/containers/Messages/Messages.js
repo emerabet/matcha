@@ -17,7 +17,7 @@ class Messages extends Component {
 
     render() {
         return (
-            <div className="chat-messages" ref={(el) => { this.messagesEnd = el; }}>
+            <div className={this.props.pos === "main" ? "chat-messages" : "chat-messages_s"} ref={(el) => { this.messagesEnd = el; }}>
                     {
                         this.props.messages.messages.map((message) => {
                         return ( 

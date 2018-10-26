@@ -1,18 +1,22 @@
 .message-from-user {
     text-align: right;
-    grid-column: 2 / span 7;
+    grid-column: 2 / span 5;
     background-color: #1976D2;
     border-radius: 5px;
     padding: 5px;
     color: #fff;
+    max-width: 50%;
+    overflow-wrap: break-word;
 }
 
 .message-from-contact {
-    grid-column: 1 / span 6;
+    grid-column: 1 / span 4;
     background-color: #F5F5F5;
     color: #000;
     border-radius: 5px;
     padding: 5px;
+    max-width: 50%;
+    overflow-wrap: break-word;
 }
 
 .message-time {
