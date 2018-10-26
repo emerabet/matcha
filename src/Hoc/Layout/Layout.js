@@ -77,6 +77,18 @@ class Layout extends Component {
             this.props.onContactConnected(this.props.connectedList, user_id_connected);
         })
 
+        this.props.socket.on('initiateVideoChat', ({from, data}) => {
+            console.log("ON RECEIVE START VIDEO CHAT", from, data);
+            console.log("VCHAT", this.props.videoChats);
+            this.props.onStartVideoChat(this.props.videoChats, from, data);
+        })
+
+        this.props.socket.on('acceptVideoChat', ({from, data}) => {
+            console.log("ON RECEIVE ACCEPT VIDEO CHAT", from, data);
+            console.log("VCHAT", this.props.videoChats);
+            this.props.onStartVideoChat(this.props.videoChats, from, data);
+            this.props.onAcceptVideoChat(this.props.videoChats, from, data);
+        })
 
     }
 
@@ -102,7 +114,8 @@ const mapStateToProps = state => {
         contacts: state.chat.contacts,
         nb_unread_chats: state.chat.nb_unread_chats,
         logged: state.login.logged,
-        connectedList: state.chat.connectedList
+        connectedList: state.chat.connectedList,
+        videoChats: state.chat.videoChats
     }
 };
 
@@ -113,7 +126,9 @@ const mapDispatchToProps = (dispatch) => {
         onContactIsTyping: (contacts, contact_id) => dispatch(actionsChat.contactIsTyping(contacts, contact_id)),
         onContactStopTyping: (contacts, contact_id) => dispatch(actionsChat.contactStopTyping(contacts, contact_id)),
         onContactConnected: (connectedList, contact_id) => dispatch(actionsChat.contactConnected(connectedList, contact_id)),
-        onContactDisconnected: (connectedList, contact_id) => dispatch(actionsChat.contactDisconnected(connectedList, contact_id))
+        onContactDisconnected: (connectedList, contact_id) => dispatch(actionsChat.contactDisconnected(connectedList, contact_id)),
+        onStartVideoChat: (videoChats, from, data) => dispatch(actionsChat.startVideoChat(videoChats, from, data)),
+        onAcceptVideoChat: (videoChats, from, data) => dispatch(actionsChat.acceptVideoChat(videoChats, from, data))
     }
 }
 

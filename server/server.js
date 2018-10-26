@@ -24,8 +24,8 @@ if (i !== -1)
     rootDir = rootDir.substr(0, i);
 global.appRoot = path.resolve(rootDir);
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
-//app.use(cors({credentials: true, origin: 'http://10.18.198.50:3000'}));
+//app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.use(cors({credentials: true, origin: 'https://10.18.201.85:3000'}));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -91,28 +91,27 @@ app.use('/api', mdw, express_graphql( req =>( {
     }
 })));
 
+var options = {
+    key: fs.readFileSync( './server.key' ),
+    cert: fs.readFileSync( './server.crt' ),
+    requestCert: false,
+    rejectUnauthorized: false
+};
 
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const https = require('https');
+
+
+const ser = https.createServer(options, app);
+
+const io = require('socket.io')(ser);
+ser.listen(port, () => console.log("server runi"))
 /*
 const mySocketMiddleware = mySocket();
 */const connectedUsers = new Map();
 
-
-/*const https = require('https');
-
-const httpsOptions = {
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./server.crt')
-  }
-const server = https.createServer(httpsOptions, app).listen(port, () => {
-    console.log('server running at ' + port)
-  })*/
-
 console.log('ici');
 io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
-io.listen(5000);
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+//io.listen(5000);
+//app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 route.setRoutes(app);

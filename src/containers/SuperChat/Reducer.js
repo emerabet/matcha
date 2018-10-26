@@ -4,7 +4,8 @@ import * as clearActions from '../../components/Menu/Actions';
 const initialState = {
     contacts: [],
     chats: [],
-    connectedList: []
+    connectedList: [],
+    videoChats: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -48,6 +49,11 @@ const reducer = (state = initialState, action) => {
             console.log("from reducer chats connected", action);
                 nextState = { ...state,
                     connectedList: action.data };     
+            break ;
+        case actions.START_VIDEO_CHAT:
+            console.log("from reducer chats starte video chats ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////", action);
+                nextState = { ...state,
+                    videoChats: action.data };     
             break ;
         default: return state;
     }
