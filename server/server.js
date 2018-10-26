@@ -24,8 +24,8 @@ if (i !== -1)
     rootDir = rootDir.substr(0, i);
 global.appRoot = path.resolve(rootDir);
 
-//app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
-app.use(cors({credentials: true, origin: 'https://10.18.201.85:3000'}));
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+//app.use(cors({credentials: true, origin: 'https://localhost:3000'}));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -108,13 +108,11 @@ var options = {
     rejectUnauthorized: false
 };
 
-const https = require('https');
-
-
-const ser = https.createServer(options, app);
-
-const io = require('socket.io')(ser);
-ser.listen(port, () => console.log("server runi"))
+//const https = require('https');
+//const ser = https.createServer(options, app);
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+app.listen(port, () => console.log("server runi"))
 /*
 const mySocketMiddleware = mySocket();
 */const connectedUsers = new Map();
