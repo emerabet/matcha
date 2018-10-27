@@ -1,6 +1,5 @@
 import axios from 'axios';
 import * as headers from '../../Tools/Header';
-import uniqid from 'uniqid';
 export const CONTACTS = 'CONTACTS';
 export const CHATS = 'CHATS';
 export const MESSAGE = 'MESSAGE';
@@ -180,7 +179,7 @@ export const openChat = (nb_unread_chats, chat_id, contacts) => {
                         }
                     `;
         
-        const response = await axios.post(`/api`,
+        await axios.post(`/api`,
             {
                 query: query,
                 variables: {

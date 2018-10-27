@@ -4,9 +4,7 @@ import { Image, Grid } from 'semantic-ui-react';
 
 const Message = ({msg, type, date, from, pos}) => {
     return (
-        <Grid.Row>
-            
-            <Grid.Column style={{position: "relative"}}>
+        <div>
                 <div className={pos === "main" ? type : `${type}_s`}>
                     { type === "message-from-contact" 
                     ?
@@ -37,8 +35,7 @@ const Message = ({msg, type, date, from, pos}) => {
                     <p className="message-time">{`${new Date(date / 1).getHours()}:${new Date(date / 1).getMinutes()}:${new Date(date / 1).getSeconds()}`}</p>
                 </div>
         
-            </Grid.Column>
-        </Grid.Row>
+            </div>
         
     )
 }

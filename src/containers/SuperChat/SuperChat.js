@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import * as headers from '../../Tools/Header';
 import Aux from '../../Hoc/Aux/Aux';
 import ChatBottom from '../ChatBottom/ChatBottom';
 import BigChat from '../BigChat/BigChat';

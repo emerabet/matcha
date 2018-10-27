@@ -17,9 +17,9 @@
     display: grid;
     grid-gap: 10px;
     padding: 10px;
-    overflow: auto;
-    overflow-x: hidden;
-    
+    overflow-y: auto;
+    width: 100%;
+    min-height: 250px;
     max-height: 30vw;
 }
 
@@ -53,7 +53,6 @@
 
 .message-from-user_s {
     text-align: right;
-   
     background-color: #1976D2;
     border-radius: 5px;
     padding: 5px;
