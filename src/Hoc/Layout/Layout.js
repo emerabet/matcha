@@ -13,6 +13,10 @@ import './Layout.css';
 
 class Layout extends Component {
 
+    state = {
+        width: 0
+    }
+
     componentDidMount() {
 
         this.props.socket.on('visited', (data) => {
@@ -86,6 +90,16 @@ class Layout extends Component {
             this.props.onAcceptVideoChat(this.props.videoChats, from, data);
         })
 
+        window.addEventListener("resize", this.updateDimensions);
+        this.updateDimensions();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.updateDimensions);
+    }
+
+    updateDimensions = () => {
+        this.setState({width: window.innerWidth});
     }
 
     render() {
@@ -95,7 +109,7 @@ class Layout extends Component {
                 <main>
                     {this.props.children}
                 </main>
-                {this.props.logged && <SuperChat type="bottom" />}
+                {this.props.logged && this.state.width > 540 && <SuperChat type="bottom" />}
                 <Footer />
             </Aux>
         );
