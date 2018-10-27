@@ -26,7 +26,7 @@ class Listview extends Component {
         const extra = `${user.popularity} pts | ${parseInt(user.distance, 10)} km from you`;
 
         return  <List.Item key={ user.user_id }>
-                    <Image avatar src={ user.src != null && user.src } />
+                    <Image avatar src={ user.src != null ? user.src : "/pictures/smoke_by.png"} />
                     <List.Content>
                         <List.Header>{user.first_name }</List.Header>
                     </List.Content>

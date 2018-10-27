@@ -5,8 +5,8 @@ export const RESTORE_STORE_FROM_SESSION_STORAGE = 'RESTORE_STORE_FROM_SESSION_ST
 export const restoreStore =() => {
     return async dispatch => {
         try {
-            console.log("actions restore");
             const user = {
+                user_id: parseInt(localStorage.getItem('user_id'), 10),
                 lastName: localStorage.getItem('last_name'),
                 firstName: localStorage.getItem('first_name'),    
                 email: localStorage.getItem('email'),

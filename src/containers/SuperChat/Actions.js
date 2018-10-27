@@ -31,16 +31,12 @@ export const addContacts = () => {
                 }`;
             
             const response = await axios.post(`/api`, { query: query }, headers.headers());
-            console.log("CONTACTS", response.data.data.getContacts);
             let nb_unread_chat = 0;
             await response.data.data.getContacts.forEach(contact => {
-                console.log("IN NB", contact.user_id_sender, localStorage.getItem("user_id"), contact.read_date);
                 if (contact.user_id_sender !== parseInt(localStorage.getItem("user_id"), 10) && contact.read_date === null){
-                    console.log("IN", contact.user_id_sender !== localStorage.getItem("user_id") && contact.read_date === null)
                     nb_unread_chat++;
                 }
             })
-            console.log("UNREAD CHATS", response.data.data.getContacts);
             dispatch({ type: CONTACTS, data: response.data.data.getContacts });
             dispatch({ type: UNREAD_CHAT, data: nb_unread_chat });
         } catch (err) { console.log('Erro in dispatch addContact'); }
@@ -49,7 +45,6 @@ export const addContacts = () => {
 
 export const addChats =() => {
     return async dispatch => {
-        console.log("ADD CHATS DISPTACH");
         try {
             const query_messages = `
             query getAllMessagesFromUser {
@@ -69,9 +64,6 @@ export const addChats =() => {
             const response_messages = await axios.post(`/api`, {
                  query: query_messages
             }, headers.headers());
-
-            console.log("MESSAGES", response_messages.data.data.getAllMessagesFromUser);
-            
             dispatch({ type: CHATS, data: response_messages.data.data.getAllMessagesFromUser });
         } catch (err) { console.log('Error in dispacth addChats'); }
     }
@@ -94,7 +86,6 @@ export const addMessage =(chat_id, login, from, to, message, chats, socket, cont
                     message: message
                 }
             }, headers.headers());
-        console.log("MESSAGES", response.data.data.addMessage);
         const insertedId = response.data.data.addMessage;
         if (insertedId){
             const updatedChats = await chats.map(chat => {
@@ -109,7 +100,6 @@ export const addMessage =(chat_id, login, from, to, message, chats, socket, cont
                     contact.user_id_sender = from;
                     contact.message = message;
                     contact.date = `${Date.now()}`;
-                    console.log("UPDATED SHOULD HAVE BEEN DONE")
                 }
                 return contact;
             });
@@ -145,7 +135,6 @@ export const receiveMessage =(chats, contacts, mes, nb_unread_chats) => {
             }
             return contact;
         });
-        console.log("NB", nb_unread_chats, nb_update)
         dispatch({ type: NEW_MESSAGE, data: {contacts: updatedContacts, chats: updatedChats, nb_unread_chats: nb_update }});
     }
 }
@@ -175,7 +164,6 @@ export const contactStopTyping = (contacts, contact_id) => {
 }
 
 export const openChat = (nb_unread_chats, chat_id, contacts) => {
-    console.log("in open chat");
     return async dispatch => {
         const updatedContacts = await contacts.map(contact => {
             if (contact.chat_id === chat_id) {
@@ -184,7 +172,6 @@ export const openChat = (nb_unread_chats, chat_id, contacts) => {
             return contact;
         });
         const nb_updated = nb_unread_chats - 1;
-        console.log("NB2", nb_unread_chats, nb_updated)
         dispatch({ type: READ_CHAT, data: {nb_unread_chats: nb_updated, contacts: updatedContacts} });
         try {
             const query = `
@@ -200,7 +187,6 @@ export const openChat = (nb_unread_chats, chat_id, contacts) => {
                     chat_id: chat_id
                 }
             }, headers.headers());
-        console.log("READ CHAT", response.data.data.readChat);
         } catch (err) {}
     }
 }
@@ -230,8 +216,6 @@ export const contactDisconnected= (connectedList, contact_id) => {
 export const startVideoChat = (videoChats, from, data) => {
     return async dispatch => {
         const updatedVideoChats = [...videoChats, {from: from, offer: "initiated", data: data}];
-        
-        console.log("VVV", videoChats, updatedVideoChats);
         dispatch({ type: START_VIDEO_CHAT, data: updatedVideoChats})
     }
 }
@@ -239,8 +223,6 @@ export const startVideoChat = (videoChats, from, data) => {
 export const acceptVideoChat = (videoChats, from, data) => {
     return async dispatch => {
         const updatedVideoChats = [...videoChats, {from: from, offer: "accepted", data: data}];
-        
-        console.log("VVV", videoChats, updatedVideoChats);
         dispatch({ type: START_VIDEO_CHAT, data: updatedVideoChats})
     }
 }
@@ -250,8 +232,6 @@ export const closeVideoChat = (videoChats, contact_id) => {
         const updatedVideoChats = videoChats.filter(videoChat => {
             return videoChat.from !== contact_id
         })
-        
-        console.log("VVV", videoChats, updatedVideoChats);
         dispatch({ type: START_VIDEO_CHAT, data: updatedVideoChats})
     }
 }

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Grid, Image, Button, Icon, Segment } from 'semantic-ui-react';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import Aux from '../Aux/Aux';
 import TopMenu from '../../components/Menu/TopMenu';
@@ -37,7 +35,6 @@ class Layout extends Component {
         });
 
         this.props.socket.on('onlineChanged', (data) => {
-            console.log("///////////////////////////////////");
             console.log("Connected users changed");
             console.log(data);
             this.props.socket.connectedUsersMatcha = null;
@@ -45,7 +42,6 @@ class Layout extends Component {
             if (this.props.connectedList.length === 0)
             this.props.onContactConnected(this.props.socket.connectedUsersMatcha, null);
             console.log(this.props.socket);
-            console.log("///////////////////////////////////");
         });
 
         this.props.socket.on('newMessage', (mes) => {

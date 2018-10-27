@@ -19,15 +19,6 @@ axios.defaults.baseURL = 'http://localhost:4000';
 //axios.defaults.baseURL = 'https://localhost:4000';
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {
-    // Do something with response data
-    console.log("AXIOS OK");
-    console.log(response);
-
-   // if (response.data.errors) {
-   //     localStorage.clear();
-       // window.location.assign("http://10.18.201.85:3000/login");
-  //  }
-
     return response;
   }, function (error) {
     console.log(error.response.status);
@@ -42,15 +33,10 @@ const rootReducer = combineReducers({
     chat: chatReducer,
 });
 
-/*const initialState = {
-    login: "ok"
-}*/
-
 const middleware = applyMiddleware(thunk);
 
 const store = createStore(
     rootReducer,
- //   initialState,
     middleware
 );
 

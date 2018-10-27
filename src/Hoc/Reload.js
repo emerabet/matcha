@@ -15,24 +15,15 @@ export const headers = {
 
 class Reload extends Component {
 
-  
-
     constructor(props){
         super(props);
         this.check(props);   
     }
 
     check = async (props) => {
-        console.log("IN HOC");
         if (localStorage.getItem('logged')) {
         try {
             const res = await axios.get('/check', headers);
-
-            console.log("FEF", res);
-            console.log("actions login");
-            // console.log('data login', res.data);
-            console.log("PROPS", props);
-
             if (this.props.user === undefined){
                 this.props.onRestoreStore();
             } else {

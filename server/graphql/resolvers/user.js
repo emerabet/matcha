@@ -107,7 +107,7 @@ module.exports = {
             const users = await db.conn.queryAsync(sql);
 
             if (extended === true) {
-                const tags = await queriesTag.getTagByUser(userId);
+                const tags = await queriesTag.getTagByUser({id: userId});
                 users[0].tags = tags;
             }
 

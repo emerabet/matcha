@@ -54,9 +54,7 @@ class ChatBottom extends Component {
             active_chat_selected: true,
             contacts_active_chats: cont});
         await this.props.contacts.map(async c => {
-            console.log("in map", c.chat_id, chat_id, c.user_id_sender, localStorage.getItem("user_id"), c.read_date);
             if (c.chat_id === chat_id && c.user_id_sender !== parseInt(localStorage.getItem("user_id"), 10) && c.read_date === null) {
-                console.log("dispatching");
                 await this.props.onOpenChat(this.props.nb_unread_chats, chat_id, this.props.contacts);
             }
             return null;
@@ -81,7 +79,6 @@ class ChatBottom extends Component {
     }
     
     handleClickActiveChats = () => {
-        console.log("active chats", this.state.contacts_active_chats);
         this.setState({active_chat_selected: false,
                         active_chat_list_display: true,
                         open: true});

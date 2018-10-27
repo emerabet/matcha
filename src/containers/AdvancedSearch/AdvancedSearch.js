@@ -26,17 +26,10 @@ class AdvancedSearch extends Component {
     }
 
     async componentDidMount () {
-        console.log('ComponentDidMount AdvSearch');
-        console.log(this.props);
-        console.log('azzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz');
         this.loadData();
     }
 
     loadData = async () => {
-
-        console.log("test");
-        console.log(this.props);
-
         const query = `
                         query getUsers($extended: Boolean, $orientation: String) {
                             getUsers(extended:$extended, orientation:$orientation){
@@ -48,6 +41,8 @@ class AdvancedSearch extends Component {
                                 age,
                                 popularity,
                                 bio,
+                                gender,
+                                orientation,
                                 latitude,
                                 longitude,
                                 city,
@@ -74,15 +69,100 @@ class AdvancedSearch extends Component {
         const nbPages = this.calculPagination(users.data.data.getUsers.length, this.state.itemsPerPage);
         const paged = this.paginate(users.data.data.getUsers, this.state.itemsPerPage, this.state.activePage); 
 
-        console.log("set state did update");
-        await this.setState({ 
-            users : users.data.data.getUsers, 
-            filteredUsers : users.data.data.getUsers,
-            pagedUsers: paged,
-            tags: tags.data.data.getTags,
-            nbPages: nbPages,
-            loaded: true
-        }); 
+        console.log("set state did update", this.props.mode);
+        if (this.props.mode === "classic") {
+            const queryTags = `
+                        query getTagByUser($id: Int!) {
+                            getTagByUser(id: $id){
+                                tag
+                            }
+                        }
+                    `;
+
+        const resp = await axios.post(`/api`, { query: queryTags, variables: {id: this.props.user.user_id}}, headers.headers());
+        const user_tags = resp.data.data.getTagByUser; 
+        const ranking = await Promise.all(users.data.data.getUsers.map(async member => {
+            let dist = 19999;
+            if (member.latitude && member.longitude) {
+                var from = point([this.props.user.latitude, this.props.user.longitude]);
+                var to = point([parseInt(member.latitude, 10), parseInt(member.longitude, 10)]);
+                var options = {units: 'kilometers'};
+                dist = distance(from, to, options);
+            }
+            let orientation_user = 0;
+            if (member.gender && this.props.user.orientation) {
+                switch(this.props.user.orientation.toLowerCase()){
+                    case "male":
+                        orientation_user = member.gender.toLowerCase() === "male" ? 1 : 0.5;  
+                        break ;
+                    case "female":
+                        orientation_user = member.gender.toLowerCase() === "female" ? 1 : 0.5;
+                        break;
+                    case "other":
+                        orientation_user = member.gender.toLowerCase() === "other" ? 1 : 0.5;
+                        break ;
+                    default: // "both"
+                        orientation_user = 1;
+                        break;
+                }
+            } else {
+                orientation_user = 1;
+            }
+            let orientation_member = 0;
+            if (this.props.user.gender && member.orientation) {
+                switch(member.orientation.toLowerCase()){
+                    case "male":
+                        orientation_member = this.props.user.gender.toLowerCase() === "male" ? 1 : 0.5;  
+                        break ;
+                    case "female":
+                        orientation_member = this.props.user.gender.toLowerCase() === "female" ? 1 : 0.5;
+                        break;
+                    case "other":
+                        orientation_member = this.props.user.gender.toLowerCase() === "other" ? 1 : 0.5;
+                        break ;
+                    default: // "both"
+                        orientation_member = 1;
+                    break;
+                }
+            } else {
+                orientation_member = 1;
+            }
+            let number_of_common_tags = 0;
+            await user_tags.forEach(async u_tag => {
+                await member.tags.forEach(async m_tag =>{
+                    if (u_tag.tag === m_tag.tag)
+                        number_of_common_tags++;
+                })
+            })
+            const popularity = (member.popularity && member.popularity !== 0 ? member.popularity : 1)
+            const score = (1000 / dist) * (orientation_user + orientation_member) * (1 + number_of_common_tags) * (popularity);
+            const withScore = {...member, ranking: score}
+            return withScore
+            }))
+            console.log("RANKING", ranking)
+            let sorted = await ranking.concat();
+            await Promise.all(sorted.sort((a, b) => {
+                return (b.ranking - a.ranking)
+            }))
+            console.log("SORTED", sorted)
+            await this.setState({ 
+                users : sorted, 
+                filteredUsers : users.data.data.getUsers,
+                pagedUsers: paged,
+                tags: tags.data.data.getTags,
+                nbPages: nbPages,
+                loaded: true
+            });
+        } else {
+            await this.setState({ 
+                users : users.data.data.getUsers, 
+                filteredUsers : users.data.data.getUsers,
+                pagedUsers: paged,
+                tags: tags.data.data.getTags,
+                nbPages: nbPages,
+                loaded: true
+            });
+        }
         console.log(users.data.data.getUsers);
         console.log("------------");
         console.log(this.state.users);
@@ -275,8 +355,6 @@ class AdvancedSearch extends Component {
 
 
     render() {
-        console.log("re-render");
-        console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
         return (
             <Aux>
                 { this.state.loaded === false &&  <Segment basic tertiary loading className='Segment__Loading'></Segment>}

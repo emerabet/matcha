@@ -9,12 +9,8 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     let nextState;
-    console.log('in login reducer');
     switch(action.type) {
         case actions.LOGIN:
-            console.log("from reducer", action);
-            console.log("token", action.data.token);
-            console.log("user", action.data.user);
             nextState = { ...state,
                         token: action.data.token,
                         user: action.data.user, logged: true };
@@ -30,6 +26,7 @@ const reducer = (state = initialState, action) => {
        
             const user_updated ={
                 login: action.data.login,
+                user_id: action.data.user_id,
                 lastName: action.data.last_name,
                 firstName: action.data.first_name,
                 email: action.data.email,
@@ -43,19 +40,16 @@ const reducer = (state = initialState, action) => {
                 latitude: action.data.latitude,
                 longitude: action.data.longitude
             }
-            console.log("TRYING TO UPDATE STORE WITH NEW PROFILE DATA");
                nextState = {...state, user: user_updated}
             break ;
         case profileActions.UPDATE_USER_LOCATION:
             nextState = {...state, user: {...state.user, share_location: action.data.location, address: action.data.address}}
             break ;
         case reloadActions.RESTORE_STORE_FROM_SESSION_STORAGE:
-            console.log("RELOAD REDUCER", action.data.user);
             nextState = {...state, user: action.data.user, logged: action.data.logged}
             break ;
         default: return state;
     }
-    console.log("NEXT STATE", nextState);
     return nextState;
 }
 

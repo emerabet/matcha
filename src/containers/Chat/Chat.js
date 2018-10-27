@@ -35,7 +35,6 @@ class Chat extends Component {
         if (prevState.message === this.state.message && prevState.contactIsTyping === this.state.contactIsTyping
         && prevState.isTyping === this.state.isTyping) {
             const contact = await this.props.contacts.filter(contact => {
-            console.log(contact.contact_id, this.props.contact_id);
             return contact.contact_id === this.props.contact_id;
         });
         if (contact && contact !== undefined) {
@@ -46,7 +45,6 @@ class Chat extends Component {
     }
 
     render () {
-        console.log("ICI", this.props.contacts, "ID", this.props.contact_id);
         if (this.props.messages[0])
 
         return (

@@ -20,7 +20,7 @@ class MapSearch extends Component {
                         { users.map(u => {
                             if (u.latitude && u.longitude && (u.longitude > -180 && u.longitude < 180) && (u.latitude > -90 && u.latitude  < 90)) {
                                 return (
-                                    <Marker position={[u.latitude, u.longitude]}></Marker>
+                                    <Marker key={u.user_id} position={[u.latitude, u.longitude]}></Marker>
                                 );
                             }
                         }) }

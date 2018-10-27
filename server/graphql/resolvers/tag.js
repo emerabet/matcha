@@ -25,8 +25,9 @@ module.exports = {
         }
     },
 
-    getTagByUser: async (id) => {
+    getTagByUser: async ({id}) => {
         try {
+            console.log("TTTTT", id)
             let sql = "SELECT tag FROM interest WHERE interest.user_id = ? ORDER BY tag;";
             sql = mysql.format(sql, [id]);
             const result = await db.conn.queryAsync(sql);

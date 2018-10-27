@@ -144,6 +144,7 @@ exports.registerSchema = buildSchema(`
         getUsers(extended: Boolean, orientation: String): [User],
         getTags: [Tag],
         getAllTags: [Tag],
+        getTagByUser(id: Int!): [Tag],
         getUserNotifications(search: String): [Notification],
         getLogin(login: String!): Boolean,
         getEmail(email: String!): Boolean,

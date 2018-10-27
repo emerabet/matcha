@@ -18,18 +18,13 @@ class TopMenu extends Component {
       if (e.target.id == 'chk')
         return ;
       if (data.name && data.name == 'ddNotification') {
-        
           const n = this.state.notificationOpen;
-
-          console.log("ici ", n, !n);
           this.setState({
             notificationOpen: !n
           })
       }
       else if (data.name) {
         this.setState(...this.state, { activeItem: data.name })
-        console.log(data.name);
-        console.log("ACTIVE", this.state.activeItem);
         this.props.history.push(`/${data.name}`);
       }
     }
@@ -43,7 +38,6 @@ class TopMenu extends Component {
     }
 
     render (){
-      console.log("USER MESNU", this.props.user);
       return (
         <div className='Menu__Container'>
           <Menu secondary borderless fluid stackable icon='labeled'>

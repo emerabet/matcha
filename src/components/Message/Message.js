@@ -3,7 +3,6 @@ import './Message.css';
 import { Image, Grid } from 'semantic-ui-react';
 
 const Message = ({msg, type, date, from, pos}) => {
-    console.log("type", type)
     return (
         <Grid.Row>
             
