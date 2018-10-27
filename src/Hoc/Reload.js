@@ -24,6 +24,7 @@ class Reload extends Component {
 
     check = async (props) => {
         console.log("IN HOC");
+        if (localStorage.getItem('logged')) {
         try {
             const res = await axios.get('/check', headers);
 
@@ -46,7 +47,7 @@ class Reload extends Component {
             console.log("EXPIRED TOKEN", err);
             localStorage.clear();
         }
-
+    }
     } 
 
     render(){

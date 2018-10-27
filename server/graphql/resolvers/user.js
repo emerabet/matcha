@@ -76,7 +76,6 @@ module.exports = {
                 if(error){
                     return console.log(error);
                 }
-                console.log('Message sent: ' + info.response);
             });
             return insertId;
         } catch (err) {
@@ -93,7 +92,6 @@ module.exports = {
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const decoded = await jwt.verify(token, config.SECRET_KEY);
 
-            console.log("ne doit pas pparaitre");
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             
@@ -159,7 +157,6 @@ module.exports = {
                         LEFT JOIN picture on user.user_id = picture.user_id 
                         WHERE (picture.priority = 1 OR picture.priority IS NULL) 
                         ${criteria};`;
-            console.log(sql);
             const users = await db.conn.queryAsync(sql);
 
             if (extended === true) {
@@ -226,11 +223,9 @@ module.exports = {
                     result = await db.conn.queryAsync(sql);
                 } else {
                     geocoder.reverse({lat: address.latitude, lon: address.longitude}, async function(err, res) {
-                        console.log("FROM NAV INFO");
                         sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
                         sql = mysql.format(sql, [decoded.user_id, address.latitude, address.longitude, res[0].zipcode, res[0].city, res[0].country, address.latitude, address.longitude, res[0].zipcode, res[0].city, res[0].country]);
                         result = await db.conn.queryAsync(sql);
-                        console.log("GOOGLE", res);
                       });
                 }
 
@@ -288,7 +283,7 @@ module.exports = {
                     
                     ret = await module.exports.addNotification({type: "like", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                     if (ret === false)
-                        return ret;
+                        return 3; // like but blocked
                     if (flag_liked > 0) {
                         sql = 'INSERT INTO `matched` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
@@ -301,14 +296,14 @@ module.exports = {
                         result = await db.conn.queryAsync(sql);
                         
                     }
-                    return true;
+                    return 1; // like
                 } else {
                     sql = 'DELETE FROM `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
                     ret = await module.exports.addNotification({type: "unlike", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                     if (ret === false)
-                        return ret;
+                        return 4; // unlike but blocked
                     if (flag_liked > 0) {
                         sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
@@ -320,14 +315,11 @@ module.exports = {
                         result = await db.conn.queryAsync(sql);
                         
                         module.exports.addNotification({type: "unmatch", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
-                        console.log("MISMATCHED", result);
                     }
-                   // return false;
+                    return 2; // unlike
                 }
             }
-            return ret;
         } catch (err) {
-            console.log("ERROR LIKED", err.message);
             throw err.message;
         }
 
@@ -352,14 +344,12 @@ module.exports = {
                     sql = 'INSERT INTO `black_listed` (`user_id_blocked`, `user_id_blocker`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                     sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
-                    
                     ret = await module.exports.addNotification({type: "black_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
                     return ret;
                 } else {
                     sql = 'DELETE FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
                     sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
-                    
                     ret = await module.exports.addNotification({type: "unblack_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
                     return ret;
                 }
@@ -398,13 +388,13 @@ module.exports = {
                     sql = 'DELETE FROM `reported` WHERE `user_id_reported` = ? AND `user_id_reporter` = ?;';
                     sql = mysql.format(sql, [user_id_to_report, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
-                    
                     ret = await module.exports.addNotification({type: "unreport", user_id_from: decoded.user_id, user_id_to: user_id_to_report});
                     return ret;
                 }
             }
             return false;
         } catch (err) {
+            console.log("EERR", err)
             throw err.message;
         }
 
@@ -439,7 +429,6 @@ module.exports = {
         let sql = 'SELECT COUNT(user_id_blocked) as nb FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
         sql = mysql.format(sql, [user_id_from, user_id_to]);
         let result = await db.conn.queryAsync(sql);
-        console.log("TEST NOTIF", result[0].nb);
         if (result[0].nb > 0)
             return false
 
@@ -521,7 +510,6 @@ module.exports = {
 
     getStatusLikedReported: async ({ user_id2 }, context) => {
         try {
-            
             const token = context.token;
 
             if (!token)
@@ -531,15 +519,15 @@ module.exports = {
             if (decoded.err)
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
             const userId = decoded.user_id;
-            let sql = `SELECT liked.date as liked, reported.date as reported 
-                        FROM user
-                        LEFT JOIN reported ON user.user_id = reported.user_id_reporter
-                        LEFT JOIN liked ON user.user_id = liked.user_id_visitor
-                        WHERE (reported.user_id_reporter = ? OR liked.user_id_visitor = ?)
-                        AND (reported.user_id_reported = ? OR liked.user_id_visited = ?)
-                        LIMIT 1;`;
+            let sql = `SELECT liked.date as liked, reported.date as report, black_listed.date as reported
+            FROM user
+            LEFT JOIN reported ON user.user_id = reported.user_id_reporter AND reported.user_id_reported = ?
+            LEFT JOIN liked ON user.user_id = liked.user_id_visitor AND liked.user_id_visited = ?
+            LEFT JOIN black_listed ON user.user_id = black_listed.user_id_blocker AND black_listed.user_id_blocked = ?
+            WHERE (reported.user_id_reporter = ? OR liked.user_id_visitor = ? OR black_listed.user_id_blocker = ?)
+            LIMIT 1;;`;
 
-            sql = mysql.format(sql, [userId, userId, user_id2, user_id2]);
+            sql = mysql.format(sql, [user_id2, user_id2, user_id2, userId, userId, userId]);
             const result = await db.conn.queryAsync(sql);
             return result[0];
         } catch (err) {
@@ -551,19 +539,16 @@ module.exports = {
         let sql = 'UPDATE `user` SET `register_token` = "validated" WHERE `register_token` = ?';
         sql = mysql.format(sql, [registration_token]);
         const result = await db.conn.queryAsync(sql);
-        console.log("RESISTRATION", result.affectedRows);
         if (result.affectedRows > 0)
             return true;
         else
             return false;
     },
     resetPassword: async ({login}) => {
-        console.log("RESET PASSWORD");
         const reset_token = uniqid();
         let sql = 'UPDATE `user` SET `reset_token` =  ? WHERE `login` = ?';
         sql = mysql.format(sql, [reset_token, login]);
         let result = await db.conn.queryAsync(sql);
-        console.log("RESET PASSWORD", result.affectedRows);
         if (result.affectedRows > 0) {
             sql = 'SELECT `email` FROM `user` WHERE `login` = ?';
             sql = mysql.format(sql, [login]);
@@ -581,7 +566,6 @@ module.exports = {
                     if(error){
                         return console.log(error);
                     }
-                    console.log('Message sent: ' + info.response);
                 });
             }
         }
@@ -592,7 +576,6 @@ module.exports = {
         let sql = 'UPDATE `user` SET `reset_token` = "reset", `password` = ? WHERE `reset_token` = ?';
         sql = mysql.format(sql, [hash, reset_token]);
         const result = await db.conn.queryAsync(sql);
-        console.log("RESISTRATION", result.affectedRows);
         if (result.affectedRows > 0)
             return true;
         else
@@ -619,17 +602,14 @@ module.exports = {
                 sql = mysql.format(sql, [address.latitude, address.longitude, userId]);
                 result = await db.conn.queryAsync(sql);
                 const t = await geocoder.reverse({lat: address.latitude, lon: address.longitude});
-                    console.log("FROM NAV INFO", t);
                     sql = 'INSERT INTO `address` (`address_id`, `user_id`, `latitude`, `longitude`, `zipcode`, `city`, `country`) VALUES (NULL, ?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `latitude` = ?, `longitude` = ?, `zipcode` = ?, `city` = ?, `country` = ?;';
                     sql = mysql.format(sql, [decoded.user_id, address.latitude, address.longitude, t[0].zipcode, t[0].city, t[0].country, address.latitude, address.longitude, t[0].zipcode, t[0].city, t[0].country]);
                     result = await db.conn.queryAsync(sql);
                    
                     if (result.affectedRows > 0) {
-                        console.log("IwwwfwN");
                         sql = 'SELECT CONCAT(address.zipcode, " ", address.city, " ", address.country) as address from `address` WHERE `user_id` = ?';               
                         sql = mysql.format(sql, [userId]);
                         result = await db.conn.queryAsync(sql);
-                        console.log("RESSSS", result)
                         return (result[0].address);
                     }
                 else

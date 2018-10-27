@@ -48,13 +48,10 @@ const root = {
 }
 
 const mdw = async (req, res, next) => {
-   // console.log("IN MIDDLEWARE", req.headers);
-   // console.log('Cookies: ', req.cookies)
     const token = req.cookies['sessionid'];
     // Cookies that have been signed
    // console.log('Signed Cookies: ', req.signedCookies)
     try {
-     //   console.log("BODY", req.body.query);
         if (req.body.query.replace(/\s/g, '') === "querygetLogin($login:String!){getLogin(login:$login)}"
             || req.body.query.replace(/\s/g, '') === "querygetEmail($email:String!){getEmail(email:$email)}"
             || req.body.query.replace(/\s/g, '') === "mutationaddUser($user:AddUserInput!,$address:AddAddressInput!){addUser(user:$user,address:$address)}"
@@ -65,17 +62,12 @@ const mdw = async (req, res, next) => {
             next();
         } else {
             if (!token || token === undefined){
-                console.log("QQQQQQQQQQQ");
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
             }
-                console.log("token in middleware", token);
                 const decoded = await jwt.verify(token, config.SECRET_KEY);
-                console.log("TEST");
                 if (decoded.err){
-                    console.log("UWHIUEFBHOWEBHFOEBOG");
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
                 }
-                console.log ("CSRF TOKEN", req.headers.authorization, decoded.csrf_token);
                 if (req.headers.authorization !== decoded.csrf_token) {
                     console.log("WRONG CSRF TOKEN");
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
@@ -108,9 +100,14 @@ var options = {
     rejectUnauthorized: false
 };
 
-//const https = require('https');
-//const ser = https.createServer(options, app);
-const http = require('http').Server(app);
+/***********HTTPS*********************/
+/*
+const https = require('https');
+const ser = https.createServer(options, app);
+const io = require('socket.io')(ser);
+ser.listen(port, () => console.log("server runi"))
+*/
+const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 app.listen(port, () => console.log("server runi"))
 /*
@@ -119,7 +116,7 @@ const mySocketMiddleware = mySocket();
 
 console.log('ici');
 io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
-//io.listen(5000);
+io.listen(5000); // HTTP (NO NEED THIS LINE FOR HTTPS WORKS ON 4000)
 //app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 route.setRoutes(app);

@@ -12,8 +12,10 @@ class Stalk extends Component {
     state = {
         isLiked: false,
         isBlacklist: false,
+        isReported: false,
         colorLike: 'grey',
         colorBlacklist: 'grey',
+        colorReport: 'grey',
         user: null,
         activeImage: 0,
         src:'',
@@ -66,7 +68,8 @@ class Stalk extends Component {
                             query getStatusLikedReported ($user_id2: Int!) {
                                 getStatusLikedReported(user_id2: $user_id2){
                                     liked,
-                                    reported
+                                    reported,
+                                    report
                                 }
                             }
                         `;
@@ -121,15 +124,18 @@ class Stalk extends Component {
 
         let colorLike = 'grey';
         let colorBlacklist = 'grey';
+        let colorReport = 'grey';
         let isLike = false;
         let isReported = false;
+        let isReport = false;
 
         if (isLikedReported.data.data.getStatusLikedReported) {
             isLike = isLikedReported.data.data.getStatusLikedReported.liked == null ? false : true;
             isReported = isLikedReported.data.data.getStatusLikedReported.reported == null ? false : true;
-
+            isReport = isLikedReported.data.data.getStatusLikedReported.report == null ? false : true;
             colorLike =  isLike === true ? 'red' : 'grey';
             colorBlacklist = isReported === true ? 'black' : 'grey';
+            colorReport = isReport === true ? 'red' : 'grey';
         }
 
         this.setState({
@@ -140,8 +146,10 @@ class Stalk extends Component {
             isMyProfile: user.data.data.getUser.isMyProfile,
             isLiked: isLike,
             isBlacklist: isReported,
+            isReported: isReport,
             colorLike: colorLike,
             colorBlacklist: colorBlacklist,
+            colorReport: colorReport
         })
     }
 
@@ -185,15 +193,19 @@ class Stalk extends Component {
             user_id_to_like: idToLike
         }}, headers.headers());
 
-        if (res.data.data.likeUser === true) {
+        // 1 = like
+        // 2 = unlike
+        // 3 = like blocked
+        // 4 = unlike blocked
+        if (res.data.data.likeUser === 1) {
             this.props.socket.emit('liked', idToLike);
-        } else if (res.data.data.likeUser === false) {
+        } else if (res.data.data.likeUser === 2) {
             this.props.socket.emit('unliked', idToLike);
         }
 
         this.setState({
-            isLiked: res.data.data.likeUser,
-            colorLike: res.data.data.likeUser === true ? 'red' : 'grey'
+            isLiked: (res.data.data.likeUser === 1 || res.data.data.likeUser === 3 ? true : false),
+            colorLike: (res.data.data.likeUser === 1 || res.data.data.likeUser === 3 ? 'red' : 'grey')
         });
     }
 
@@ -211,6 +223,31 @@ class Stalk extends Component {
         this.setState({
             isBlacklist: res.data.data.addToBlackList,
             colorBlacklist: res.data.data.addToBlackList === true ? 'black' : 'grey'
+        });
+    }
+
+    handleReport = async (e, data) => {
+
+        const idToReport = this.state.userViewed;
+
+        const query = `mutation addToReport($user_id_to_report: Int!) {
+                            addToReport(user_id_to_report: $user_id_to_report)
+                        }`;
+        const res = await axios.post('/api', { query, variables: {
+            user_id_to_report: idToReport
+        }}, headers.headers());
+
+        if (res.data.data.likeUser === true) {
+            this.props.socket.emit('liked', idToReport);
+        } else if (res.data.data.likeUser === false) {
+            this.props.socket.emit('unliked', idToReport);
+        }
+
+        console.log("RES", res);
+
+        this.setState({
+            isReported: res.data.data.addToReport,
+            colorReport: res.data.data.addToReport === true ? 'red' : 'grey'
         });
     }
 
@@ -254,7 +291,7 @@ class Stalk extends Component {
                                     </Card.Description>
                                 </Card.Content>
                                 <Card.Content extra>
-                                    <div className='ui two buttons'>
+                                    <div className='ui three buttons'>
                                     <Button basic color={this.state.colorLike} onClick={this.handleLike} animated='vertical'>
                                         <Button.Content hidden>Like</Button.Content>
                                         <Button.Content visible>
@@ -265,6 +302,12 @@ class Stalk extends Component {
                                         <Button.Content hidden>Black list</Button.Content>
                                         <Button.Content visible>
                                             <Icon name='lock' />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button basic color={this.state.colorReport} onClick={this.handleReport} animated='vertical'>
+                                        <Button.Content hidden>Report</Button.Content>
+                                        <Button.Content visible>
+                                            <Icon name='close' />
                                         </Button.Content>
                                     </Button>
                                     </div>
