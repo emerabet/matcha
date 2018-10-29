@@ -15,7 +15,8 @@ module.exports = {
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
                 const contact = user.friends.get(to);
-                io.to(contact.socketId).emit('newMessage', {chat_id: chat_id, user_id_sender: from, login: login, message: message, message_id: messageId, date: `${Date.now()}`});
+                if (contact !== undefined)
+                    io.to(contact.socketId).emit('newMessage', {chat_id: chat_id, user_id_sender: from, login: login, message: message, message_id: messageId, date: `${Date.now()}`});
             } catch (err) {
                 console.log('Error socket on new message: ', err);
             }
@@ -38,8 +39,8 @@ module.exports = {
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
                 const contact = user.friends.get(contact_id);
-
-                io.to(contact.socketId).emit('isTyping', from);
+                if (contact !== undefined)
+                    io.to(contact.socketId).emit('isTyping', from);
             } catch (err) {
                 console.log('Error socket on new message: ', err);
             }
@@ -59,8 +60,8 @@ module.exports = {
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
                 const contact = user.friends.get(contact_id);
-
-                io.to(contact.socketId).emit('stopTyping', from);
+                if (contact !== undefined)
+                    io.to(contact.socketId).emit('stopTyping', from);
             } catch (err) {
                 console.log('Error socket on new message: ', err);
             }
