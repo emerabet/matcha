@@ -132,9 +132,9 @@ module.exports = {
 
             let criteria = '';
             switch(orientation.toLowerCase()) {
-                case 'female': criteria = `AND (profil.gender = 'Male' OR profil.gender = 'male')`
+                case 'female': criteria = `AND (profil.gender = 'Female' OR profil.gender = 'female')`
                     break;
-                case 'male': criteria = `AND (profil.gender = 'Female' OR profil.gender = 'female')`
+                case 'male': criteria = `AND (profil.gender = 'Male' OR profil.gender = 'male')`
                     break;
                 default: break;
             }
@@ -148,6 +148,7 @@ module.exports = {
                         LEFT JOIN picture on user.user_id = picture.user_id 
                         WHERE (picture.priority = 1 OR picture.priority IS NULL);`;
             const users = await db.conn.queryAsync(sql);
+
             if (extended === true) {
                 const tags = await queriesTag.getAllTags();
 
