@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Popup, Checkbox, Card, Input, Select, Form, Button, TextArea, Image } from 'semantic-ui-react';
+import { Popup, Checkbox, Input, Select, Form, Button, TextArea, Image } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -373,7 +373,7 @@ class Profile extends Component{
 
         const passwordRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
         const passOK = (this.state.password1 === this.state.password2) && passwordRegex.test(this.state.password1);
-        const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const emailOK = emailRegex.test(String(this.state.email).toLowerCase()) && this.state.email !== "";
         const oldPassOK = this.state.old_password !== "";
 

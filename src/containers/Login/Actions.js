@@ -1,5 +1,4 @@
 import axios from 'axios';
-import * as headers from '../../Tools/Header';
 
 import * as actionsActivity from '../../components/Activity/Actions';
 
@@ -11,11 +10,7 @@ export const login = (userName, password, socket, callBackLogin) => {
         try {
             socket.disconnect();
             const res = await axios.post('/connect', { login: userName, password: password });
-            console.log("actions login test");
-            console.log('data login', res.data.auth);
             if (res.data.auth){
-                console.log("CONNECTED", res.data);
-                console.log("EMITTING");
                 socket.connect();
                 socket.emit('login', userName);
                 localStorage.setItem('csrf_token', res.data.csrf_token);

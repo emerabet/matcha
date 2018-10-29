@@ -66,7 +66,7 @@ class Register extends Component{
     render () {
         const passwordRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
         const passOK = (this.state.password1 === this.state.password2) && passwordRegex.test(this.state.password1);
-        const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const emailOK = emailRegex.test(String(this.state.email).toLowerCase()) && this.state.email !== "";
 
        return (
@@ -85,7 +85,7 @@ class Register extends Component{
                         <Input type='text' onChange={this.handleChange} name='lastName' value={ this.state.lastName } placeholder='Last name' required></Input>
                     </Form.Field>
                     <Form.Field>
-                        <label style={(emailOK && !this.state.emailAlreadyTaken) || (this.state.email == '') ? null : styles.nok} htmlFor='email'>Email {this.state.emailAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
+                        <label style={(emailOK && !this.state.emailAlreadyTaken) || (this.state.email === '') ? null : styles.nok} htmlFor='email'>Email {this.state.emailAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
                         <Input type='email' onChange={this.handleChange} onBlur={this.handleBlur} name='email' value={ this.state.email } placeholder='Email' required></Input>
                     </Form.Field>
                     <Popup trigger={

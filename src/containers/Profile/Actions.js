@@ -20,11 +20,7 @@ export const updateProfile =(profileState) => {
             localStorage.setItem('login', profileState.login);
             dispatch({ type: UPDATE_USER_PROFILE, data: profileState });
         } catch (err) {
-         /*   dispatch({
-                type: LOGIN_FAIL,
-                data: null
-            })*/
-            console.log("FAIL");
+
         }
     }
 }
@@ -36,11 +32,7 @@ export const updateLocation =(location, address) => {
             localStorage.setItem('address', address);
             dispatch({ type: UPDATE_USER_LOCATION, data: {location: location, address: address} });
         } catch (err) {
-         /*   dispatch({
-                type: LOGIN_FAIL,
-                data: null
-            })*/
-            console.log("FAIL");
+
         }
     }
 }

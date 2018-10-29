@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Divider, Icon, Pagination, Grid, Loader, Dimmer, Segment } from 'semantic-ui-react';
+import { Divider, Icon, Pagination, Grid, Segment } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { buffer, point, polygon, pointsWithinPolygon, points } from '@turf/turf';
 import distance from '@turf/distance';
@@ -69,7 +69,6 @@ class AdvancedSearch extends Component {
         const nbPages = this.calculPagination(users.data.data.getUsers.length, this.state.itemsPerPage);
         const paged = this.paginate(users.data.data.getUsers, this.state.itemsPerPage, this.state.activePage); 
 
-        console.log("set state did update", this.props.mode);
         if (this.props.mode === "classic") {
             await this.scoring(users.data.data.getUsers, tags.data.data.getTags);
         } else {
@@ -82,9 +81,6 @@ class AdvancedSearch extends Component {
                 loaded: true
             });
         }
-        console.log(users.data.data.getUsers);
-        console.log("------------");
-        console.log(this.state.users);
 
         this.withinArea(this.state.lastDistanceChecked);
     }
@@ -121,12 +117,10 @@ class AdvancedSearch extends Component {
             const withScore = {...member, ranking: score}
             return withScore
             }))
-            console.log("RANKING", ranking)
             let sorted = await ranking.concat();
             await Promise.all(sorted.sort((a, b) => {
                 return (b.ranking - a.ranking)
             }))
-            console.log("SORTED", sorted)
             const nbPages = this.calculPagination(sorted.length, this.state.itemsPerPage);
             const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage); 
             await this.setState({ 
@@ -156,14 +150,9 @@ class AdvancedSearch extends Component {
             return false; }
         });
 
-        console.log('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn');
-        console.log(filtered);
-        console.log(this.state.users);
         const nbPages = this.calculPagination(filtered.length, this.state.itemsPerPage);
         const paged = this.paginate(filtered, this.state.itemsPerPage, 1);
 
-
-        console.log("Handle filter");
         this.setState({ 
             filteredUsers: filtered,
             pagedUsers: paged,
@@ -179,13 +168,6 @@ class AdvancedSearch extends Component {
         const lat = parseFloat(this.props.user.latitude);
         const lng = parseFloat(this.props.user.longitude);
         const pt = point([lat, lng]);
-        console.log("mmmmmmmmmmmmmmmmmmmmmmmmmm");
-        console.log(pt);
-        console.log(dist);
-
-
-        console.log(pt);
-
         const buffered = buffer(pt, parseInt(dist, 10), {units: 'kilometers'});
 
         /* Copie en profondeur du tableau d'objets */
@@ -214,7 +196,6 @@ class AdvancedSearch extends Component {
             }
         });
 
-        console.log("set state within area");
         await this.setState({
                         users: newUsers,
                         lastDistanceChecked: dist
@@ -256,14 +237,11 @@ class AdvancedSearch extends Component {
     }
 
     paginate = (array, itemsPerPage, activePage) => {
-        console.log("paginate");
         return array.slice((activePage - 1) * itemsPerPage, activePage * itemsPerPage);
     }
 
     handlePageChange = (e, data) => {
-        console.log("pagechange");
         const paged = this.paginate(this.state.filteredUsers, this.state.itemsPerPage, data.activePage);
-        console.log("Set state handle page change");
         this.setState({
             pagedUsers: paged,
             activePage: data.activePage

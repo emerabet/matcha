@@ -62,7 +62,6 @@ class Stalk extends Component {
     }
 
     getIsLikedReported = async (id) => {
-        console.log("icsssssssssssssssssssssi");
         try {
             const query = `
                             query getStatusLikedReported ($user_id2: Int!) {
@@ -77,14 +76,8 @@ class Stalk extends Component {
                 user_id2:id
             }}, headers.headers());
 
-            console.log("okokokokok");
-            console.log(res);
-
-
             return res;
         } catch (err) {
-            console.log("catch");
-            console.log(err);
             return err;
         }
     }
@@ -118,9 +111,6 @@ class Stalk extends Component {
 
         if (resVisit.data.data.addVisit === true)
             this.props.socket.emit('visit', id);
-
-        console.log("is reported or liked?");
-        console.log(isLikedReported);
 
         let colorLike = 'grey';
         let colorBlacklist = 'grey';
@@ -177,7 +167,6 @@ class Stalk extends Component {
     getActivePicture = (user) => {
         if (!user || !user.pictures || user.pictures.length === 0)
             return '/pictures/smoke_by.png';
-        console.log(user);
         return user.pictures[this.state.activeImage].src;
     }
 
@@ -242,8 +231,6 @@ class Stalk extends Component {
         } else if (res.data.data.likeUser === false) {
             this.props.socket.emit('unliked', idToReport);
         }
-
-        console.log("RES", res);
 
         this.setState({
             isReported: res.data.data.addToReport,
@@ -356,8 +343,6 @@ class Stalk extends Component {
 
 }
 const mapStateToProps = state => {
-    console.log("map");
-    console.log(state);
     return {
         myuser: state.login.user
     }

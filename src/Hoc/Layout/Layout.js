@@ -20,72 +20,54 @@ class Layout extends Component {
     componentDidMount() {
 
         this.props.socket.on('visited', (data) => {
-
-            console.log(data);
             this.props.onLoadNotifications('all');
             toast(data);
         });
 
         this.props.socket.on('liked', (data) => {
-            console.log(data);
             this.props.onLoadNotifications('all');
             toast(data);
         });
 
         this.props.socket.on('unliked', (data) => {
-            console.log(data);
             this.props.onLoadNotifications('all');
             toast(data);
         });
 
         this.props.socket.on('onlineChanged', (data) => {
-            console.log("Connected users changed");
-            console.log(data);
             this.props.socket.connectedUsersMatcha = null;
             this.props.socket.connectedUsersMatcha = JSON.parse(data);
             if (this.props.connectedList.length === 0)
             this.props.onContactConnected(this.props.socket.connectedUsersMatcha, null);
-            console.log(this.props.socket);
         });
 
         this.props.socket.on('newMessage', (mes) => {
-            console.log("NEW MESSAGE", mes);
             this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes, this.props.nb_unread_chats);    
         });
 
         this.props.socket.on('isTyping', (contact_id) => {
-            console.log("CONTACT IS TYPING", contact_id);
-            this.props.onContactIsTyping(this.props.contacts, contact_id);
-            //this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
+            this.props.onContactIsTyping(this.props.contacts, contact_id);   
         });
 
         this.props.socket.on('stopTyping', (contact_id) => {
-            console.log("CONTACT HAS STOPPED TYPING", contact_id);
-            this.props.onContactStopTyping(this.props.contacts, contact_id);
-            //this.props.onReceiveMessage(this.props.chats, this.props.contacts, mes);    
+            this.props.onContactStopTyping(this.props.contacts, contact_id);   
         });
 
         this.props.socket.on('disconnected', (user_id_disconnected, login) => {
-            console.log("has just disconnected", user_id_disconnected);
             toast(`${login} has just disconnected`);
             this.props.onContactDisconnected(this.props.connectedList, user_id_disconnected);
         })
 
         this.props.socket.on('connected', (user_id_connected, login) => {
-            console.log("has just connected", user_id_connected);
             toast(`${login} has just connected`);
             this.props.onContactConnected(this.props.connectedList, user_id_connected);
         })
 
         this.props.socket.on('initiateVideoChat', ({from, data}) => {
-            console.log("ON RECEIVE START VIDEO CHAT", from, data);
-            console.log("VCHAT", this.props.videoChats);
             this.props.onStartVideoChat(this.props.videoChats, from, data);
         })
 
         this.props.socket.on('acceptVideoChat', ({from, data}) => {
-            console.log("ON RECEIVE ACCEPT VIDEO CHAT", from, data);
-            console.log("VCHAT", this.props.videoChats);
             this.props.onStartVideoChat(this.props.videoChats, from, data);
             this.props.onAcceptVideoChat(this.props.videoChats, from, data);
         })

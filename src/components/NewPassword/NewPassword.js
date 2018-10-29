@@ -29,7 +29,7 @@ class NewPassword extends Component {
                 checkResetToken(reset_token: $reset_token, password: $password)
             }
             `;
-            console.log("PAS", this.state.newPassword);
+
         const result = await axios.post(`/api`, {   query: query,
             variables: { reset_token: reset_token, password: this.state.newPassword }
         });

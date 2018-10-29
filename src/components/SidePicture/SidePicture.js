@@ -7,11 +7,6 @@ import * as headers from '../../Tools/Header';
 class SidePicture extends Component {
     
     handleUpload = async (e) => {
-        console.log("name", e.target.name);
-        console.log("file", e.target.value);
-        console.log("F", e.target.files[0]);
-        console.log("KEY", e.target.key);
-
         const data = new FormData();
         data.append('filename', "test.png");
         data.append('token', localStorage.getItem("token"));
@@ -21,14 +16,8 @@ class SidePicture extends Component {
         data.append('file', e.target.files[0], localStorage.getItem('token'));
         
         const res = await axios.post('/upload_picture', data, headers.headers());
-        if (res) {
-        console.log("res", res);
-        console.log("INSERT ID", res.insertId);
-        console.log("UPLOADED");
-        console.log("SIZE", res.data.pictures.length);
         if (res)
             this.props.handleRefresh(res.data.pictures);
-        }
     }
 
     handleDelete = async (e) => {
@@ -44,7 +33,7 @@ class SidePicture extends Component {
                             }
                         }
                     `;
-                   console.log("PICTURE TO DELETE", this.props.pic.picture_id)
+
         const result = await axios.post(`/api`, {   query: query,
             variables: { 
             token: localStorage.getItem("token"), 
@@ -53,8 +42,6 @@ class SidePicture extends Component {
             }
         }, headers.headers());
 
-        console.log("RESDDD", result);
-        console.log(result.data.data.deletePicture);
         this.props.handleRefresh(result.data.data.deletePicture);
     }
  

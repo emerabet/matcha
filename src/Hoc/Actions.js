@@ -24,11 +24,7 @@ export const restoreStore =() => {
             const logged = localStorage.getItem("logged");
             dispatch({ type: RESTORE_STORE_FROM_SESSION_STORAGE, data: {user: user, logged: logged }});
         } catch (err) {
-         /*   dispatch({
-                type: LOGIN_FAIL,
-                data: null
-            })*/
-            console.log("FAIL RESTORE");
+
         }
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import './Message.css';
-import { Image, Grid } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
 
 const Message = ({msg, type, date, from, pos}) => {
     return (

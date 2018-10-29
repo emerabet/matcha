@@ -21,7 +21,6 @@ axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {
     return response;
   }, function (error) {
-    console.log(error.response.status);
     // Do something with response error
     if (error.response.status === 403)
         localStorage.clear();

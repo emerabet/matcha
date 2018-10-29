@@ -3,8 +3,10 @@ import Activity from '../../components/Activity/Activity';
 import { } from 'semantic-ui-react';
 
 
-export default Notification = () => {
+const Notification = () => {
     return (
         <Activity size='large'></Activity>
     );
 }
+
+export default Notification;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextArea, Button, Form, Header, Image, Segment } from 'semantic-ui-react';
+import { TextArea, Button, Form, Header, Image } from 'semantic-ui-react';
 import './Chat.css';
 import Messages from '../Messages/Messages';
 import withSocket from '../../Hoc/Socket/SocketHOC';

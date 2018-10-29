@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Card, List, Image } from 'semantic-ui-react';
 import Aux from '../../Hoc/Aux/Aux';
 import withSocket from '../../Hoc/Socket/SocketHOC';
-import { Link } from 'react-router-dom';
 
 class Listview extends Component {
 
@@ -11,7 +10,6 @@ class Listview extends Component {
     }
 
     handleClick = (e, data) => {
-        console.log(this.props.history);
         this.props.history.push(`/stalk/${data.id}`);
     }
 
@@ -60,8 +58,6 @@ class Listview extends Component {
     };
 
     render () {
-        console.log("count:", this.props.users.length);
-        console.log("sockett:", this.props.socket);
         return (
             <Aux>
                 { this.props.mode === 'classic' && this.FillUsers(this.props.users) }

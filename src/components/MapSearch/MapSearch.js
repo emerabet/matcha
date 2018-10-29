@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
-import Aux from './../../Hoc/Aux/Aux';
-
+import { Map, TileLayer, Marker } from 'react-leaflet';
 
 class MapSearch extends Component {
 
@@ -22,7 +20,8 @@ class MapSearch extends Component {
                                 return (
                                     <Marker key={u.user_id} position={[u.latitude, u.longitude]}></Marker>
                                 );
-                            }
+                            } else
+                                return false;
                         }) }
                     </Map>
         )

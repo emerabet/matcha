@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, List } from 'semantic-ui-react'
+import { List } from 'semantic-ui-react'
 import Contact from '../../components/Contact/Contact';
 
 //const displ

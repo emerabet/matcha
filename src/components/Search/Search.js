@@ -15,7 +15,6 @@ class Search extends Component {
     }
 
     componentDidMount() {
-        console.log("Component Search Did Mount");
         this.props.handleFilter(this.state);
     }
 
@@ -67,7 +66,6 @@ class Search extends Component {
     }
 
     handleOrdering = async (e, data) => {
-        console.log(data);
         this.props.handleSort(data.name);
     }
 

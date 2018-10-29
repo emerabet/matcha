@@ -38,7 +38,7 @@ export const addContacts = () => {
             })
             dispatch({ type: CONTACTS, data: response.data.data.getContacts });
             dispatch({ type: UNREAD_CHAT, data: nb_unread_chat });
-        } catch (err) { console.log('Erro in dispatch addContact'); }
+        } catch (err) { }
     }
 }
 
@@ -64,7 +64,7 @@ export const addChats =() => {
                  query: query_messages
             }, headers.headers());
             dispatch({ type: CHATS, data: response_messages.data.data.getAllMessagesFromUser });
-        } catch (err) { console.log('Error in dispacth addChats'); }
+        } catch (err) { }
     }
 }
 
@@ -108,7 +108,7 @@ export const addMessage =(chat_id, login, from, to, message, chats, socket, cont
             socket.emit('newMessage', {chat_id: chat_id, login: login, to: to, message: message, messageId: insertedId});
             
         }
-        } catch (err) { console.log('Error in dispacth addChats'); }
+        } catch (err) { }
     }
 }
 

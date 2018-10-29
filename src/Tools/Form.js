@@ -24,6 +24,6 @@ export const handleBlur = async (e, data) => {
             });
             return ({userNameAlreadyTaken: result ? result.data.data.getLogin : null});
         default:
-            console.log("DEFAULT");
+            return ;
     }
 }

@@ -4,7 +4,7 @@ import Chat from '../Chat/Chat';
 import './BigChat.css';
 import { connect } from 'react-redux';
 import * as actions from '../SuperChat/Actions';
-import { Button, Grid, Segment } from 'semantic-ui-react';
+import { Button, Grid } from 'semantic-ui-react';
 import Aux from '../../Hoc/Aux/Aux';
 import SimplePeer from 'simple-peer';
 import withSocket from '../../Hoc/Socket/SocketHOC';
@@ -70,7 +70,7 @@ class BigChat extends Component {
         })
 
         p.on('error', () => {
-            console.log("ERROR IN STREAM");
+            
         })
     }
 
@@ -97,7 +97,7 @@ class BigChat extends Component {
                 this.handleOffer(videoChat.data);
             }
         }, /*ERROR*/ error => {
-            console.log("STREAM ERROR")
+            
         }
         )
     }

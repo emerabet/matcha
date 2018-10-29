@@ -6,9 +6,6 @@ import { connect } from 'react-redux';
 class Activity extends Component {
 
     componentDidMount() {
-        console.log("Activity mount");
-        console.log(this.props);
-        console.log("mounted");
         const type = this.props.size === 'large' ? 'all' : 'unread';
 
         if (type === 'all' || (this.props && this.props.notifications.length === 0)) {
@@ -17,12 +14,10 @@ class Activity extends Component {
     }
 
     handleRemoveNotificationClicked = (id) => {
-        console.log(id);
         this.props.onRemoveNotification(id);
     }
 
     handleReadNotificationClicked = (id) => {
-        console.log(id);
         this.props.onCheckNotification(id);
     }
 
@@ -62,7 +57,7 @@ class Activity extends Component {
             return (
                 <Feed.Event key={ itm.notification_id }>
                 <Feed.Label>
-                             <img src={ itm.src } />
+                             <img src={ itm.src } alt=""/>
                         </Feed.Label>
                     <Feed.Content>
                     
@@ -75,9 +70,7 @@ class Activity extends Component {
             );
         });
 
-        console.log("LENGHT: ", loaded.length);
-
-        return count > 0 ? loaded : this.Nothing();;
+        return count > 0 ? loaded : this.Nothing();
     }
 
     render() {
