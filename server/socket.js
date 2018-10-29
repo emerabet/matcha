@@ -6,7 +6,7 @@ const socketNotif = require('./socketNotif');
 const queryContact = require('./graphql/resolvers/chat');
 
 const parseCookies = (cookies) => {
-	let c = cookies.split(";")
+	let c = cookies && cookies !== undefined ? cookies.split(";") : [];
 	let result = new Map();
 
 	c.forEach(async element => {

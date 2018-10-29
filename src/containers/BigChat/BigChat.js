@@ -180,8 +180,10 @@ class BigChat extends Component {
                     <Aux>
                         <div>
                             <h2> Video chat </h2>
+                            <div>
                             <video ref="yourvideo"  height="200px"> </video>
                             <video controls ref="myvideo"  height="40px"> </video>
+                            </div>
                             {
                                 this.state.started === false
                                 ? 

@@ -14,6 +14,8 @@ module.exports = {
                 }
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
+                if (user === undefined)
+                    return ;
                 const contact = user.friends.get(to);
                 if (contact !== undefined)
                     io.to(contact.socketId).emit('newMessage', {chat_id: chat_id, user_id_sender: from, login: login, message: message, message_id: messageId, date: `${Date.now()}`});
@@ -38,6 +40,8 @@ module.exports = {
                 }
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
+                if (user === undefined)
+                    return ;
                 const contact = user.friends.get(contact_id);
                 if (contact !== undefined)
                     io.to(contact.socketId).emit('isTyping', from);
@@ -59,6 +63,8 @@ module.exports = {
                 }
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
+                if (user === undefined)
+                    return ;
                 const contact = user.friends.get(contact_id);
                 if (contact !== undefined)
                     io.to(contact.socketId).emit('stopTyping', from);
@@ -82,9 +88,11 @@ module.exports = {
 
                 const from = token.user_id;
                 const user = connectedUsers.get(from);
+                if (user === undefined)
+                    return ;
                 const contact = user.friends.get(to);
-
-                io.to(contact.socketId).emit('initiateVideoChat', {from :from, data: data});
+                if (contact !== undefined)
+                    io.to(contact.socketId).emit('initiateVideoChat', {from :from, data: data});
             } catch (err) {
                 console.log('Error socket on new message: ', err);
             }
@@ -103,8 +111,11 @@ module.exports = {
                 }
                 const from = token.user_id;
                 const user = connectedUsers.get(from);
+                if (user === undefined)
+                    return ;
                 const contact = user.friends.get(to);
-                io.to(contact.socketId).emit('acceptVideoChat', {from :from, data: data});
+                if (contact !== undefined)
+                    io.to(contact.socketId).emit('acceptVideoChat', {from :from, data: data});
             } catch (err) {
                 console.log('Error socket on new message: ', err);
             }
