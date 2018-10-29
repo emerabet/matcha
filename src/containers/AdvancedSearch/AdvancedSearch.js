@@ -99,8 +99,8 @@ class AdvancedSearch extends Component {
         const ranking = await Promise.all(users.map(async member => {
             let dist = 19999;
             if (member.latitude && member.longitude) {
-                var from = point([this.props.user.latitude, this.props.user.longitude]);
-                var to = point([parseInt(member.latitude, 10), parseInt(member.longitude, 10)]);
+                var from = point([parseFloat(this.props.user.latitude), parseFloat(this.props.user.longitude)]);
+                var to = point([member.latitude, member.longitude]);
                 var options = {units: 'kilometers'};
                 dist = distance(from, to, options);
             }
@@ -111,26 +111,32 @@ class AdvancedSearch extends Component {
                     if (u_tag.tag === m_tag.tag)
                         number_of_common_tags++;
                 })
-            })
+            });
             const popularity = (member.popularity && member.popularity !== 0 ? member.popularity : 1)
             const score = (1000 / dist) * (1 + number_of_common_tags) * (popularity);
+
             const withScore = {...member, ranking: score}
             return withScore
-            }))
-            let sorted = await ranking.concat();
-            await Promise.all(sorted.sort((a, b) => {
-                return (b.ranking - a.ranking)
-            }))
-            const nbPages = this.calculPagination(sorted.length, this.state.itemsPerPage);
-            const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage); 
-            await this.setState({ 
-                users : sorted, 
-                filteredUsers : users,
-                pagedUsers: paged,
-                tags: tags,
-                nbPages: nbPages,
-                loaded: true
-            });
+        }));
+        
+        let sorted = await ranking.concat();
+        await Promise.all(sorted.sort((a, b) => {
+            return (b.ranking - a.ranking)
+        }))
+            
+        const nbPages = this.calculPagination(sorted.length, this.state.itemsPerPage);
+
+        console.log(sorted);
+
+        const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage); 
+        await this.setState({ 
+            users : sorted, 
+            filteredUsers : users,
+            pagedUsers: paged,
+            tags: tags,
+            nbPages: nbPages,
+            loaded: true
+        });
     }
 
     handleFilter = async (filters) => {

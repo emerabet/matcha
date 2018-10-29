@@ -260,12 +260,6 @@ class Stalk extends Component {
                             <Segment attached>
                                 <Image src={this.state.src} />
                             </Segment>
-                            <Button.Group attached='bottom'>
-                                <Button><Icon name='angle left' /></Button>
-                                <Button><Icon name='angle right' /></Button>
-                                <Button><Icon name='angle left' /></Button>
-                                <Button><Icon name='angle right' /></Button>
-                            </Button.Group>
                         </Grid.Column>
                         <Grid.Column>
                             <Card fluid>
@@ -274,7 +268,7 @@ class Stalk extends Component {
                                     <Card.Meta>{this.state.user.country} ({this.state.user.city})</Card.Meta>
                                     <Card.Description>
                                         <h5>Popularity: {this.state.user.popularity}</h5>
-                                        <h5>Status: Online</h5>
+                                        <h5>Status: { this.props.socket.connectedUsersMatcha !== undefined && this.props.socket.connectedUsersMatcha.includes(this.state.user.user_id) ? 'Online' : 'Offline'}</h5>
                                     </Card.Description>
                                 </Card.Content>
                                 <Card.Content extra>
@@ -292,7 +286,7 @@ class Stalk extends Component {
                                         </Button.Content>
                                     </Button>
                                     <Button basic color={this.state.colorReport} onClick={this.handleReport} animated='vertical'>
-                                        <Button.Content hidden>Report</Button.Content>
+                                        <Button.Content hidden>Report as fake</Button.Content>
                                         <Button.Content visible>
                                             <Icon name='close' />
                                         </Button.Content>

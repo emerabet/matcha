@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Range } from 'rc-slider';
 import Slider from 'rc-slider';
+import Tooltip from 'rc-tooltip';
 import { Button, Form, Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import 'rc-slider/assets/index.css';
 
-class Search extends Component {
+const Handle = Slider.Handle;
 
+class Search extends Component {
     state = {
         age: { min: 26, max: 38 },
         popularity: { min: 60, max: 85 },
@@ -69,20 +71,35 @@ class Search extends Component {
         this.props.handleSort(data.name);
     }
 
+    handleTooltip = (data) => {
+        const { value, dragging, index, ...restProps } = data;
+            return (
+                <Tooltip
+                prefixCls="rc-slider-tooltip"
+                overlay={value}
+                visible={dragging}
+                placement="top"
+                key={index}
+                >
+                <Handle value={value} {...restProps} />
+                </Tooltip>
+            );
+    }
+
     render () {
         return (
             <Form>
                 <Form.Field>
                     <label>Age</label>
-                    <Range onChange = { this.handleChangeAge } min={ 18 } max={ 100 } defaultValue={[26, 38]} />
+                    <Range onChange = { this.handleChangeAge } min={ 18 } max={ 100 } defaultValue={[26, 38]} handle={this.handleTooltip} />
                 </Form.Field>
                 <Form.Field>
                     <label>Popularity</label>
-                    <Range onChange = { this.handleChangePopularity } min={ 0 } max={ 100 } defaultValue={[60, 85]} />
+                    <Range onChange = { this.handleChangePopularity } min={ 0 } max={ 100 } defaultValue={[60, 85]} handle={this.handleTooltip} />
                 </Form.Field>
                 <Form.Field>
                     <label>Distance</label>
-                    <Slider onChange = { this.handleChangeDistance } min={ 5 } max={ 500 } defaultValue={ 100 } />
+                    <Slider onChange = { this.handleChangeDistance } min={ 5 } max={ 500 } defaultValue={ 100 } handle={this.handleTooltip} />
                 </Form.Field>
                 <Form.Field>
                     <label>Tag</label>
