@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Feed, Card, Icon } from 'semantic-ui-react';
+import { Feed, Icon } from 'semantic-ui-react';
 import * as actions from './Actions';
 import { connect } from 'react-redux';
-import { Link } from "react-router-dom";
-
-import { createBrowserHistory } from 'history';
 
 class Activity extends Component {
 
@@ -12,9 +9,9 @@ class Activity extends Component {
         console.log("Activity mount");
         console.log(this.props);
         console.log("mounted");
-        const type = this.props.size == 'large' ? 'all' : 'unread';
+        const type = this.props.size === 'large' ? 'all' : 'unread';
 
-        if (type == 'all' || (this.props && this.props.notifications.length === 0)) {
+        if (type === 'all' || (this.props && this.props.notifications.length === 0)) {
             this.props.onLoadNotification(type);
         }
     }
@@ -58,7 +55,7 @@ class Activity extends Component {
 
         const loaded = this.props.notifications.map(itm => {         
 
-            if (this.props.size == 'small' && itm.is_read === true)
+            if (this.props.size === 'small' && itm.is_read === true)
                 return false;
             count++;
             const date = new Date(itm.date / 1);
@@ -75,8 +72,6 @@ class Activity extends Component {
                         </Feed.Summary>
                     </Feed.Content>
                 </Feed.Event>
-                // <Link to={`/stalk/${itm.user_id_from}`}>{itm.login}</Link>
-               // <Icon onClick={() => this.handleRemoveNotificationClicked(itm.notification_id)} name='close' />
             );
         });
 

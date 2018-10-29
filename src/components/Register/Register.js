@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Divider, Input, Form, Button } from 'semantic-ui-react';
+import { Divider, Input, Form, Button, Popup } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import publicIp from 'public-ip';
 import { handleBlur } from '../../Tools/Form';
@@ -88,10 +88,14 @@ class Register extends Component{
                         <label style={(emailOK && !this.state.emailAlreadyTaken) || (this.state.email == '') ? null : styles.nok} htmlFor='email'>Email {this.state.emailAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
                         <Input type='email' onChange={this.handleChange} onBlur={this.handleBlur} name='email' value={ this.state.email } placeholder='Email' required></Input>
                     </Form.Field>
-                    <Form.Field>
-                        <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor='password1'>Password (must contains at least 8 characters including a lower letter, a capital letter and a number)</label>
-                        <Input type='password' onChange={this.handleChange} name='password1' value={ this.state.password1 } placeholder='Password' required></Input>
-                    </Form.Field>
+                    <Popup trigger={
+                        <Form.Field>
+                            <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor='password1'>Password </label>
+                            <Input type='password' onChange={this.handleChange} name='password1' value={ this.state.password1 } placeholder='Password' required></Input>
+                        </Form.Field>}
+                        header="Password requirement"
+                        content="must contains at least 8 characters including a lower letter, a capital letter and a number"
+                    />
                     <Form.Field>
                         <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor='password2'>Confirm password</label>
                         <Input type='password' onChange={this.handleChange} name='password2' value={ this.state.password2 } placeholder='Confirm password' required></Input>

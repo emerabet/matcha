@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Form, Button } from 'semantic-ui-react';
+import { Form, Button, Popup } from 'semantic-ui-react';
 import { toast } from 'react-toastify';
 
 class NewPassword extends Component {
@@ -56,10 +56,14 @@ class NewPassword extends Component {
         return (
             <div className='Login_Register__Container'>
                 <Form className='Login_Register__Form' onSubmit={this.handleNewPassword}>
-                    <Form.Field>
-                        <label style={(this.state.newPassword !== "" && this.state.newPasswordConfirmation !== "") ? (passOK ? null : {color: "red"}) : null}>New password (must contains at least 8 characters including a lower letter, a capital letter and a number)</label>
-                        <input name="newPassword" type='password' onChange={this.handleChange} placeholder='New password' required />
-                    </Form.Field>
+                    <Popup trigger={
+                        <Form.Field>
+                            <label style={(this.state.newPassword !== "" && this.state.newPasswordConfirmation !== "") ? (passOK ? null : {color: "red"}) : null}>New password</label>
+                            <input name="newPassword" type='password' onChange={this.handleChange} placeholder='New password' required />
+                        </Form.Field>}
+                        header="Password requirement"
+                        content="must contains at least 8 characters including a lower letter, a capital letter and a number"
+                    />
                     <Form.Field>
                         <label style={(this.state.newPassword !== "" && this.state.newPasswordConfirmation !== "") ? (passOK ? null : {color: "red"}) : null}>New password confirmation</label>
                         <input name="newPasswordConfirmation" type='password' onChange={this.handleChange} placeholder='New password confirmation' required />
