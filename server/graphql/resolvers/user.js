@@ -281,8 +281,10 @@ module.exports = {
                     result = await db.conn.queryAsync(sql);
                     
                     ret = await module.exports.addNotification({type: "like", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
-                    if (ret === false)
+                    if (ret === false) {
+                        module.exports.updateScore(user_id_to_like, 2);
                         return 3; // like but blocked
+                    }
                     if (flag_liked > 0) {
                         sql = 'INSERT INTO `matched` (`user_id_visitor`, `user_id_visited`, `date`) VALUES(?,?,CURRENT_TIMESTAMP);';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
@@ -295,14 +297,17 @@ module.exports = {
                         result = await db.conn.queryAsync(sql);
                         
                     }
+                    module.exports.updateScore(user_id_to_like, 2);
                     return 1; // like
                 } else {
                     sql = 'DELETE FROM `liked` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
                     ret = await module.exports.addNotification({type: "unlike", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
-                    if (ret === false)
+                    if (ret === false) {
+                        module.exports.updateScore(user_id_to_like, -2);
                         return 4; // unlike but blocked
+                    }
                     if (flag_liked > 0) {
                         sql = 'DELETE FROM `matched` WHERE `user_id_visitor` = ? AND `user_id_visited` = ?;';
                         sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
@@ -315,6 +320,7 @@ module.exports = {
                         
                         module.exports.addNotification({type: "unmatch", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
                     }
+                    module.exports.updateScore(user_id_to_like, -2);
                     return 2; // unlike
                 }
             }
@@ -344,6 +350,7 @@ module.exports = {
                     sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id]);
                     result = await db.conn.queryAsync(sql);
                     ret = await module.exports.addNotification({type: "black_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
+                    module.exports.updateScore(user_id_to_black_list, -2);
                     return ret;
                 } else {
                     sql = 'DELETE FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
@@ -412,7 +419,6 @@ module.exports = {
                 let sql = 'INSERT INTO `visit` (`visit_id`, `user_id_visitor`, `user_id_visited`, `date`) VALUES(NULL,?,?,CURRENT_TIMESTAMP);';
                 sql = mysql.format(sql, [decoded.user_id, user_id_visited]);
                 await db.conn.queryAsync(sql);
-                
                 const ret = await module.exports.addNotification({type: "visit", user_id_from: decoded.user_id, user_id_to: user_id_visited});
                 return ret;
             }
@@ -641,6 +647,21 @@ module.exports = {
         } catch (err) {
             console.log("catch get user");
             throw new Error(errors.errorTypes.UNAUTHORIZED);
+        }
+    },
+
+    updateScore: async (user_id, to_add) => {
+        let sql = 'SELECT `popularity` FROM `profil` WHERE user_id = ?';
+        sql = mysql.format(sql, [user_id]);
+        const result = await db.conn.queryAsync(sql);
+        console.log("RES", result, result[0].popularity);
+
+        const pop = result[0].popularity + to_add;
+        console.log("POP", pop)
+        if (pop >= 0 && pop <= 100) {
+            sql = 'UPDATE `profil` SET `popularity` = ? WHERE `user_id` = ?';
+            sql = mysql.format(sql, [pop, user_id]);
+            await db.conn.queryAsync(sql);
         }
     }
 }
