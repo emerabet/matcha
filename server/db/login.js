@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
         const rows = await db.conn.queryAsync(sql);
         if (bcrypt.compareSync(req.body.password, rows[0].password)) {
             const csrf_token = uniqid();
-            const token = jwt.sign({ user_id: rows[0].user_id, csrf_token: csrf_token, role: rows[0].role}, config.SECRET_KEY, { expiresIn: 3600 });
+            const token = jwt.sign({ user_id: rows[0].user_id, csrf_token: csrf_token, role: rows[0].role}, config.SECRET_KEY, { expiresIn: 5400 });
             const user = {
                 user_id: rows[0].user_id,
                 login: rows[0].login,
