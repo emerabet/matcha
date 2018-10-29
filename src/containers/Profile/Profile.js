@@ -427,10 +427,7 @@ class Profile extends Component{
                                 </Form.Field>
                             </Form.Group>
                             <Form.Group>
-                                <Form.Field width={6}>
-                                        <label style={oldPassOK ? styles.ok : styles.nok} htmlFor="old_password">Current password (required)</label>
-                                        <Input type="password" onChange={this.handleChange} name="old_password" value={ this.state.old_password } placeholder="Current password" required></Input>                   
-                                </Form.Field>
+
                                 <Form.Field width={6}>
                                     <label htmlFor="birthdate">Birthdate</label>
                                     <Input type="date" onChange={this.handleChange} name="birthdate" value={ this.state.birthdate } placeholder="Birthdate" required></Input>                   
@@ -503,7 +500,20 @@ class Profile extends Component{
                                     />
                                 </Form.Field>
                             </Form.Group>
-                            <Button type='submit' disabled = {!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && !this.state.userNameAlreadyTaken && !this.emailAlreadyTaken && emailOK && oldPassOK)}>Update profile information</Button>
+
+                            <Form.Group>
+                                <Form.Field width={6}>
+                                    <Popup trigger={
+                                        <Input type="password" onChange={this.handleChange} name="old_password" value={ this.state.old_password } placeholder="Current password" required></Input>                   
+                                    }
+                                    header="Password requirement"
+                                    content="required to update profile info"
+                                    />
+                                    </Form.Field>
+                                <Button type='submit' disabled = {!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && !this.state.userNameAlreadyTaken && !this.emailAlreadyTaken && emailOK && oldPassOK)}>Update profile information</Button>
+                                
+                            </Form.Group>
+                            
                        </Form>
              
                         Last visit: {this.state.last_visit.substr(0, 10) }
