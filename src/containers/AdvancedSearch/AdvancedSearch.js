@@ -78,7 +78,6 @@ class AdvancedSearch extends Component {
 
         if (users === undefined || users === null)
             return ;
-        console.log("U", users)
         
         const tags = await axios.post('/api', { query: `query getTags { getTags { tag } }`}, headers.headers());
 
@@ -138,12 +137,12 @@ class AdvancedSearch extends Component {
         let sorted = await ranking.concat();
         await Promise.all(sorted.sort((a, b) => {
             return (b.ranking - a.ranking)
-        }))
-        console.log("S", sorted)
+        }));
+
         const nbPages = this.calculPagination(sorted.length, this.state.itemsPerPage);
 
-        const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage); 
-        console.log("dd", paged)
+        const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage);
+        
         await this.setState({ 
             users : users, 
             filteredUsers : sorted,
