@@ -78,7 +78,7 @@ class AdvancedSearch extends Component {
 
         if (users === undefined || users === null)
             return ;
-        
+        console.log("U", users)
         
         const tags = await axios.post('/api', { query: `query getTags { getTags { tag } }`}, headers.headers());
 
@@ -110,7 +110,7 @@ class AdvancedSearch extends Component {
                         }
                     `;
 
-        const resp = await axios.post(`/api`, { query: queryTags, variables: {id: this.props.user.user_id}}, headers.headers());
+        const resp = await axios.post(`/api`, { query: queryTags, variables: {id: parseInt(localStorage.getItem("user_id"), 10)}}, headers.headers());
         const user_tags = resp.data.data.getTagByUser; 
         const ranking = await Promise.all(users.map(async member => {
             let dist = 19999;
@@ -139,13 +139,14 @@ class AdvancedSearch extends Component {
         await Promise.all(sorted.sort((a, b) => {
             return (b.ranking - a.ranking)
         }))
-            
+        console.log("S", sorted)
         const nbPages = this.calculPagination(sorted.length, this.state.itemsPerPage);
 
         const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage); 
+        console.log("dd", paged)
         await this.setState({ 
-            users : sorted, 
-            filteredUsers : users,
+            users : users, 
+            filteredUsers : sorted,
             pagedUsers: paged,
             tags: tags,
             nbPages: nbPages,

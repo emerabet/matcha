@@ -6,6 +6,7 @@ import * as headers from '../../Tools/Header';
 import Activity from '../../components/Activity/Activity';
 import withSocket from '../../Hoc/Socket/SocketHOC';
 import MapSearch from '../../components/MapSearch/MapSearch';
+import NotAuthorised from '../../components/NotAuthorised/NotAuthorised';
 
 class Stalk extends Component {
 
@@ -20,7 +21,8 @@ class Stalk extends Component {
         activeImage: 0,
         src:'',
         userViewed: null,
-        isMyProfile: false
+        isMyProfile: false,
+        complete : true
     }
 
     getUserDetails = async (id) => {
@@ -93,54 +95,70 @@ class Stalk extends Component {
         return res;
     }
 
+    checkProfile = async () => {
+        const query = `
+                        query checkProfile {
+                            checkProfile
+                        }
+                    `;
+
+        const res = await axios.post(`/api`, { query: query, variables: { }}, headers.headers());
+        return res.data.data.checkProfile;
+    }
+
     async componentDidMount() {
+        const complete = await this.checkProfile();
+        if (complete) {
+            const id = parseInt(this.props.match.params.id, 10);
 
-        const id = parseInt(this.props.match.params.id, 10);
+            // recuperer profil utilisateur
+            let res1 = this.getUserDetails(id);
 
-        // recuperer profil utilisateur
-        let res1 = this.getUserDetails(id);
+            // marquer le profil comme visité
+            let res2 = this.sendVisit(id);
 
-        // marquer le profil comme visité
-        let res2 = this.sendVisit(id);
+            let res3 = this.getIsLikedReported(id);
 
-        let res3 = this.getIsLikedReported(id);
+            const user = await res1;
+            const resVisit = await res2;
+            const isLikedReported = await res3;
 
-        const user = await res1;
-        const resVisit = await res2;
-        const isLikedReported = await res3;
+            if (resVisit.data.data.addVisit === true)
+                this.props.socket.emit('visit', id);
 
-        if (resVisit.data.data.addVisit === true)
-            this.props.socket.emit('visit', id);
+            let colorLike = 'grey';
+            let colorBlacklist = 'grey';
+            let colorReport = 'grey';
+            let isLike = false;
+            let isReported = false;
+            let isReport = false;
 
-        let colorLike = 'grey';
-        let colorBlacklist = 'grey';
-        let colorReport = 'grey';
-        let isLike = false;
-        let isReported = false;
-        let isReport = false;
+            if (isLikedReported.data.data.getStatusLikedReported) {
+                isLike = isLikedReported.data.data.getStatusLikedReported.liked == null ? false : true;
+                isReported = isLikedReported.data.data.getStatusLikedReported.reported == null ? false : true;
+                isReport = isLikedReported.data.data.getStatusLikedReported.report == null ? false : true;
+                colorLike =  isLike === true ? 'red' : 'grey';
+                colorBlacklist = isReported === true ? 'black' : 'grey';
+                colorReport = isReport === true ? 'red' : 'grey';
+            }
 
-        if (isLikedReported.data.data.getStatusLikedReported) {
-            isLike = isLikedReported.data.data.getStatusLikedReported.liked == null ? false : true;
-            isReported = isLikedReported.data.data.getStatusLikedReported.reported == null ? false : true;
-            isReport = isLikedReported.data.data.getStatusLikedReported.report == null ? false : true;
-            colorLike =  isLike === true ? 'red' : 'grey';
-            colorBlacklist = isReported === true ? 'black' : 'grey';
-            colorReport = isReport === true ? 'red' : 'grey';
+            this.setState({
+                user: user.data.data.getUser,
+                nbImage: user.data.data.getUser.pictures.length,
+                src: this.getActivePicture(user.data.data.getUser),
+                userViewed: id,
+                isMyProfile: user.data.data.getUser.isMyProfile,
+                isLiked: isLike,
+                isBlacklist: isReported,
+                isReported: isReport,
+                colorLike: colorLike,
+                colorBlacklist: colorBlacklist,
+                colorReport: colorReport,
+                complete: complete
+            })
+        } else {
+            this.setState({complete: complete})
         }
-
-        this.setState({
-            user: user.data.data.getUser,
-            nbImage: user.data.data.getUser.pictures.length,
-            src: this.getActivePicture(user.data.data.getUser),
-            userViewed: id,
-            isMyProfile: user.data.data.getUser.isMyProfile,
-            isLiked: isLike,
-            isBlacklist: isReported,
-            isReported: isReport,
-            colorLike: colorLike,
-            colorBlacklist: colorBlacklist,
-            colorReport: colorReport
-        })
     }
 
     handleNextPhoto  = async (e, data) => {
@@ -325,8 +343,15 @@ class Stalk extends Component {
 
         return (
             <div>
-                { loaded }
+                { 
+                    this.state.complete
+                ? 
+                    loaded
+                :
+                    <NotAuthorised history={this.props.history} />
+                }
             </div>
+           
         );
 
 

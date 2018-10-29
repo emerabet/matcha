@@ -58,16 +58,20 @@ class ProfilePicture extends Component {
                                     <Image name="profile_picture" style={{marginBottom: "5px"}} src={this.props.picture_src} size='medium' rounded />
                                         }>
                             <Modal.Header>Display picture</Modal.Header>
-                                <Modal.Content image>
-                                    <Image wrapped size='massive' src={this.props.picture_src} rounded/>
+                                <Modal.Content image style={{display: "flex", flexDirection: "column"}}>
+                                    <Image wrapped size='big' src={this.props.picture_src} rounded/>
                                     <Modal.Description>            
                                         <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="profile_picture" className="inputfile" id="upload_other_picture" />
-                                        <label style={{width: "350px"}}  className="ui huge gray right floated button" htmlFor="upload_other_picture">
+                                        <label style={{width: "100%"}}  className="ui huge gray button" htmlFor="upload_other_picture">
                                             Upload an other picture
                                         </label>
-                                        <label style={{width: "350px"}} className="ui huge red right floated button" onClick={this.handleDelete} htmlFor="delete_picture">
-                                            Delete this picture
-                                        </label>
+                                        {   
+                                            this.props.picture_src !== "/pictures/smoke_by.png"
+                                        &&
+                                            <label style={{width: "100%"}} className="ui huge red button" onClick={this.handleDelete} htmlFor="delete_picture">
+                                                Delete this picture
+                                            </label>
+                                        }
                                     </Modal.Description>
                                 </Modal.Content>
             </Modal> 

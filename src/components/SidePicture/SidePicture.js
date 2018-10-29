@@ -51,14 +51,14 @@ class SidePicture extends Component {
                                 <Image  id={this.props.pic.picture_id} onClick={this.handleClickedPhoto} name="side_picture" style={styles.picture} src={this.props.pic.src} size='tiny' rounded />
                             </div>}>
                             <Modal.Header>Display picture</Modal.Header>
-                                <Modal.Content image>
+                                <Modal.Content image style={{display: "flex", flexDirection: "column"}}>
                                     <Image wrapped size='massive' src={this.props.pic.src} rounded/>
                                     <Modal.Description>            
                                         <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="side_picture" className="inputfile" id="upload_other_picture" />
-                                        <label style={{width: "350px"}}  className="ui huge gray right floated button" htmlFor="upload_other_picture">
+                                        <label style={{width: "100%"}}  className="ui huge gray button" htmlFor="upload_other_picture">
                                             Upload an other picture
                                         </label>
-                                        <label style={{width: "350px"}} onClick={this.handleDelete} className="ui huge red right floated button" htmlFor="delete_picture">
+                                        <label style={{width: "100%"}} onClick={this.handleDelete} className="ui huge red button" htmlFor="delete_picture">
                                             Delete this picture
                                         </label>
                                     </Modal.Description>
