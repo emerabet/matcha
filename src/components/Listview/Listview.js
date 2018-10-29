@@ -14,9 +14,7 @@ class Listview extends Component {
     }
 
     interactiveView = (users) => {
-        console.log("li", users)
-    const array = users.map(user => {
-
+        const array = users.map(user => {
         const status = this.props.socket.connectedUsersMatcha !== undefined && this.props.socket.connectedUsersMatcha.includes(user.user_id) ? 'Online' : 'Offline';
         const color = status === 'Online' ? 'Listview__Status__Online' : 'Listview__Status__Offline';
         const meta = `${user.age} ans - ${user.city} (${user.country})`;
