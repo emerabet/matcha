@@ -26,11 +26,6 @@ class BigChat extends Component {
     }
 
     selectContact = async (user_id, user_name, chat_id, src) => {
-        console.log("user id", user_id);
-        console.log("user name", user_name);
-        console.log("CHAT ID", chat_id, this.props.chats.filter(chat => {
-            return (chat.chat_id === chat_id)
-        }));
         this.setState({active_chat_id: chat_id,
                         active_chat_contact_login: user_name,
                         active_chat_contact_id: user_id,
@@ -38,12 +33,10 @@ class BigChat extends Component {
                         active_chat_messages: this.props.chats.filter(chat => {
                             return (chat.chat_id === chat_id)
                         })});
-        console.log("STATE", this.state);
+
         // AXIOS UPDATE READ STATUS MESSAGE
         await this.props.contacts.map(async c => {
-            console.log("in map", c.chat_id, chat_id, c.user_id_sender, localStorage.getItem("user_id"), c.read_date);
             if (c.chat_id === chat_id && c.user_id_sender !== parseInt(localStorage.getItem("user_id"), 10) && c.read_date === null) {
-                console.log("dispatching");
                 await this.props.onOpenChat(this.props.nb_unread_chats, chat_id, this.props.contacts);
             }
             return null;
