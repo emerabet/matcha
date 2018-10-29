@@ -205,9 +205,6 @@ class Profile extends Component{
             }
         }, headers.headers());
 
-        // dispatch
-        
-        console.log("RE", result)
         if (result.data.data.updateUser) {
             toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
             await this.props.onUpdateProfile(this.state);
@@ -223,7 +220,6 @@ class Profile extends Component{
         if (this.state.share_location === 1) {
             geolocation = navigator.geolocation;
             geolocation.getCurrentPosition((position) => {
-                console.log("WILL UPDATE");
                 this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
             });
         } else {
