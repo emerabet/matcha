@@ -60,7 +60,7 @@ module.exports = {
             sql = mysql.format(sql, [result.insertId, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name, add.data.latitude, add.data.longitude, add.data.zip, add.data.city, add.data.country_name]);
             let res = await db.conn.queryAsync(sql);
             const insertId = result.insertId;
-            sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES (?, "","Both","",0,NULL);';
+            sql = 'INSERT INTO `profil` (`user_id`, `gender`, `orientation`, `bio`, `popularity`, `birthdate`) VALUES (?, "","both","",0,NULL);';
             sql = mysql.format(sql, [insertId]);
             res = await db.conn.queryAsync(sql);
 
@@ -139,10 +139,10 @@ module.exports = {
             console.log('********************');
 
             let criteria = '';
-            switch(orientation) {
-                case 'female': criteria = `AND gender = 'Male' OR gender = 'Both'`
+            switch(orientation.toLowerCase()) {
+                case 'female': criteria = `AND (profil.gender = 'Male' OR profil.gender = 'male')`
                     break;
-                case 'male': criteria = `AND gender = 'Female' OR gender = 'Both'`
+                case 'male': criteria = `AND (profil.gender = 'Female' OR profil.gender = 'female')`
                     break;
                 default: break;
             }
@@ -152,13 +152,12 @@ module.exports = {
                                 user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
                                 YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude, address.city, address.country, picture_id, priority, picture.src
                         FROM user 
-                        LEFT JOIN address on user.user_id = address.user_id 
-                        LEFT JOIN profil on user.user_id = profil.user_id 
+                        LEFT JOIN address on user.user_id = address.user_id
+                        LEFT JOIN profil on user.user_id = profil.user_id ${criteria}
                         LEFT JOIN picture on user.user_id = picture.user_id 
-                        WHERE (picture.priority = 1 OR picture.priority IS NULL) 
-                        ${criteria};`;
+                        WHERE (picture.priority = 1 OR picture.priority IS NULL);`;
             const users = await db.conn.queryAsync(sql);
-
+            console.log(sql);
             if (extended === true) {
                 const tags = await queriesTag.getAllTags();
 

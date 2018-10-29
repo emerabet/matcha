@@ -89,44 +89,7 @@ class AdvancedSearch extends Component {
                 var options = {units: 'kilometers'};
                 dist = distance(from, to, options);
             }
-            let orientation_user = 0;
-            if (member.gender && this.props.user.orientation) {
-                switch(this.props.user.orientation.toLowerCase()){
-                    case "male":
-                        orientation_user = member.gender.toLowerCase() === "male" ? 1 : 0.5;  
-                        break ;
-                    case "female":
-                        orientation_user = member.gender.toLowerCase() === "female" ? 1 : 0.5;
-                        break;
-                    case "other":
-                        orientation_user = member.gender.toLowerCase() === "other" ? 1 : 0.5;
-                        break ;
-                    default: // "both"
-                        orientation_user = 1;
-                        break;
-                }
-            } else {
-                orientation_user = 1;
-            }
-            let orientation_member = 0;
-            if (this.props.user.gender && member.orientation) {
-                switch(member.orientation.toLowerCase()){
-                    case "male":
-                        orientation_member = this.props.user.gender.toLowerCase() === "male" ? 1 : 0.5;  
-                        break ;
-                    case "female":
-                        orientation_member = this.props.user.gender.toLowerCase() === "female" ? 1 : 0.5;
-                        break;
-                    case "other":
-                        orientation_member = this.props.user.gender.toLowerCase() === "other" ? 1 : 0.5;
-                        break ;
-                    default: // "both"
-                        orientation_member = 1;
-                    break;
-                }
-            } else {
-                orientation_member = 1;
-            }
+            
             let number_of_common_tags = 0;
             await user_tags.forEach(async u_tag => {
                 await member.tags.forEach(async m_tag =>{
@@ -135,7 +98,7 @@ class AdvancedSearch extends Component {
                 })
             })
             const popularity = (member.popularity && member.popularity !== 0 ? member.popularity : 1)
-            const score = (1000 / dist) * (orientation_user + orientation_member) * (1 + number_of_common_tags) * (popularity);
+            const score = (1000 / dist) * (1 + number_of_common_tags) * (popularity);
             const withScore = {...member, ranking: score}
             return withScore
             }))
