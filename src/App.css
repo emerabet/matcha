@@ -71,6 +71,16 @@
   cursor: pointer;
 }
 
+.Listview__Status__Online {
+  background-color: #dfffd6 !important;
+  margin-bottom: 1px !important;
+}
+
+.Listview__Status__Offline {
+  background-color: #ffe2ed !important;
+  margin-bottom: 1px !important;
+}
+
 .Segment__Loading {
   height: 80vh;
 }
