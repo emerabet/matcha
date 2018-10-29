@@ -24,7 +24,7 @@ class AdvancedSearch extends Component {
         lastDistanceChecked: 50,
         criteria: null,
         loaded: false,
-        complete: false
+        complete: true
     }
 
     async componentDidMount () {
