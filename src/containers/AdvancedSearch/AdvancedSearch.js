@@ -71,7 +71,26 @@ class AdvancedSearch extends Component {
 
         console.log("set state did update", this.props.mode);
         if (this.props.mode === "classic") {
-            const queryTags = `
+            await this.scoring(users.data.data.getUsers, tags.data.data.getTags);
+        } else {
+            await this.setState({ 
+                users : users.data.data.getUsers, 
+                filteredUsers : users.data.data.getUsers,
+                pagedUsers: paged,
+                tags: tags.data.data.getTags,
+                nbPages: nbPages,
+                loaded: true
+            });
+        }
+        console.log(users.data.data.getUsers);
+        console.log("------------");
+        console.log(this.state.users);
+
+        this.withinArea(this.state.lastDistanceChecked);
+    }
+
+    scoring = async (users, tags) => {
+        const queryTags = `
                         query getTagByUser($id: Int!) {
                             getTagByUser(id: $id){
                                 tag
@@ -81,7 +100,7 @@ class AdvancedSearch extends Component {
 
         const resp = await axios.post(`/api`, { query: queryTags, variables: {id: this.props.user.user_id}}, headers.headers());
         const user_tags = resp.data.data.getTagByUser; 
-        const ranking = await Promise.all(users.data.data.getUsers.map(async member => {
+        const ranking = await Promise.all(users.map(async member => {
             let dist = 19999;
             if (member.latitude && member.longitude) {
                 var from = point([this.props.user.latitude, this.props.user.longitude]);
@@ -108,29 +127,16 @@ class AdvancedSearch extends Component {
                 return (b.ranking - a.ranking)
             }))
             console.log("SORTED", sorted)
+            const nbPages = this.calculPagination(sorted.length, this.state.itemsPerPage);
+            const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage); 
             await this.setState({ 
                 users : sorted, 
-                filteredUsers : users.data.data.getUsers,
+                filteredUsers : users,
                 pagedUsers: paged,
-                tags: tags.data.data.getTags,
+                tags: tags,
                 nbPages: nbPages,
                 loaded: true
             });
-        } else {
-            await this.setState({ 
-                users : users.data.data.getUsers, 
-                filteredUsers : users.data.data.getUsers,
-                pagedUsers: paged,
-                tags: tags.data.data.getTags,
-                nbPages: nbPages,
-                loaded: true
-            });
-        }
-        console.log(users.data.data.getUsers);
-        console.log("------------");
-        console.log(this.state.users);
-
-        this.withinArea(this.state.lastDistanceChecked);
     }
 
     handleFilter = async (filters) => {
