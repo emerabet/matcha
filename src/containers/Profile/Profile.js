@@ -380,7 +380,9 @@ class Profile extends Component{
        return (
 
                 <Aux>
-                        <div style={{width: "60px"}}>
+                        <ProfilePicture picture_src={this.state.profile_picture} picture_id={this.state.profile_picture_id} old_login={this.state.oldLogin} popularity={this.state.popularity} handleRefresh={this.handleRefresh} />
+                        
+                        <div style={{display: "flex"}}>
                             {
                                 this.state.pictures.map((pic) => {
                                     if (pic.priority === 0){
@@ -403,8 +405,7 @@ class Profile extends Component{
                             }
 
                         </div>
-                        <ProfilePicture picture_src={this.state.profile_picture} picture_id={this.state.profile_picture_id} old_login={this.state.oldLogin} popularity={this.state.popularity} handleRefresh={this.handleRefresh} />
-                         <Form onSubmit= {this.handleUpdate}>
+                        <Form onSubmit= {this.handleUpdate}>
                             <Form.Group>
                                 <Form.Field width={6}>
                                     <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor="login">User name {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>

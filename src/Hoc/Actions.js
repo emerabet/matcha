@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export const RESTORE_STORE_FROM_SESSION_STORAGE = 'RESTORE_STORE_FROM_SESSION_STORAGE';
 
 export const restoreStore =() => {

@@ -15,9 +15,9 @@ class TopMenu extends Component {
     }
 
     handleItemClick = (e, data) => {
-      if (e.target.id == 'chk')
+      if (e.target.id === 'chk')
         return ;
-      if (data.name && data.name == 'ddNotification') {
+      if (data.name && data.name === 'ddNotification') {
           const n = this.state.notificationOpen;
           this.setState({
             notificationOpen: !n

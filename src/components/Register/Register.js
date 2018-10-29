@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 class Register extends Component{
 
     state = {
-        userName: '',
+        login: '',
         firstName: '',
         lastName: '',
         email: '',
@@ -29,7 +29,7 @@ class Register extends Component{
                     `;
 
         const user = {
-            user_name: this.state.userName,
+            user_name: this.state.login,
             first_name: this.state.firstName,
             last_name: this.state.lastName,
             email: this.state.email,
@@ -73,8 +73,8 @@ class Register extends Component{
             <div className='Login_Register__Container'>
                 <Form className='Login_Register__Form' onSubmit={this.handleRegister}>
                     <Form.Field>
-                    <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor='userName'>Username {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
-                        <Input type='text' onChange={this.handleChange} onBlur={this.handleBlur} name='userName' value={ this.state.userName } placeholder='User name' required></Input>
+                    <label style={this.state.userNameAlreadyTaken ? styles.nok : null} htmlFor='login'>Username {this.state.userNameAlreadyTaken && `(This user name is already in use, please choose another user name)`}</label>
+                        <Input type='text' onChange={this.handleChange} onBlur={this.handleBlur} name='login' value={ this.state.login } placeholder='User name' required></Input>
                     </Form.Field>
                     <Form.Field>
                         <label htmlFor='firstName'>First name</label>

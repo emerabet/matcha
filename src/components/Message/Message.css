@@ -5,6 +5,7 @@
     border-radius: 5px;
     padding: 5px;
     color: #fff;
+    width: 100%;
     min-width: 100%;
     margin-bottom: 5px;
     overflow-wrap: break-word;
@@ -16,6 +17,7 @@
     color: #000;
     border-radius: 5px;
     padding: 5px;
+    width: 100%;
     min-width: 100%;
     margin-bottom: 5px;
     overflow-wrap: break-word;

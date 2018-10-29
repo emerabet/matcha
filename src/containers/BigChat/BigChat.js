@@ -65,7 +65,7 @@ class BigChat extends Component {
         })
 
         p.on('stream', stream => {
-            this.refs.yourvideo.src = window.URL.createObjectURL(stream);
+            this.refs.yourvideo.srcObject = stream;
             this.refs.yourvideo.play();
         })
 
@@ -91,7 +91,7 @@ class BigChat extends Component {
             })
             await this.bindEvents(p);
             //this.refs.myvideo.volume = 0
-            this.refs.myvideo.src = await window.URL.createObjectURL(stream);
+            this.refs.myvideo.srcObject = stream;
             await this.refs.myvideo.play();
             if (videoChat !== null) {
                 this.handleOffer(videoChat.data);

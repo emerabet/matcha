@@ -1,16 +1,15 @@
 import React from 'react';
 import { Component } from 'react';
-import { Divider, Input, Form, Button } from 'semantic-ui-react';
+import { Form, Button } from 'semantic-ui-react';
 import axios from 'axios';
-import withSocket from '../../Hoc/Socket/SocketHOC';
-import { toast } from 'react-toastify';
 import { handleBlur } from '../../Tools/Form';
 import * as headers from '../../Tools/Header';
+import toast from 'react-toastify';
 
 class  ResetPassword extends Component {
    
     state = {
-        username: "",
+        login: "",
         userNameAlreadyTaken: true,
         sent: false
     }
@@ -23,12 +22,13 @@ class  ResetPassword extends Component {
         }
         `;
 
-        const result = await axios.post(`/api`, {   query: query,
+        await axios.post(`/api`, {   query: query,
         variables: { 
-        login: this.state.username
+        login: this.state.login
         }
         }, headers.headers());
         this.setState({sent: true});
+        toast("An email has been sent to you", {type: toast.TYPE.SUCCESS});
     }
 
     handleChange = (e) => {
@@ -47,10 +47,10 @@ class  ResetPassword extends Component {
                 <Form className='Login_Register__Form' onSubmit={this.handleReset}>
                     <Form.Field>
                         <label style={this.state.userNameAlreadyTaken ? null : {color: "red"}}>Username {!this.state.userNameAlreadyTaken && "this user name is unknown"}</label>
-                        <input name="username" onBlur={this.handleBlur} onChange={this.handleChange} placeholder='Username' required />
+                        <input name="login" onBlur={this.handleBlur} onChange={this.handleChange} placeholder='Username' required />
                     </Form.Field>
                     {this.state.sent && <span> An email has been sent to you </span>}
-                    <Button primary fluid type='submit' disabled={this.state.username !== "" && this.state.userNameAlreadyTaken ? false : true}>Reset Password</Button>
+                    <Button primary fluid type='submit' disabled={this.state.login !== "" && this.state.userNameAlreadyTaken ? false : true}>Reset Password</Button>
                 </Form>
             </div>
         );

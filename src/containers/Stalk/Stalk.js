@@ -102,7 +102,7 @@ class Stalk extends Component {
 
     async componentDidMount() {
 
-        const id = parseInt(this.props.match.params.id);
+        const id = parseInt(this.props.match.params.id, 10);
 
         // recuperer profil utilisateur
         let res1 = this.getUserDetails(id);
@@ -160,7 +160,7 @@ class Stalk extends Component {
 
         let newIndex = 0;
 
-        if (data.name == 'topleft') {
+        if (data.name === 'topleft') {
             newIndex = (this.state.activeImage - 1);
             if (newIndex < 0)
                 newIndex = this.state.user.pictures.length - 1;

@@ -62,6 +62,8 @@ class ProfilePicture extends Component {
     render () {
         return (
             <div >
+                                <span style={{fontSize: "3em", fontWeight: "bold", margin: "5px"}}>
+            {` ${this.props.old_login} (${ this.props.popularity } pts)`} </span>
                                 <label style={{display: "flex", flexDirection: "column", padding: "10px"}}>
 
             <Modal trigger={
@@ -80,8 +82,7 @@ class ProfilePicture extends Component {
                                         </label>
                                     </Modal.Description>
                                 </Modal.Content>
-            </Modal>
-            {` ${this.props.old_login} (${ this.props.popularity } pts)`}
+            </Modal> 
                                 </label>                            
                             </div>
         );

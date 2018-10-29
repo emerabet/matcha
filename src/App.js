@@ -1,4 +1,4 @@
-import React, { Component, createContext } from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Login from './containers/Login/Login';
@@ -9,7 +9,7 @@ import Stalk from './containers/Stalk/Stalk';
 import SuperChat from './containers/SuperChat/SuperChat';
 import Notification from './containers/Notification/Notification';
 import Verif from './components/Verif/Verif';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Admin from './containers/Admin/Admin';
 import ResetPassword from './components/ResetPassword/ResetPassword';
@@ -17,8 +17,6 @@ import AdvancedSearch from './containers/AdvancedSearch/AdvancedSearch';
 import Layout from './Hoc/Layout/Layout';
 import Aux from './Hoc/Aux/Aux';
 import NewPassword from './components/NewPassword/NewPassword';
-import map from './components/MapSearch/MapSearch';
-
 
 class App extends Component {
 
