@@ -113,3 +113,11 @@ footer {
       width:95%;
   }
 }
+
+.notAuthorized {
+  height: 80vh;
+  padding-top: 20vh;
+  font-weight: bold;
+  font-size: 2em;
+  text-align: center;
+}

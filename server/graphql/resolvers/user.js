@@ -645,5 +645,29 @@ module.exports = {
             sql = mysql.format(sql, [pop, user_id]);
             await db.conn.queryAsync(sql);
         }
+    },
+
+    checkProfile: async ({}, context) => {
+        const token = context.token;
+        try {
+            if (!token)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+                
+            const decoded = await jwt.verify(token, config.SECRET_KEY);
+            if (decoded.err)
+                throw new Error(errors.errorTypes.UNAUTHORIZED);
+            
+            let sql = 'SELECT COUNT(`user_id`) as nb FROM `profil` WHERE profil.user_id = ? AND profil.gender IS NOT NULL AND profil.birthdate IS NOT NULL AND profil.bio IS NOT NULL AND (SELECT COUNT(picture.user_id) FROM `picture` WHERE picture.user_id = ?) >= 1;'
+            sql = mysql.format(sql, [decoded.user_id, decoded.user_id]);
+            const result = await db.conn.queryAsync(sql);
+            if (result[0].nb === 1)
+                return true;
+            else
+                return false;
+        } catch (err) {
+            console.log("User not found");
+            throw err.message;
+        }
+
     }
 }

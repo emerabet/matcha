@@ -9,6 +9,7 @@ import Listview from './../../components/Listview/Listview';
 import MapSearch from './../../components/MapSearch/MapSearch';
 import Aux from '../../Hoc/Aux/Aux';
 import * as headers from '../../Tools/Header';
+import NotAuthorized from '../../components/NotAuthorised/NotAuthorised';
 
 class AdvancedSearch extends Component {
 
@@ -22,11 +23,26 @@ class AdvancedSearch extends Component {
         tags: null,
         lastDistanceChecked: 50,
         criteria: null,
-        loaded: false
+        loaded: false,
+        complete: false
     }
 
     async componentDidMount () {
-        this.loadData();
+        const complete = await this.checkProfile();
+        if (complete)
+            this.loadData();
+        this.setState({complete: complete})
+    }
+
+    checkProfile = async () => {
+        const query = `
+                        query checkProfile {
+                            checkProfile
+                        }
+                    `;
+
+        const res = await axios.post(`/api`, { query: query, variables: { }}, headers.headers());
+        return res.data.data.checkProfile;
     }
 
     loadData = async () => {
@@ -308,11 +324,20 @@ class AdvancedSearch extends Component {
 
 
     render() {
+        console.log("propR", this.props)
         return (
             <Aux>
-                { this.state.loaded === false &&  <Segment basic tertiary loading className='Segment__Loading'></Segment>}
-                { this.props.mode === 'map' && this.state.users && this.interactiveView() }
-                { this.props.mode === 'classic' && this.state.users && this.classicView() }
+                {
+                    this.state.complete
+                ?
+                    <Aux>
+                        { this.state.loaded === false &&  <Segment basic tertiary loading className='Segment__Loading'></Segment>}
+                        { this.props.mode === 'map' && this.state.users && this.interactiveView() }
+                        { this.props.mode === 'classic' && this.state.users && this.classicView() }
+                    </Aux>
+                :
+                    <NotAuthorized history={this.props.history} />
+                }
             </Aux>
         );
     }
