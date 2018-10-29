@@ -18,7 +18,6 @@ exports.upload = async (req, res) => {
             insertId = r.insertId;
         }
     } catch (err) {
-        console.log("ERR", err);
         res.status(400).send();
     }
 

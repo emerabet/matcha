@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export const UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE';
 export const UPDATE_USER_LOCATION = 'UPDATE_USER_LOCATION';
 
@@ -7,11 +5,6 @@ export const UPDATE_USER_LOCATION = 'UPDATE_USER_LOCATION';
 export const updateProfile =(profileState) => {
     return async dispatch => {
         try {
-            //const res = await axios.post('/connect', { login: userName, password: password });
-            console.log("actions update");
-            //console.log('data update', res.data);
-            //localStorage.setItem('token', res.data.token);
-            console.log("PROFILE STATE", profileState);
             localStorage.setItem('last_name', profileState.last_name);
             localStorage.setItem('first_name', profileState.first_name);
             localStorage.setItem('email', profileState.email);

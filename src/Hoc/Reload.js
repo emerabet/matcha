@@ -23,11 +23,9 @@ class Reload extends Component {
     check = async (props) => {
         if (localStorage.getItem('logged')) {
         try {
-            const res = await axios.get('/check', headers);
+            await axios.get('/check', headers);
             if (this.props.user === undefined){
                 this.props.onRestoreStore();
-            } else {
-                    console.log("NO NEED TO RESTORE");
             }
             // on se reconnecte a la socket
             if (localStorage.getItem('login') && localStorage.getItem('login') !== undefined) {
@@ -35,7 +33,7 @@ class Reload extends Component {
                 this.props.socket.emit('login', localStorage.getItem('login'));
             }
         } catch (err) {
-            console.log("EXPIRED TOKEN", err);
+            // expired token
             localStorage.clear();
         }
     }

@@ -19,7 +19,6 @@ export const remove = (id) => {
                                                 variables: {
                                                     notification_id:id
                                                 }}, headers.headers());
-            console.log("res query: ", res);
             if (res && res.data.data.removeNotification === true)
                 dispatch({ type: NOTIFICATION_DELETED_SUCCESS, data: id });
             else
@@ -48,9 +47,7 @@ export const check = (id) => {
                                                 variables: {
                                                     notification_id:id
                                                 }}, headers.headers());
-            console.log("res query check: ", res);
             if (res && res.data.data.checkNotification === true) {
-                console.log("okici");
                 dispatch({ type: NOTIFICATION_READ_SUCCESS, data: id });
             }
             else
@@ -87,7 +84,6 @@ export const load = (type) => {
                 search:type
             } }, headers.headers());
 
-            console.log("TYPE:", type);
             dispatch({ type: NOTIFICATION_LOADED, data: notif.data.data.getUserNotifications });
         } catch (err) {
             dispatch({

@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Popup, Checkbox, Card, Input, Select, Form, Button, TextArea, Image } from 'semantic-ui-react';
 import * as styles  from './Styles';
-import TopMenu from '../../components/Menu/TopMenu';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import publicIp from 'public-ip';
 import Chips from 'react-chips';
@@ -78,7 +77,6 @@ class Profile extends Component{
     }
 
     async componentDidMount() {
-        console.log("MOUNTING", this.props.user);
         const query_tags = `query getTags{
                                 getTags{
                                    tag
@@ -121,13 +119,8 @@ class Profile extends Component{
                     extended: true
                 }
             }, headers.headers());
-            
-        console.log('response', response);
+
         if (response) {
-            console.log(response.data.data.getUser);
-            if (this.props.user === undefined) {
-                console.log("NO PROPS");
-            }
                     
             let bday = ""; 
             if (this.props.user.birthdate)
@@ -140,11 +133,7 @@ class Profile extends Component{
             })
             const profile_picture = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png';
             const profile_picture_id = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0;
-                console.log("GENDER", this.props.user.gender, response.data.data.getUser.gender);
-            if (this.props.user === undefined) {
-                console.log("NO PROPS");
-            }
-                    console.log("PROPS", this.props);
+
             this.setState({...this.state,
                 oldLogin: this.props.user.login,
                 login: this.props.user.login,
@@ -168,8 +157,7 @@ class Profile extends Component{
             });
                     
         } else {
-            console.log("pres du toast error"); 
-            //toast("Error while getting your profile. Please try to unlog and the relog !", {type: toast.TYPE.ERROR});
+            toast("Error while getting your profile. Please try to unlog and the relog !", {type: toast.TYPE.ERROR});
             this.props.history.push("/login");
         }
     }
@@ -218,20 +206,19 @@ class Profile extends Component{
         }, headers.headers());
 
         // dispatch
-        console.log("DISPATCHING");
-        await this.props.onUpdateProfile(this.state);
-        console.log("RES", result);
-        if (result)
+        
+        console.log("RE", result)
+        if (result.data.data.updateUser) {
             toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
+            await this.props.onUpdateProfile(this.state);
+        }
         else
-            console.log("Error updating your profile information, please check that the password you put is correct !");
-            //toast("Error updating your profile information, please check that the password you put is correct !", {type: toast.TYPE.ERROR});
+            toast("Error updating your profile information, please check that the password you put is correct !", {type: toast.TYPE.ERROR});
     }
 
     handleUpdate = async (e) => {
         e.preventDefault();
         const ip = await publicIp.v4();
-        console.log("V4", ip);
             
         if (this.state.share_location === 1) {
             geolocation = navigator.geolocation;
@@ -240,7 +227,6 @@ class Profile extends Component{
                 this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
             });
         } else {
-            console.log("WILL UPDATE ONLY IP");
             this.updateUserInfo(ip);
         }
     }
@@ -276,13 +262,11 @@ class Profile extends Component{
     }
 
     handleBlur = async (e, data) => {
-        console.log("blur");
         switch (e.target.name) {
             case 'login':
                 if (this.state.oldLogin !== this.state.login) {
                     this.setState(await handleBlur(e, data));        
                 } else {
-                    console.log("ok");
                     this.setState({userNameAlreadyTaken: false});
                 }
                 break ;
@@ -298,36 +282,19 @@ class Profile extends Component{
         }
     }
 
-    handleClickedPhoto = async (e) => {
-        console.log(e.target.id);
-        //console.log("priority", this.state.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].src);
-        //console.log("CLICKED", this.state.pictures.filter(pic => pic.picture_id === Number.parseInt(e.target.id, 10)));
-        //this.setState({picture_id_clicked: e.target.id, picture_src_clicked: this.state.pictures.filter(pic => pic.picture_id === Number.parseInt(e.target.id, 10))[0].src});
-    }
-
     handleUpload = async (e) => {
-        console.log("name", e.target.name);
-        console.log("file", e.target.value);
-        console.log("F", e.target.files[0]);
-        console.log("KEY", e.target.key);
 
         const data = new FormData();
         data.append('filename', "test.png");
-        //data.append('token', localStorage.getItem("token"));
         data.append('type', e.target.name);
-      //  data.append('picture_id', this.state.picture_id_clicked);
-       // data.append('src', this.state.picture_src_clicked);
         data.append('file', e.target.files[0], localStorage.getItem('token'));
         
         const res = await axios.post('/upload_picture', data, headers.headers());
-        console.log("res", res);
-        console.log("UPLOADED");
         if (!res || res === undefined) {
             toast("Something went wrong, maybe the file you are trying to upload is not a picture", {type: toast.TYPE.ERROR});
             return ;
         }
 
-        console.log("SIZE", res.data.pictures.length);
         if (res.data.pictures.length > 0){
             if (res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1).length > 0) {
                 this.setState({pictures: res.data.pictures, profile_picture: res.data.pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1)[0].src,
@@ -374,7 +341,6 @@ class Profile extends Component{
             }
         }, headers.headers());
 
-        console.log("RET", result.data.data.updateUserLocation);
         if (result.data.data.updateUserLocation !== "nok")
             toast("Location successfully updated", {type: toast.TYPE.SUCCESS});
         return (result.data.data.updateUserLocation);
@@ -386,19 +352,13 @@ class Profile extends Component{
         if (this.state.share_location === 1) {
             geolocation = navigator.geolocation;
             geolocation.getCurrentPosition(async (position) => {
-                console.log("WILL UPDATE");
                 r = await this.updateLocation(ip, position.coords.latitude, position.coords.longitude); 
-                console.log("R", r);
                 this.props.onUpdateLocation(this.state.share_location, r);
             });
         } else {
-            console.log("WILL UPDATE ONLY IP");
             r = await this.updateLocation(ip);
-            console.log("R", r);
             this.props.onUpdateLocation(this.state.share_location, r);
         }
-        
-       // this.props.onUpdateLocation(this.state.share_location, r);
     }
 
     render () {
@@ -502,7 +462,7 @@ class Profile extends Component{
                                 {this.state.share_location !== 0 &&
                                 <Form.Field width={8}>
                                     <label htmlFor="current_location">Current location</label>
-                                    <Input action={<Button type="button" onClick={this.handleUpdateLocation}> Upate current location </Button>} type="text" onChange={this.handleChange} name="current_location" value={ this.props.user.address } placeholder="Current location"></Input>
+                                    <Input action={<Button type="button" onClick={this.handleUpdateLocation}> Upate current location </Button>} type="text" onChange={this.handleChange} name="current_location" value={ this.state.address } placeholder="Current location"></Input>
                                 </Form.Field>
                                 }
                             </Form.Group>

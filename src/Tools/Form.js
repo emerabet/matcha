@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export const handleBlur = async (e, data) => {
-    console.log("in blur", e.target.name);
     let query, result;
     switch (e.target.name) {
         case 'email':
