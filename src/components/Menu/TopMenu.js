@@ -21,7 +21,7 @@ class TopMenu extends Component {
           const n = this.state.notificationOpen;
           this.setState({
             notificationOpen: !n
-          })
+          });
       }
       else if (data.name) {
         this.setState(...this.state, { activeItem: data.name })
@@ -35,6 +35,10 @@ class TopMenu extends Component {
       this.props.socket.disconnect();
       axios.post('/logout');
       this.props.history.push('/login');
+    }
+
+    handleViewAll = () => {
+      this.props.history.push('/notifications');
     }
 
     render (){
@@ -62,19 +66,10 @@ class TopMenu extends Component {
                         >
                         
                   <Dropdown.Menu>
-                    <Dropdown.Header>Text Size</Dropdown.Header>
+                    <Dropdown.Header onClick={this.handleViewAll}>View all</Dropdown.Header>
                     <Activity size='small'></Activity>
                   </Dropdown.Menu>
               </Dropdown>
-
-            <Menu.Item
-              name='notifications'
-              active={this.state.activeItem === 'notifications'}
-              onClick={this.handleItemClick}
-            >
-              <Icon name='bell outline' />
-              Notifications
-            </Menu.Item>
 
             <Menu.Item
               name='chat'
@@ -83,7 +78,7 @@ class TopMenu extends Component {
             >
               <Icon.Group size="large">
               <Icon size="large" name='wechat'> </Icon>
-              <Label size="small" color='blue' horizontal circular >
+              <Label size="small" color='pink' horizontal circular >
               {this.props.nb_unread_chats}
             </Label>
             </Icon.Group>
@@ -100,26 +95,32 @@ class TopMenu extends Component {
               Search
             </Menu.Item>
 
-            <Menu.Item
-              name='log_out'
-              active={this.state.activeItem === 'log_out'}
-              onClick={this.handleLogOut}
-            >
-              <Icon name='log out' />
-              Log out
-            </Menu.Item>
+            <Menu.Menu position='right'>
+                {parseInt(this.props.user.role, 10) === 2
+                &&
+                <Menu.Item
+                name='admin'
+                active={this.state.activeItem === 'admin'}
+                onClick={this.handleItemClick}
+              >
+                <Icon name='desktop' />
+                Admin
+              </Menu.Item>
+                }
 
-            {parseInt(this.props.user.role, 10) === 2
-            &&
-            <Menu.Item
-            name='admin'
-            active={this.state.activeItem === 'admin'}
-            onClick={this.handleItemClick}
-          >
-            <Icon name='desktop' />
-            Admin
-          </Menu.Item>
-            }
+                <Menu.Item
+                name='log_out'
+                active={this.state.activeItem === 'log_out'}
+                onClick={this.handleLogOut}
+              >
+                <Icon name='log out' />
+                Log out
+              </Menu.Item>
+          </Menu.Menu>
+
+
+
+
           </Menu>
         </div>
 

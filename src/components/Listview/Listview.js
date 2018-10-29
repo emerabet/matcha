@@ -59,7 +59,6 @@ class Listview extends Component {
     };
 
     render () {
-        console.log("oooooooooooo");
         return (
             <Aux>
                 { this.props.mode === 'classic' && this.FillUsers(this.props.users) }

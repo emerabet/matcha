@@ -305,7 +305,7 @@ class Profile extends Component{
         } else {
             this.setState({pictures: [], profile_picture: "/pictures/smoke_by.png",
                     profile_picture_id: 0}
-                    );
+            );
         }
     }
 
@@ -378,7 +378,6 @@ class Profile extends Component{
         const oldPassOK = this.state.old_password !== "";
 
        return (
-
                 <Aux>
                         <ProfilePicture picture_src={this.state.profile_picture} picture_id={this.state.profile_picture_id} old_login={this.state.oldLogin} popularity={this.state.popularity} handleRefresh={this.handleRefresh} />
                         
@@ -451,7 +450,7 @@ class Profile extends Component{
                             <Form.Group>
                                 <Form.Field width={4}>
                                     <label htmlFor="share_location">Share current location?</label>
-                                    <Checkbox toggle onChange={this.handleChange} name="share_location" checked={this.state.share_location === 1 ? true : false}/>
+                                    <Checkbox toggle color='pink' onChange={this.handleChange} name="share_location" checked={this.state.share_location === 1 ? true : false}/>
                                 </Form.Field>
                                 {this.state.share_location !== 0 &&
                                 <Form.Field width={8}>

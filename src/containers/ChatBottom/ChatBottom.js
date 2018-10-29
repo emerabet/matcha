@@ -103,7 +103,7 @@ class ChatBottom extends Component {
                                 <Icon name="users"/>
                                 Chat 
                       
-                                <Label color="blue" circular> {this.props.nb_unread_chats} </Label>
+                                <Label color="pink" circular> {this.props.nb_unread_chats} </Label>
                                 
                             </Aux> }
                     </div>
