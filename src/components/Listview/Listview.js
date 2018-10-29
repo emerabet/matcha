@@ -13,20 +13,21 @@ class Listview extends Component {
         this.props.history.push(`/stalk/${data.id}`);
     }
 
-
     interactiveView = (users) => {
 
     const array = users.map(user => {
 
         const status = this.props.socket.connectedUsersMatcha !== undefined && this.props.socket.connectedUsersMatcha.includes(user.user_id) ? 'Online' : 'Offline';
-        const color = status === 'Online' ? 'green' : 'red';
-        const meta = `${user.age} ans - ${user.city} (${user.country}) : ${status}`;
+        const color = status === 'Online' ? 'Listview__Status__Online' : 'Listview__Status__Offline';
+        const meta = `${user.age} ans - ${user.city} (${user.country})`;
         const extra = `${user.popularity} pts | ${parseInt(user.distance, 10)} km from you`;
 
-        return  <List.Item key={ user.user_id }>
+        return  <List.Item key={ user.user_id } id={user.user_id} className={color} onClick={this.handleClick}>
                     <Image avatar src={ user.src != null ? user.src : "/pictures/smoke_by.png"} />
                     <List.Content>
                         <List.Header>{user.first_name }</List.Header>
+                        <List.Description as='span'>{meta}</List.Description>
+                        <List.Description as='span'>{extra}</List.Description>                        
                     </List.Content>
                 </List.Item>
         });
@@ -58,6 +59,7 @@ class Listview extends Component {
     };
 
     render () {
+        console.log("oooooooooooo");
         return (
             <Aux>
                 { this.props.mode === 'classic' && this.FillUsers(this.props.users) }

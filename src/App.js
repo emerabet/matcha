@@ -40,7 +40,7 @@ class App extends Component {
             <Route path="/home" exact component={ Home }/>
             <Route path="/profile" exact component={ Profile }/>
             <Route path="/verif/:registration_token" component={Verif}/>
-            <Route path="/search" exact render={() => <AdvancedSearch mode='map' />}/>
+            <Route path="/search" exact render={(props) => <AdvancedSearch history={props.history} mode='map' />}/>
             <Route path="/notifications" exact component={ Notification }/>
             <Route path="/stalk/:id(\d+)" exact component={ Stalk }/>
             <Route path="/chat" exact component={SuperChat}/>
