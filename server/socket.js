@@ -97,12 +97,14 @@ const mySocket = async (io, socket, connectedUsers) => {
 			throw new Error('Decode failed on login');
 		}
 
-		socket.to(`${token.user_id}`).emit("disconnected", token.user_id, connectedUsers.get(token.user_id).username);
-		
-		connectedUsers.delete(token.user_id);
+		if (connectedUsers.get(token.user_id) !== undefined) {
+			socket.to(`${token.user_id}`).emit("disconnected", token.user_id, connectedUsers.get(token.user_id).username);
+			
+			connectedUsers.delete(token.user_id);
 
-		let keys =[ ...connectedUsers.keys() ];
-		io.emit('onlineChanged', JSON.stringify(keys));
+			let keys =[ ...connectedUsers.keys() ];
+			io.emit('onlineChanged', JSON.stringify(keys));
+		}
 	});
 
 	socketChat.newMessage(io, socket, connectedUsers, parseCookies);

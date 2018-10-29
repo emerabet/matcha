@@ -97,7 +97,7 @@ module.exports = {
             const userId = user_id2 === 0 ? decoded.user_id: user_id2;
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, 
                                 user.share_location, user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
-                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude
+                                YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude, address.country, address.city 
                         FROM user 
                         LEFT JOIN profil on user.user_id = profil.user_id 
                         LEFT JOIN address on user.user_id = address.user_id
