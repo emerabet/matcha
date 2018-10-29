@@ -153,6 +153,7 @@ exports.registerSchema = buildSchema(`
         getMessages(chat_id: Int!): [Message],
         getStatusLikedReported(user_id2: Int!): IsLikedReported,
         getAllMessagesFromUser: [Chat],
-        getReported: [Reported]
+        getReported: [Reported],
+        checkProfile: Boolean
     }
 `);
