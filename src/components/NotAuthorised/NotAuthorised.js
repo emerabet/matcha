@@ -4,7 +4,6 @@ import { Button } from 'semantic-ui-react';
 class NotAuthorized extends Component {
     
     goToProfile = () => {
-        console.log(this.props)
         this.props.history.push("/profile");
     }
     

@@ -142,8 +142,6 @@ class AdvancedSearch extends Component {
             
         const nbPages = this.calculPagination(sorted.length, this.state.itemsPerPage);
 
-        console.log(sorted);
-
         const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage); 
         await this.setState({ 
             users : sorted, 
@@ -324,7 +322,6 @@ class AdvancedSearch extends Component {
 
 
     render() {
-        console.log("propR", this.props)
         return (
             <Aux>
                 {
