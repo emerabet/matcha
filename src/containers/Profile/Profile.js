@@ -135,7 +135,6 @@ class Profile extends Component{
             const profile_picture = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png';
             const profile_picture_id = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0;
 
-            console.log("props", this.props)
             this.setState({...this.state,
                 oldLogin: this.props.user.login,
                 login: this.props.user.login,
