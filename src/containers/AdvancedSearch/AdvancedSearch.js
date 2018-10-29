@@ -312,7 +312,7 @@ class AdvancedSearch extends Component {
                         />
                     </Grid.Column>
                     <Grid.Column width={11}>
-                        <MapSearch lat={this.props.user.latitude} lng={this.props.user.longitude} users={this.state.pagedUsers} height='800px' />
+                        <MapSearch history={this.props.history} lat={this.props.user.latitude} lng={this.props.user.longitude} users={this.state.pagedUsers} height='800px' />
                     </Grid.Column>
                 </Grid>                
             </Aux>

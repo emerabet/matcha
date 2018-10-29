@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
-import { Card, Image } from 'semantic-ui-react'
+import { Map, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
+import { Card, Image, Button } from 'semantic-ui-react'
 
 class MapSearch extends Component {
+
+
+    handleClick = (e) => {
+
+        this.props.history.push(`/stalk/${e}`);
+    }
 
     render() {
 
@@ -21,19 +27,25 @@ class MapSearch extends Component {
                                 return (
                                     <Marker key={u.user_id} position={[u.latitude, u.longitude]}>
                                     
+                                    <Tooltip>
+                                        {u.login}<br />
+                                        {u.popularity} pts | {parseInt(u.distance, 10)} km from you
+                                    </Tooltip>
                                     <Popup>
                                         <Card>
                                             <Image src={u.src} />
                                             <Card.Content>
-                                                <Card.Header>Matthew</Card.Header>
-                                                <Card.Meta>
-                                                    <span className='date'>Joined in 2015</span>
-                                                </Card.Meta>
-                                                <Card.Description>Matthew is a musician living in Nashville.</Card.Description>
+                                                <Card.Header>{u.login}</Card.Header>
+                                                <Card.Description>{u.bio}</Card.Description>
                                                 </Card.Content>
                                                 <Card.Content extra>
-                                                    <a>22 Friends</a>
-                                                </Card.Content>
+                                                    {u.popularity} pts | {parseInt(u.distance, 10)} km from you
+                                            </Card.Content>
+                                            <Card.Content extra>
+                                                    <Button onClick={() => this.handleClick(u.user_id)} fluid basic color='pink'>
+                                                        View
+                                                    </Button>
+                                            </Card.Content>
                                         </Card>
                                     </Popup>
                                     
