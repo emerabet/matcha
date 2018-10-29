@@ -53,8 +53,8 @@ exports.login = async (req, res) => {
 
             await res.clearCookie();
             res.header('Pragma', 'no-cache');
-            await res.cookie('sessionid', token, { httpOnly: true/*, sameSite: "strict"*/ })
-            .status(200).send({ auth: true, csrf_token: csrf_token, user: user/*, reported_users: result */});
+            await res.cookie('sessionid', token, { httpOnly: true })
+            .status(200).send({ auth: true, csrf_token: csrf_token, user: user });
             return ;
         } else {
             res.status(403).send({ auth: false, token: null });

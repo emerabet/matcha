@@ -1,5 +1,5 @@
 const queriesPicture = require('../graphql/resolvers/picture');
-var fs = require('fs');
+const fs = require('fs');
 const sharp = require('sharp');
 
 exports.upload = async (req, res) => {

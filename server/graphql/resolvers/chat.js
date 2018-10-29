@@ -58,7 +58,6 @@ module.exports = {
             const result = await db.conn.queryAsync(sql); 
             return result.insertId;
         } catch (err) {
-
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
@@ -94,7 +93,6 @@ module.exports = {
                 all_chats.push(current_chat);
             return all_chats;
         } catch (err) {
-   
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },

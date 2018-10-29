@@ -5,16 +5,12 @@ const multer = require('multer');
 const config = require('../config');
 var fs = require('fs');
 var uniqid = require('uniqid');
-var axios = require('axios');
-const queriesPicture = require('../graphql/resolvers/picture');
-const sharp = require('sharp');
 
 const storage = multer.diskStorage({
     destination: './public/pictures',
     fileFilter: (req, file, cb) => {
         const picture_types = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
         let type = file.mimetype;
-            console.log("TYPE", type);
             let i = type.lastIndexOf('/') + 1;
             if (i !== -1)
                 type = type.substr(i);
@@ -24,7 +20,6 @@ const storage = multer.diskStorage({
         return cb(null, false);}
       },
     async filename(req, file, cb) {
-        console.log("ICI", file);
         const token = req.cookies['sessionid'];
         await jwt.verify(token, config.SECRET_KEY, async (err, decoded) => {
             if (await !fs.existsSync(`${appRoot}/public/pictures/${decoded.user_id}/`)){
@@ -34,7 +29,6 @@ const storage = multer.diskStorage({
                 await fs.mkdirSync(`${appRoot}/public/pictures/tmp/`);
             }
             let type = file.mimetype;
-            console.log("TYPE", type);
             let i = type.lastIndexOf('/') + 1;
             if (i !== -1)
                 type = type.substr(i);

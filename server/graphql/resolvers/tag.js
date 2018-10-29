@@ -9,7 +9,6 @@ module.exports = {
             const result = await db.conn.queryAsync(sql);
             return result;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
@@ -20,7 +19,6 @@ module.exports = {
             const result = await db.conn.queryAsync(sql);
             return result;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
@@ -32,7 +30,6 @@ module.exports = {
             const result = await db.conn.queryAsync(sql);
             return result;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     }

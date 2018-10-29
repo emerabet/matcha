@@ -27,7 +27,7 @@ module.exports = {
 
     isTyping : (io, socket, connectedUsers, parseCookies) => {
         socket.on('isTyping', async ({contact_id, chat_id}) => {
-            console.log("IS TYPING", contact_id, chat_id);
+
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
@@ -38,7 +38,7 @@ module.exports = {
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
                 const contact = user.friends.get(contact_id);
-                console.log("IS TYPING EMITING TO");
+
                 io.to(contact.socketId).emit('isTyping', from);
             } catch (err) {
                 console.log('Error socket on new message: ', err);
@@ -48,7 +48,7 @@ module.exports = {
 
     stopTyping : (io, socket, connectedUsers, parseCookies) => {
         socket.on('stopTyping', async ({contact_id, chat_id}) => {
-            console.log("STOP TYPING", contact_id, chat_id);
+
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
@@ -59,7 +59,7 @@ module.exports = {
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
                 const contact = user.friends.get(contact_id);
-                console.log("HAS STOPPED TYPING EMITING TO");
+
                 io.to(contact.socketId).emit('stopTyping', from);
             } catch (err) {
                 console.log('Error socket on new message: ', err);
@@ -69,14 +69,12 @@ module.exports = {
 
     initiateVideoChat : (io, socket, connectedUsers, parseCookies) => {
         socket.on('initiateVideoChat', async ({to, data}) => {
-            //console.log("VIDEO CHAT INITIATED", to, data);
-            console.log("INITIATED VIDEO CHAT")
+
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    console.log("ERROR TOKEN")
                     throw new Error('Decode failed on login');
                 }
                 
@@ -84,7 +82,7 @@ module.exports = {
                 const from = token.user_id;
                 const user = connectedUsers.get(from);
                 const contact = user.friends.get(to);
-                console.log("CONTACT ID", to, connectedUsers.get(from));
+
                 io.to(contact.socketId).emit('initiateVideoChat', {from :from, data: data});
             } catch (err) {
                 console.log('Error socket on new message: ', err);
@@ -94,7 +92,7 @@ module.exports = {
 
     acceptVideoChat : (io, socket, connectedUsers, parseCookies) => {
         socket.on('acceptVideoChat', async ({to, data}) => {
-            console.log("VIDEO CHAT ACCEPTED", to, data);
+
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {

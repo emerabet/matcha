@@ -49,8 +49,6 @@ const root = {
 
 const mdw = async (req, res, next) => {
     const token = req.cookies['sessionid'];
-    // Cookies that have been signed
-   // console.log('Signed Cookies: ', req.signedCookies)
     try {
         if (req.body.query.replace(/\s/g, '') === "querygetLogin($login:String!){getLogin(login:$login)}"
             || req.body.query.replace(/\s/g, '') === "querygetEmail($email:String!){getEmail(email:$email)}"
@@ -58,7 +56,6 @@ const mdw = async (req, res, next) => {
             || req.body.query.replace(/\s/g, '') === "mutationconfirmAccount($registration_token:String!){confirmAccount(registration_token:$registration_token)}"
             || req.body.query.replace(/\s/g, '') === "mutationresetPassword($login:String!){resetPassword(login:$login)}"
             || req.body.query.replace(/\s/g, '') === "mutationcheckResetToken($reset_token:String!,$password:String!){checkResetToken(reset_token:$reset_token,password:$password)}") {
-            console.log("OK", req.body.query.replace(/\s/g, ''));
             next();
         } else {
             if (!token || token === undefined){
@@ -69,13 +66,11 @@ const mdw = async (req, res, next) => {
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
                 }
                 if (req.headers.authorization !== decoded.csrf_token) {
-                    console.log("WRONG CSRF TOKEN");
                     throw new Error(errors.errorTypes.UNAUTHORIZED);
                 }
                 next();
             }
-        } catch (err) {
-        console.log("ERROR IN MIDDLEWARE");   
+        } catch (err) { 
         res.status(403).send();    
     }
 }
@@ -88,7 +83,6 @@ app.use('/api', mdw, express_graphql( req =>( {
     },
     graphiql: true,    
     formatError: (err) => {
-        //console.log(err);
         return ({ message: err.message, statusCode: 403})
     }
 })));
@@ -105,16 +99,14 @@ var options = {
 const https = require('https');
 const ser = https.createServer(options, app);
 const io = require('socket.io')(ser);
-ser.listen(port, () => console.log("server runi"))
 */
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
-app.listen(port, () => console.log("server runi"))
-/*
-const mySocketMiddleware = mySocket();
-*/const connectedUsers = new Map();
+app.listen(port, () => console.log("Server started"))
 
-console.log('ici');
+const connectedUsers = new Map();
+
+
 io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
 io.listen(5000); // HTTP (NO NEED THIS LINE FOR HTTPS WORKS ON 4000)
 //app.listen(port, () => console.log(`Example app listening on port ${port}!`));

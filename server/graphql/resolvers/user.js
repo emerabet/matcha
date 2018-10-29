@@ -74,12 +74,11 @@ module.exports = {
 
             transporter.sendMail(mailData, function(error, info){
                 if(error){
-                    return console.log(error);
+                    console.log('Email not sent');
                 }
             });
             return insertId;
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
@@ -119,7 +118,6 @@ module.exports = {
                 users[0].isMyProfile = false;
             return users[0];
         } catch (err) {
-            console.log("catch get user");
             throw new Error(errors.errorTypes.UNAUTHORIZED);
         }
     },
@@ -131,12 +129,6 @@ module.exports = {
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const decoded = await jwt.verify(token, config.SECRET_KEY);
 
-            console.log("****************************************************************************");
-            console.log("****************************************************************************");
-            console.log("in get users");
-            console.log("Orientation: ", orientation);
-            console.log('********************');
-            console.log('********************');
 
             let criteria = '';
             switch(orientation.toLowerCase()) {
@@ -147,7 +139,6 @@ module.exports = {
                 default: break;
             }
 
-            console.log('criteria: ', criteria);
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, 
                                 user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
                                 YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude, address.city, address.country, picture_id, priority, picture.src
@@ -157,7 +148,6 @@ module.exports = {
                         LEFT JOIN picture on user.user_id = picture.user_id 
                         WHERE (picture.priority = 1 OR picture.priority IS NULL);`;
             const users = await db.conn.queryAsync(sql);
-            console.log(sql);
             if (extended === true) {
                 const tags = await queriesTag.getAllTags();
 
@@ -166,7 +156,6 @@ module.exports = {
 
             return users;
         } catch (err) {
-            console.log(err);
             throw err.message;
         }
     },
@@ -362,7 +351,7 @@ module.exports = {
             }
             return false;
         } catch (err) {
-            console.log("ERROR LIKED", err.message);
+            console.log("User not blacklisted");
             throw err.message;
         }
 
@@ -400,7 +389,7 @@ module.exports = {
             }
             return false;
         } catch (err) {
-            console.log("EERR", err)
+            console.log("User not reported");
             throw err.message;
         }
 
@@ -424,7 +413,7 @@ module.exports = {
             }
             return false;
         } catch (err) {
-            console.log("ERROR LIKED", err.message);
+            console.log("Visit no added");
             throw err.message;
         }
 
@@ -486,7 +475,7 @@ module.exports = {
             const userId = decoded.user_id;
             let sql = `DELETE FROM notification WHERE notification_id = ? AND user_id_to = ?;`;
             sql = mysql.format(sql, [notification_id, userId]);
-            const result = await db.conn.queryAsync(sql);
+            await db.conn.queryAsync(sql);
             
             return true;
         } catch (err) {
@@ -506,7 +495,7 @@ module.exports = {
             const userId = decoded.user_id;
             let sql = `UPDATE notification SET is_read = 1 WHERE notification_id = ? AND user_id_to = ?;`;
             sql = mysql.format(sql, [notification_id, userId]);
-            const result = await db.conn.queryAsync(sql);
+            await db.conn.queryAsync(sql);
             return true;
         } catch (err) {
             throw (errors.errorTypes.BAD_REQUEST);
@@ -567,9 +556,10 @@ module.exports = {
                     html: `Please click on this link to reset your password: http://localhost:3000/new_password/${reset_token}`
                 };
     
-                transporter.sendMail(mailData, function(error, info){
-                    if(error){
-                        return console.log(error);
+                transporter.sendMail(mailData, function(error, info)
+                {
+                    if (error){
+                        return console.log("Email not sent");
                     }
                 });
             }
@@ -588,7 +578,6 @@ module.exports = {
     },
 
     updateUserLocation: async ({address}, context) => {
-        console.log("UPDATING USER LOCATION");
         try {
             const token = context.token;
             if (!token)
@@ -619,10 +608,7 @@ module.exports = {
                     }
                 else
                     return "nok";
-                  
-            
         } catch (err) {
-            console.log("ERR", err);
             throw (errors.errorTypes.BAD_REQUEST);
         }
     },
@@ -645,7 +631,6 @@ module.exports = {
             
             return reported;
         } catch (err) {
-            console.log("catch get user");
             throw new Error(errors.errorTypes.UNAUTHORIZED);
         }
     },
@@ -654,10 +639,7 @@ module.exports = {
         let sql = 'SELECT `popularity` FROM `profil` WHERE user_id = ?';
         sql = mysql.format(sql, [user_id]);
         const result = await db.conn.queryAsync(sql);
-        console.log("RES", result, result[0].popularity);
-
         const pop = result[0].popularity + to_add;
-        console.log("POP", pop)
         if (pop >= 0 && pop <= 100) {
             sql = 'UPDATE `profil` SET `popularity` = ? WHERE `user_id` = ?';
             sql = mysql.format(sql, [pop, user_id]);

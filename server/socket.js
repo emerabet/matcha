@@ -18,8 +18,6 @@ const parseCookies = (cookies) => {
 }
 
 const mySocket = async (io, socket, connectedUsers) => {
-	console.log("CONNECTED TO THE SOCKET");
-
 
 	const getSocketById = (socketId) => {
 		return io.sockets.clients().connected[socketId];
@@ -64,16 +62,10 @@ const mySocket = async (io, socket, connectedUsers) => {
 				throw new Error('Decode failed on login');
 			}
 
-			console.log("ID", token.user_id, userName);
-
 			const context = {
 				token: cookies.get('sessionid')
 			}
 			const contacts = await queryContact.getContacts({}, context);
-			
-
-			console.log("--------------------------");
-			console.log(contacts);
 			
 			// On crée une room au nom de l'id de l'user sur la socket
 			socket.join(token.user_id);
@@ -86,27 +78,20 @@ const mySocket = async (io, socket, connectedUsers) => {
 
 			addContactToRooms(user, token.user_id, contacts);
 			connectedUsers.set(token.user_id, user);
-			console.log("LIST OF CONNECTED USERS", connectedUsers);
-			console.log("FRIENDS", connectedUsers.get(token.user_id).friends);
 			let keys =[ ...connectedUsers.keys() ];
 			io.emit('onlineChanged', JSON.stringify(keys));
 			socket.to(`${token.user_id}`).emit("connected", token.user_id, connectedUsers.get(token.user_id).username);
-			console.log('emitted');
 		} catch (err) {
 			console.log('Error socket on login: ', err);
 		}
-		console.log('********************** END CONNECT *********************************');
 	});
 
 	/*
 	/* **************************** Disconnect Event ****************************
 	*/
 	socket.on('disconnect', async () => {
-		console.log("SOCKET DISCONNECT");
 		const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		const cookies = parseCookies(header);
-		console.log("Header: ", header);
-
 		const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
 		if (token.err) {
 			throw new Error('Decode failed on login');
@@ -116,12 +101,8 @@ const mySocket = async (io, socket, connectedUsers) => {
 		
 		connectedUsers.delete(token.user_id);
 
-		console.log("LIST OF CONNECTED USERS", connectedUsers);
-
 		let keys =[ ...connectedUsers.keys() ];
 		io.emit('onlineChanged', JSON.stringify(keys));
-
-		console.log('********************** END DISCONNECT *********************************');
 	});
 
 	socketChat.newMessage(io, socket, connectedUsers, parseCookies);

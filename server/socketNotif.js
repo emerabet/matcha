@@ -7,20 +7,14 @@ module.exports = {
         socket.on('visit', async (id) => {
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
             const cookies = parseCookies(header);
-            console.log("Header: ", header);
-
             try {
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
                     throw new Error('Decode failed on login');
                 }
 
-                console.log(socket.id + ' visited the profil: ' + id);
-                console.log(connectedUsers);
-        
                 const online = connectedUsers.get(id);
                 if (online !== undefined) {
-                    console.log('transmettre la notif à: ' + online.socketId);
                     const user = connectedUsers.get(token.user_id);
                     io.to(`${online.socketId}`).emit('visited', `${user.username} just visited your profil`);
                 }
@@ -34,18 +28,14 @@ module.exports = {
         socket.on('liked', async (id) => {
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
             const cookies = parseCookies(header);
-            console.log("Header: ", header);
             try {
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
                     throw new Error('Decode failed on liked');
                 }
 
-                console.log(socket.id + ' liked the profil: ' + id);
-
                 const online = connectedUsers.get(id);
                 if (online !== undefined) {
-                    console.log('transmettre la notif à: ' + online.socketId);
                     const user = connectedUsers.get(token.user_id);
                     io.to(`${online.socketId}`).emit('liked', `${user.username} liked your profil`);
                 }
@@ -59,18 +49,15 @@ module.exports = {
         socket.on('unliked', async (id) => {
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
             const cookies = parseCookies(header);
-            console.log("Header: ", header);
+
             try {
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
                     throw new Error('Decode failed on unliked');
                 }
 
-                console.log(socket.id + ' unliked the profil: ' + id);
-
                 const online = connectedUsers.get(id);
                 if (online !== undefined) {
-                    console.log('transmettre la notif à: ' + online.socketId);
                     const user = connectedUsers.get(token.user_id);
                     io.to(`${online.socketId}`).emit('unliked', `${user.username} unliked your profil`);
                 }
