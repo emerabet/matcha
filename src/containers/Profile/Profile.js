@@ -23,6 +23,7 @@ let geolocation;
 class Profile extends Component{
 
     state = {
+        user_id: 0,
         oldLogin: "",
         login: "",
         first_name: "",
@@ -134,6 +135,7 @@ class Profile extends Component{
             const profile_picture = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).src : '/pictures/smoke_by.png';
             const profile_picture_id = await this.haveProfilePicture(response.data.data.getUser.pictures) ? this.haveProfilePicture(response.data.data.getUser.pictures, 1).picture_id : 0;
 
+            console.log("props", this.props)
             this.setState({...this.state,
                 oldLogin: this.props.user.login,
                 login: this.props.user.login,
@@ -153,7 +155,10 @@ class Profile extends Component{
                 pictures: response.data.data.getUser.pictures,
                 profile_picture: profile_picture,
                 profile_picture_id: profile_picture_id,
-                address: this.props.user.address
+                address: this.props.user.address,
+                latitude: parseFloat(this.props.user.latitude),
+                longitude: parseFloat(this.props.user.longitude),
+                user_id: this.props.user_id
             });
                     
         } else {
