@@ -4,6 +4,7 @@ import { Divider, Input, Form, Button } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import publicIp from 'public-ip';
 import { handleBlur } from '../../Tools/Form';
+import { toast } from 'react-toastify';
 
 class Register extends Component{
 
@@ -42,10 +43,12 @@ class Register extends Component{
         }
         
         const result = await axios.post(`/api`, { query: query, variables: { user: user, address: address } });
-        if (!result.data.errors)
+        if (!result.data.errors) {
             this.props.history.push('/login');
+            toast("Your account has been successfully created, please check your emails", {type: toast.TYPE.SUCCESS});
+        }
         else
-            console.log("TOAST", result.data.errors[0].statusCode, result.data.errors[0].message);
+            toast("Something went wrong during your account creation, please try again later", {type: toast.TYPE.ERROR});
     }
 
     handleLogin = () => {
@@ -57,7 +60,6 @@ class Register extends Component{
     }
 
     handleBlur = async (e, data) => {
-        console.log('HANDLE BLUR');
         this.setState(await handleBlur(e, data));
     }
 
@@ -66,12 +68,6 @@ class Register extends Component{
         const passOK = (this.state.password1 === this.state.password2) && passwordRegex.test(this.state.password1);
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const emailOK = emailRegex.test(String(this.state.email).toLowerCase()) && this.state.email !== "";
-
-
-        console.log('**********************');
-        console.log(emailOK);
-        console.log(this.state.emailAlreadyTaken);
-        console.log('**********************');
 
        return (
             <div className='Login_Register__Container'>
