@@ -101,9 +101,12 @@ class Stalk extends Component {
                             checkProfile
                         }
                     `;
-
+        
         const res = await axios.post(`/api`, { query: query, variables: { }}, headers.headers());
-        return res.data.data.checkProfile;
+        if (res)
+            return res.data.data.checkProfile;
+        else
+            return false;
     }
 
     async componentDidMount() {
