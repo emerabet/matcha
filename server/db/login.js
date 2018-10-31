@@ -3,7 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
 const config = require('../config');
-var uniqid = require('uniqid');
+const uniqid = require('uniqid');
+const axios = require('axios');
 
 exports.login = async (req, res) => {
     try {
@@ -85,4 +86,13 @@ exports.checkToken = async (req, res) => {
 
 exports.logout = async (req, res) => {
     res.clearCookie("sessionid").status(200).send({ auth: false, token: null });
+}
+
+exports.locate = async (req, res) => {
+    try {
+        const add = await axios.get(`http://api.ipstack.com/${req.body.ip}?access_key=${config.IPSTACK_KEY}`);
+        res.status(200).send({ latitude: add.data.latitude, longitude: add.data.longitude });
+    } catch (err) {
+        res.status(406).send({});
+    }
 }

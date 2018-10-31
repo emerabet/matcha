@@ -227,7 +227,8 @@ class Profile extends Component{
                 this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
             });
         } else {
-            this.updateUserInfo(ip);
+            const add = await axios.post('/locate', { ip: ip });
+            this.updateUserInfo(ip, add.latitude, add.longitude);
         }
     }
 
