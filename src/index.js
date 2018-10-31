@@ -15,7 +15,7 @@ import 'semantic-ui-css/semantic.min.css';
 import Reload from './Hoc/Reload';
 import SocketProvider from './Hoc/Socket/SocketProvider';
 
-axios.defaults.baseURL = 'http://localhost:4000';
+axios.defaults.baseURL = '/';
 //axios.defaults.baseURL = 'https://localhost:4000';
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {

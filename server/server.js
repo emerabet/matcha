@@ -100,15 +100,16 @@ const https = require('https');
 const ser = https.createServer(options, app);
 const io = require('socket.io')(ser);
 */
-const http = require('http').createServer(app);
+const http = require('http').Server(app);
 const io = require('socket.io')(http);
-app.listen(port, () => console.log("Server started"))
+io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
+http.listen(port, () => console.log("Server started"))
 
 const connectedUsers = new Map();
 
 
-io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
-io.listen(5000); // HTTP (NO NEED THIS LINE FOR HTTPS WORKS ON 4000)
+
+//io.listen(5000); // HTTP (NO NEED THIS LINE FOR HTTPS WORKS ON 4000)
 //app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 route.setRoutes(app);
