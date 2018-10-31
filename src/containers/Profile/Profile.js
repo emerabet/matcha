@@ -211,6 +211,10 @@ class Profile extends Component{
 
         if (result.data.data.updateUser) {
             toast("Profile updated successfully", {type: toast.TYPE.SUCCESS});
+            await this.setState({
+                latitude: latitude,
+                longitude: longitude,
+            });
             await this.props.onUpdateProfile(this.state);
         }
         else
@@ -224,6 +228,7 @@ class Profile extends Component{
         if (this.state.share_location === 1) {
             geolocation = navigator.geolocation;
             geolocation.getCurrentPosition((position) => {
+                console.log(position);
                 this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
             });
         } else {
@@ -464,18 +469,6 @@ class Profile extends Component{
                                 </Form.Field>
                                 }
                             </Form.Group>
-                            <Form.Field style={{display: "none"}}>
-                                <label htmlFor="Latitude">Latitude</label>
-                                <Input type="text" onChange={this.handleChange} name="latitude" value={ this.state.latitude } placeholder="Latitude" required></Input>                   
-                            </Form.Field>
-                            <Form.Field style={{display: "none"}}>
-                                <label htmlFor="Longitude">Longitude</label>
-                                <Input type="text" onChange={this.handleChange} name="longitude" value={ this.state.longitude } placeholder="Longitude" required></Input>                   
-                            </Form.Field>
-                            <Form.Field style={{display: "none"}}>
-                                <label htmlFor="Ip">Ip</label>
-                                <Input type="text" onChange={this.handleChange} name="ip" value={ this.state.ip } placeholder="Ip" required></Input>                   
-                            </Form.Field>
                             <Form.Group>
                                 <Form.Field width={6}>
                                     <label htmlFor="gender">Gender</label>

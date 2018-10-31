@@ -24,7 +24,7 @@ class AdvancedSearch extends Component {
         lastDistanceChecked: 50,
         criteria: null,
         loaded: false,
-        complete: true
+        complete: false
     }
 
     async componentDidMount () {
@@ -104,6 +104,10 @@ class AdvancedSearch extends Component {
     }
 
     scoring = async (users, tags) => {
+
+        if (isNaN(parseFloat(this.props.user.latitude)) || isNaN(parseFloat(this.props.user.longitude)))
+            return ;
+
         const queryTags = `
                         query getTagByUser($id: Int!) {
                             getTagByUser(id: $id){
@@ -117,6 +121,8 @@ class AdvancedSearch extends Component {
         const ranking = await Promise.all(users.map(async member => {
             let dist = 19999;
             if (member.latitude && member.longitude) {
+                console.log(this.props.user.latitude, this.props.user.longitude);
+                console.log('..........');
                 var from = point([parseFloat(this.props.user.latitude), parseFloat(this.props.user.longitude)]);
                 var to = point([member.latitude, member.longitude]);
                 var options = {units: 'kilometers'};
@@ -185,7 +191,7 @@ class AdvancedSearch extends Component {
     }
 
     withinArea = async (dist = 5) => {
-        if (!this.props.user || !this.props.user.latitude || !this.props.user.longitude)
+        if (!this.props.user || !this.props.user.latitude || !this.props.user.longitude || isNaN(parseFloat(this.props.user.latitude)) || isNaN(parseFloat(this.props.user.longitude)))
             return ;
 
         const lat = parseFloat(this.props.user.latitude);
