@@ -82,7 +82,7 @@ class BigChat extends Component {
         await navigator.getUserMedia({
             video: true,
             audio: true
-        }, /*SUCCESS*/ async stream => {
+        }, async stream => {
             p = await new SimplePeer({
                 initiator: initiator,
                 stream: stream,
@@ -96,10 +96,7 @@ class BigChat extends Component {
             if (videoChat !== null) {
                 this.handleOffer(videoChat.data);
             }
-        }, /*ERROR*/ error => {
-            
-        }
-        )
+        }, error => { });
     }
 
     handleStartVideo = (e) => {

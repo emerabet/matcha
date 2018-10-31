@@ -1,7 +1,7 @@
 .message-from-user {
     text-align: right;
     right: 0;
-    background-color: #1976D2;
+    background-color: #4b003d;
     border-radius: 5px;
     padding: 5px;
     color: #fff;
@@ -26,7 +26,7 @@
 .message-from-user_s {
     text-align: right;
     
-    background-color: #1976D2;
+    background-color: #4b003d;
     border-radius: 5px;
     padding: 5px;
     color: #fff;

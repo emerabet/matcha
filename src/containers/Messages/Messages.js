@@ -21,7 +21,7 @@ class Messages extends Component {
             <Aux>
                 
                 <div className={this.props.pos === "main" ? "chat-messages" : "chat-messages_s"} ref={(el) => { this.messagesEnd = el; }}>
-                    <div>>
+                    <div>
                     {
                         this.props.messages.messages.map((message) => {
                         return ( 

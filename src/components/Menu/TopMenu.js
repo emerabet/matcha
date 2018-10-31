@@ -24,7 +24,7 @@ class TopMenu extends Component {
           });
       }
       else if (data.name) {
-        this.setState(...this.state, { activeItem: data.name })
+        this.setState({ activeItem: data.name });
         this.props.history.push(`/${data.name}`);
       }
     }
