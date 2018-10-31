@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
           return cb(null, true);
         } else {
         return cb(null, false);}
-      },
+    },
     async filename(req, file, cb) {
         const token = req.cookies['sessionid'];
         await jwt.verify(token, config.SECRET_KEY, async (err, decoded) => {
@@ -40,9 +40,9 @@ const storage = multer.diskStorage({
                 cb(null, `/tmp/${file_name}`);
         });
     },
-  });
+});
   
-  const up = multer({ storage });
+const up = multer({ storage });
 
 exports.setRoutes = (app) => {
 

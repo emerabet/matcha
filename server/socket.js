@@ -57,7 +57,11 @@ const mySocket = async (io, socket, connectedUsers) => {
 		const cookies = parseCookies(header);
 
 		try {
-			const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
+			const t = cookies.get('sessionid');
+			if (t === undefined)
+				return ;
+			
+			const token = await jwt.verify(t, config.SECRET_KEY);
 			if (token.err) {
 				throw new Error('Decode failed on login');
 			}
@@ -90,20 +94,29 @@ const mySocket = async (io, socket, connectedUsers) => {
 	/* **************************** Disconnect Event ****************************
 	*/
 	socket.on('disconnect', async () => {
-		const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
-		const cookies = parseCookies(header);
-		const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
-		if (token.err) {
-			throw new Error('Decode failed on login');
-		}
+		try {
+			const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
+			const cookies = parseCookies(header);
 
-		if (connectedUsers.get(token.user_id) !== undefined) {
-			socket.to(`${token.user_id}`).emit("disconnected", token.user_id, connectedUsers.get(token.user_id).username);
-			
-			connectedUsers.delete(token.user_id);
+			const t = cookies.get('sessionid');
+			if (t === undefined)
+				return ;
 
-			let keys =[ ...connectedUsers.keys() ];
-			io.emit('onlineChanged', JSON.stringify(keys));
+			const token = await jwt.verify(t, config.SECRET_KEY);
+			if (token.err) {
+				throw new Error('Decode failed on login');
+			}
+
+			if (connectedUsers.get(token.user_id) !== undefined) {
+				socket.to(`${token.user_id}`).emit("disconnected", token.user_id, connectedUsers.get(token.user_id).username);
+				
+				connectedUsers.delete(token.user_id);
+
+				let keys =[ ...connectedUsers.keys() ];
+				io.emit('onlineChanged', JSON.stringify(keys));
+			}
+		} catch (err) {
+			console.log(err);
 		}
 	});
 

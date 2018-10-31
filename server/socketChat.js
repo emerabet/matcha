@@ -8,6 +8,10 @@ module.exports = {
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
+                const t = cookies.get('sessionid');
+			    if (t === undefined)
+                    return ;
+                
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
                     throw new Error('Decode failed on login');
@@ -22,9 +26,6 @@ module.exports = {
             } catch (err) {
                 console.log('Error socket on new message: ', err);
             }
-
-
-
         })
     },
 
@@ -34,6 +35,10 @@ module.exports = {
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
+                const t = cookies.get('sessionid');
+			    if (t === undefined)
+                    return ;
+                
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
                     throw new Error('Decode failed on login');
@@ -57,6 +62,10 @@ module.exports = {
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
+                const t = cookies.get('sessionid');
+			    if (t === undefined)
+                    return ;
+                
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
                     throw new Error('Decode failed on login');
@@ -80,11 +89,14 @@ module.exports = {
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
+                const t = cookies.get('sessionid');
+			    if (t === undefined)
+                    return ;
+
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
                     throw new Error('Decode failed on login');
                 }
-                
 
                 const from = token.user_id;
                 const user = connectedUsers.get(from);
@@ -105,6 +117,10 @@ module.exports = {
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
+                const t = cookies.get('sessionid');
+			    if (t === undefined)
+                    return ;
+                
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
                     throw new Error('Decode failed on login');
