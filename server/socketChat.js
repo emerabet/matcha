@@ -14,7 +14,7 @@ module.exports = {
                 
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    throw new Error('Decode failed on login');
+                    return ;
                 }
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
@@ -41,7 +41,7 @@ module.exports = {
                 
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    throw new Error('Decode failed on login');
+                    return ;
                 }
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
@@ -68,7 +68,7 @@ module.exports = {
                 
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    throw new Error('Decode failed on login');
+                    return ;
                 }
                 const from = token.user_id;
                 const user = connectedUsers.get(token.user_id);
@@ -95,7 +95,7 @@ module.exports = {
 
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    throw new Error('Decode failed on login');
+                    return ;
                 }
 
                 const from = token.user_id;
@@ -123,7 +123,7 @@ module.exports = {
                 
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    throw new Error('Decode failed on login');
+                    return ;
                 }
                 const from = token.user_id;
                 const user = connectedUsers.get(from);

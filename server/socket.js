@@ -63,7 +63,7 @@ const mySocket = async (io, socket, connectedUsers) => {
 			
 			const token = await jwt.verify(t, config.SECRET_KEY);
 			if (token.err) {
-				throw new Error('Decode failed on login');
+				return ;
 			}
 
 			const context = {
@@ -101,10 +101,10 @@ const mySocket = async (io, socket, connectedUsers) => {
 			const t = cookies.get('sessionid');
 			if (t === undefined)
 				return ;
-
+				
 			const token = await jwt.verify(t, config.SECRET_KEY);
 			if (token.err) {
-				throw new Error('Decode failed on login');
+				return ;
 			}
 
 			if (connectedUsers.get(token.user_id) !== undefined) {

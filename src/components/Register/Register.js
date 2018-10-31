@@ -100,7 +100,7 @@ class Register extends Component{
                         <label style={(this.state.password1 !== "" && this.state.password2 !== "") ? (passOK ? styles.ok : styles.nok) : null} htmlFor='password2'>Confirm password</label>
                         <Input type='password' onChange={this.handleChange} name='password2' value={ this.state.password2 } placeholder='Confirm password' required></Input>
                     </Form.Field>
-                    <Button type='submit' primary fluid disabled = {this.state.userNameAlreadyTaken || this.state.emailAlreadyTaken || (!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && emailOK))}>Register</Button>
+                    <Button type='submit' color='pink' fluid disabled = {this.state.userNameAlreadyTaken || this.state.emailAlreadyTaken || (!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && emailOK))}>Register</Button>
                     <Divider horizontal>Or</Divider>
                     <Button secondary fluid onClick={this.handleLogin}>Login</Button>
                 </Form>

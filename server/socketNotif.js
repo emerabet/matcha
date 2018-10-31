@@ -14,7 +14,7 @@ module.exports = {
                 
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    throw new Error('Decode failed on login');
+                    return ;
                 }
 
                 const online = connectedUsers.get(id);
@@ -39,7 +39,7 @@ module.exports = {
 
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    throw new Error('Decode failed on liked');
+                    return ;
                 }
 
                 const online = connectedUsers.get(id);
@@ -65,7 +65,7 @@ module.exports = {
                     
                 const token = await jwt.verify(cookies.get('sessionid'), config.SECRET_KEY);
                 if (token.err) {
-                    throw new Error('Decode failed on unliked');
+                    return ;
                 }
 
                 const online = connectedUsers.get(id);

@@ -63,11 +63,13 @@ class  Login extends Component {
                         <input name="password" type='password' onChange={this.handleChange} placeholder='Password' required />
                     </Form.Field>
 
-                    <Button primary fluid type='submit'>Login</Button>
+                    <Button fluid color='pink' type='submit'>Login</Button>
                     <Divider horizontal>Or</Divider>
                     <Button secondary fluid onClick={this.handleRegister}>Register</Button>
                     <Divider horizontal></Divider>
-                    <a style={{cursor: "pointer"}} onClick={this.resetPassword}>Password forgotten</a>
+                    <Button basic fluid color='pink' onClick={this.resetPassword}>
+                        Password forgotten
+                    </Button>
                 </Form>
             </div>
         );
