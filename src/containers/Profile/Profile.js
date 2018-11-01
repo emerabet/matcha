@@ -228,11 +228,11 @@ class Profile extends Component{
         if (this.state.share_location === 1) {
             geolocation = navigator.geolocation;
             geolocation.getCurrentPosition((position) => {
-                console.log(position);
                 this.updateUserInfo(ip, position.coords.latitude, position.coords.longitude);  
             });
         } else {
-            this.updateUserInfo(ip);
+            const add = await axios.post('/locate', { ip: ip });
+            this.updateUserInfo(ip, add.data.latitude, add.data.longitude);
         }
     }
 

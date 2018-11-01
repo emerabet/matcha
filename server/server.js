@@ -95,16 +95,18 @@ var options = {
 };
 
 /***********HTTPS*********************/
-/*
+
 const https = require('https');
 const ser = https.createServer(options, app);
 const io = require('socket.io')(ser);
-*/
-const http = require('http').Server(app);
+ser.listen(port, () => console.log("server runi"))
+io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
+
+/*const http = require('http').Server(app);
 const io = require('socket.io')(http);
 io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
 http.listen(port, () => console.log("Server started"))
-
+*/
 const connectedUsers = new Map();
 
 
