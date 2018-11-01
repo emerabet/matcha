@@ -99,7 +99,7 @@ var options = {
 const https = require('https');
 const ser = https.createServer(options, app);
 const io = require('socket.io')(ser);
-ser.listen(port, () => console.log("server runi"))
+ser.listen(port, () => console.log("server running"))
 io.on('connection', (socket) => mySocket(io, socket, connectedUsers));
 
 /*const http = require('http').Server(app);

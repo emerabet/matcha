@@ -85,7 +85,7 @@ module.exports = {
 
     initiateVideoChat : (io, socket, connectedUsers, parseCookies) => {
         socket.on('initiateVideoChat', async ({to, data}) => {
-
+            console.log("requesting video chat", data)
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
@@ -103,8 +103,12 @@ module.exports = {
                 if (user === undefined)
                     return ;
                 const contact = user.friends.get(to);
-                if (contact !== undefined)
+                if (contact !== undefined) {
+                    console.log("shoudl be ok", data);
                     io.to(contact.socketId).emit('initiateVideoChat', {from :from, data: data});
+                } else {
+                    console.log("contact not in the list")
+                }
             } catch (err) {
                 console.log('Error socket on new message: ', err);
             }
@@ -113,7 +117,7 @@ module.exports = {
 
     acceptVideoChat : (io, socket, connectedUsers, parseCookies) => {
         socket.on('acceptVideoChat', async ({to, data}) => {
-
+            console.log("accepting video chat")
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
