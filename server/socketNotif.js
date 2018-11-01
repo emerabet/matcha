@@ -23,7 +23,7 @@ module.exports = {
                     io.to(`${online.socketId}`).emit('visited', `${user.username} just visited your profil`);
                 }
             } catch (err) {
-                console.log('Error socket on visited: ', err);
+                console.log('Error socket on visited: ');
             }
         });
     },
@@ -48,7 +48,7 @@ module.exports = {
                     io.to(`${online.socketId}`).emit('liked', `${user.username} liked your profil`);
                 }
             } catch (err) {
-                console.log('Error socket on liked: ', err);
+                console.log('Error socket on liked: ');
             }
         });
     },
@@ -74,7 +74,7 @@ module.exports = {
                     io.to(`${online.socketId}`).emit('unliked', `${user.username} unliked your profil`);
                 }
             } catch (err) {
-                console.log('Error socket on unliked: ', err);
+                console.log('Error socket on unliked: ');
             }
         });
     }

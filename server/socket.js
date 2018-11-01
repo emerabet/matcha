@@ -86,7 +86,7 @@ const mySocket = async (io, socket, connectedUsers) => {
 			io.emit('onlineChanged', JSON.stringify(keys));
 			socket.to(`${token.user_id}`).emit("connected", token.user_id, connectedUsers.get(token.user_id).username);
 		} catch (err) {
-			console.log('Error socket on login: ', err);
+			console.log('Error socket on login: ');
 		}
 	});
 
@@ -116,7 +116,7 @@ const mySocket = async (io, socket, connectedUsers) => {
 				io.emit('onlineChanged', JSON.stringify(keys));
 			}
 		} catch (err) {
-			console.log(err);
+			console.log("token expired");
 		}
 	});
 

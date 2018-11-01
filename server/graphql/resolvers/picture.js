@@ -53,6 +53,7 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const user_id = decoded.user_id;
+            console.log("trying to remove", `${appRoot}/build${picture_src}`);
             if (await fs.existsSync(`${appRoot}/build${picture_src}`)){
                 await fs.unlink(`${appRoot}/build${picture_src}`, (err) => {
                     if (err) throw err;

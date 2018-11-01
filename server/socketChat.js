@@ -24,7 +24,7 @@ module.exports = {
                 if (contact !== undefined)
                     io.to(contact.socketId).emit('newMessage', {chat_id: chat_id, user_id_sender: from, login: login, message: message, message_id: messageId, date: `${Date.now()}`});
             } catch (err) {
-                console.log('Error socket on new message: ', err);
+                console.log('Error socket on new message: ');
             }
         })
     },
@@ -51,7 +51,7 @@ module.exports = {
                 if (contact !== undefined)
                     io.to(contact.socketId).emit('isTyping', from);
             } catch (err) {
-                console.log('Error socket on new message: ', err);
+                console.log('Error socket on new message: ');
             }
         })
     },
@@ -78,7 +78,7 @@ module.exports = {
                 if (contact !== undefined)
                     io.to(contact.socketId).emit('stopTyping', from);
             } catch (err) {
-                console.log('Error socket on new message: ', err);
+                console.log('Error socket on new message: ');
             }
         })
     },
@@ -110,7 +110,7 @@ module.exports = {
                     console.log("contact not in the list")
                 }
             } catch (err) {
-                console.log('Error socket on new message: ', err);
+                console.log('Error socket on new message: ';
             }
         })
     },
@@ -137,7 +137,7 @@ module.exports = {
                 if (contact !== undefined)
                     io.to(contact.socketId).emit('acceptVideoChat', {from :from, data: data});
             } catch (err) {
-                console.log('Error socket on new message: ', err);
+                console.log('Error socket on new message: ');
             }
         })
     }
