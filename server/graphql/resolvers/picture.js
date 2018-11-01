@@ -53,8 +53,8 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const user_id = decoded.user_id;
-            if (await fs.existsSync(`${appRoot}/public${picture_src}`)){
-                await fs.unlink(`${appRoot}/public${picture_src}`, (err) => {
+            if (await fs.existsSync(`${appRoot}/build${picture_src}`)){
+                await fs.unlink(`${appRoot}/build${picture_src}`, (err) => {
                     if (err) throw err;
                   });
             }

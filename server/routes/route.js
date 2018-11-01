@@ -7,7 +7,7 @@ var fs = require('fs');
 var uniqid = require('uniqid');
 
 const storage = multer.diskStorage({
-    destination: './public/pictures',
+    destination: './build/pictures',
     fileFilter: (req, file, cb) => {
         const picture_types = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
         let type = file.mimetype;
@@ -22,11 +22,11 @@ const storage = multer.diskStorage({
     async filename(req, file, cb) {
         const token = req.cookies['sessionid'];
         await jwt.verify(token, config.SECRET_KEY, async (err, decoded) => {
-            if (await !fs.existsSync(`${appRoot}/public/pictures/${decoded.user_id}/`)){
-                await fs.mkdirSync(`${appRoot}/public/pictures/${decoded.user_id}/`);
+            if (await !fs.existsSync(`${appRoot}/build/pictures/${decoded.user_id}/`)){
+                await fs.mkdirSync(`${appRoot}/build/pictures/${decoded.user_id}/`);
             }
-            if (await !fs.existsSync(`${appRoot}/public/pictures/tmp/`)){
-                await fs.mkdirSync(`${appRoot}/public/pictures/tmp/`);
+            if (await !fs.existsSync(`${appRoot}/build/pictures/tmp/`)){
+                await fs.mkdirSync(`${appRoot}/build/pictures/tmp/`);
             }
             let type = file.mimetype;
             let i = type.lastIndexOf('/') + 1;

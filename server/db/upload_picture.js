@@ -5,14 +5,17 @@ const sharp = require('sharp');
 exports.upload = async (req, res) => {
     let insertId = -1;
     try {
-        if (await fs.existsSync(`${appRoot}/public/pictures/${req.body.src}`)){
-            await sharp(`public/pictures/tmp/${req.body.file_name}`)
+        if (await fs.existsSync(`${appRoot}/build/pictures/${req.body.src}`)){
+            await sharp(`build/pictures/tmp/${req.body.file_name}`)
             .resize(450, 450)
-            .toFile(`public/pictures/${req.body.user_id}/${req.body.file_name}`)
-            if (await fs.existsSync(`${appRoot}/public/pictures/tmp/${req.body.file_name}`)){
-                await fs.unlink(`${appRoot}/public/pictures/tmp/${req.body.file_name}`, (err) => {
-                    if (err) throw err;
-                  });
+            .toFile(`build/pictures/${req.body.user_id}/${req.body.file_name}`);
+            if ( await fs.existsSync(`${appRoot}/build/pictures/tmp/${req.body.file_name}`))
+            {
+                await fs.unlink(`${appRoot}/build/pictures/tmp/${req.body.file_name}`, (err) => {
+                    if (err) {
+                        throw err;
+                    };
+                });
             }
             const r = await queriesPicture.addPicture({token: req.body.token, picture_id: req.body.picture_id, url: `/pictures/${req.body.user_id}/${req.body.file_name}`, type: req.body.type, delete_url: req.body.src});
             insertId = r.insertId;
