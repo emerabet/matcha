@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Image } from 'semantic-ui-react';
+import { Modal, Image, Button, Icon } from 'semantic-ui-react';
 import * as styles  from './Styles';
 import axios from 'axios';
 import * as headers from '../../Tools/Header';
@@ -54,26 +54,23 @@ class ProfilePicture extends Component {
             {` ${this.props.old_login} (${ this.props.popularity } pts)`} </span>
                                 <label style={{display: "flex", flexDirection: "column", padding: "10px"}}>
 
-            <Modal trigger={
-                                    <Image name="profile_picture" style={{marginBottom: "5px"}} src={this.props.picture_src} size='medium' rounded />
-                                        }>
-                            <Modal.Header>Display picture</Modal.Header>
-                                <Modal.Content image style={{display: "flex", flexDirection: "column"}}>
-                                    <Image wrapped size='big' src={this.props.picture_src} rounded/>
-                                    <Modal.Description>            
-                                        <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="profile_picture" className="inputfile" id="upload_other_picture" />
-                                        <label style={{width: "100%"}}  className="ui huge gray button" htmlFor="upload_other_picture">
-                                            Upload an other picture
-                                        </label>
-                                        {   
-                                            this.props.picture_src !== "/pictures/smoke_by.png"
+            <Modal centered basic size='small' trigger= { <Image name="profile_picture" style={{marginBottom: "5px"}} src={this.props.picture_src} size='medium' rounded /> }>
+                            <Modal.Content image>
+                                <Image wrapped size='medium' src={this.props.picture_src} rounded/>
+                            </Modal.Content>
+                            <Modal.Actions>
+                            {
+                                    this.props.picture_src !== "/pictures/smoke_by.png"
                                         &&
-                                            <label style={{width: "100%"}} className="ui huge red button" onClick={this.handleDelete} htmlFor="delete_picture">
-                                                Delete this picture
-                                            </label>
-                                        }
-                                    </Modal.Description>
-                                </Modal.Content>
+                                    <Button basic color='red' inverted onClick={this.handleDelete}>
+                                        <Icon name='remove' /> Delete
+                                    </Button>
+                            }
+                            <input type="file" accept=".jpg,.jpeg,.png,.gif,.bmp" style={styles.hiddenInput} onChange={this.handleUpload} name="profile_picture" className="inputfile" id="upload_other_picture" />
+                                <label className="ui green inverted button" htmlFor="upload_other_picture">
+                                <Icon name='checkmark' /> Upload
+                            </label>
+                            </Modal.Actions>
             </Modal> 
                                 </label>                            
                             </div>
