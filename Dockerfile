@@ -13,7 +13,7 @@ COPY package*.json ./
 # Bundle app source
 COPY . .
 
-ENV IP="192.168.99.100"
+#ENV IP="192.168.99.100"
 
 # Entrypoint script
 # RUN cp docker-entrypoint.sh /usr/local/bin/ && \
@@ -22,7 +22,7 @@ RUN npm run build
 
 #EXPOSE 3000
 EXPOSE 4000
-EXPOSE 5000
+#EXPOSE 5000
 
 # ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
