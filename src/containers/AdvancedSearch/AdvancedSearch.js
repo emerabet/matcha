@@ -121,8 +121,6 @@ class AdvancedSearch extends Component {
         const ranking = await Promise.all(users.map(async member => {
             let dist = 19999;
             if (member.latitude && member.longitude) {
-                console.log(this.props.user.latitude, this.props.user.longitude);
-                console.log('..........');
                 var from = point([parseFloat(this.props.user.latitude), parseFloat(this.props.user.longitude)]);
                 var to = point([member.latitude, member.longitude]);
                 var options = {units: 'kilometers'};
