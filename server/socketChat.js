@@ -107,17 +107,17 @@ module.exports = {
                     console.log("shoudl be ok", data);
                     io.to(contact.socketId).emit('initiateVideoChat', {from :from, data: data});
                 } else {
-                    console.log("contact not in the list")
+                    console.log("contact not in the list");
                 }
             } catch (err) {
-                console.log('Error socket on new message: ';
+                console.log('Error socket on new message: ');
             }
         })
     },
 
     acceptVideoChat : (io, socket, connectedUsers, parseCookies) => {
         socket.on('acceptVideoChat', async ({to, data}) => {
-            console.log("accepting video chat")
+            console.log("accepting video chat");
             const header = socket.handshake.headers.cookie || socket.request.headers.cookie;
 		    const cookies = parseCookies(header);
             try {
