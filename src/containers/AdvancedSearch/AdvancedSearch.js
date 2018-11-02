@@ -50,8 +50,8 @@ class AdvancedSearch extends Component {
 
     loadData = async () => {
         const query = `
-                        query getUsers($extended: Boolean, $orientation: String) {
-                            getUsers(extended:$extended, orientation:$orientation){
+                        query getUsers($extended: Boolean, $orientation: String, $gender: String) {
+                            getUsers(extended:$extended, orientation:$orientation, gender: $gender){
                                 user_id,
                                 login,
                                 first_name,
@@ -77,7 +77,7 @@ class AdvancedSearch extends Component {
                         }
                     `;
 
-        const users = await axios.post(`/api`, { query: query, variables: { extended: true, orientation: localStorage.getItem('orientation') } }, headers.headers());
+        const users = await axios.post(`/api`, { query: query, variables: { extended: true, orientation: localStorage.getItem('orientation'), gender: localStorage.getItem('gender') } }, headers.headers());
 
         if (users === undefined || users === null)
             return ;

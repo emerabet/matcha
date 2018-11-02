@@ -122,7 +122,7 @@ module.exports = {
         }
     },
 
-    getUsers: async ({ extended, orientation }, context) => {
+    getUsers: async ({ extended, orientation, gender = "" }, context) => {
         try {
             const token = context.token;
             if (!token)
@@ -139,6 +139,18 @@ module.exports = {
                 default: break;
             }
 
+            let criteriab = "";
+            if (gender !== "") {
+                switch(gender.toLowerCase()) {
+                    case 'female': criteria = `AND (profil.orientation = 'Female' OR profil.orientation = 'female')`
+                        break;
+                    case 'male': criteria = `AND (profil.orientation = 'Male' OR profil.orientation = 'male')`
+                        break;
+                    default: break;
+                }
+                criteria = `${criteria} ${criteriab}`;
+            }
+
             let sql = `SELECT user.user_id, user.login, user.email, user.last_name, user.first_name, user.share_location, 
                                 user.last_visit, profil.gender, profil.orientation, profil.bio, profil.birthdate, 
                                 YEAR(NOW()) - YEAR(profil.birthdate) as age, profil.popularity, address.latitude, address.longitude, address.city, address.country, picture_id, priority, picture.src
@@ -147,6 +159,7 @@ module.exports = {
                         LEFT JOIN profil on user.user_id = profil.user_id ${criteria}
                         LEFT JOIN picture on user.user_id = picture.user_id 
                         WHERE (picture.priority = 1 OR picture.priority IS NULL);`;
+            console.log(sql);
             const users = await db.conn.queryAsync(sql);
 
             if (extended === true) {
