@@ -17,6 +17,7 @@ class Messages extends Component {
     }
 
     render() {
+        console.log("MESS", this.props.messages.messages)
         return (
             <Aux>
                 

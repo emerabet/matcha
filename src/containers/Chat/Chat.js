@@ -73,7 +73,7 @@ class Chat extends Component {
                                 this.state.contactIsTyping &&
                             <p> is typing ... </p>}
                             <TextArea onChange={this.handleChange} value={this.state.message} name="message" type="textarea" style={{ borderTopLeftRadius: "5px", borderTopRightRadius: "5px", borderBottomLeftRadius: "0px", borderBottomRightRadius: "0px"}} autoHeight placeholder='Write your message here...' required />
-                            <Button style={{borderTopLeftRadius: "0px", borderTopRightRadius: "0px", width: "100%"}} type='submit' >Send</Button>
+                            <Button disabled={this.state.message === ""} style={{borderTopLeftRadius: "0px", borderTopRightRadius: "0px", width: "100%"}} type='submit' >Send</Button>
 
                         </Form>
                     </Aux>

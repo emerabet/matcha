@@ -18,7 +18,7 @@ COPY . .
 # Entrypoint script
 # RUN cp docker-entrypoint.sh /usr/local/bin/ && \
 #    chmod +x /usr/local/bin/docker-entrypoint.sh
-RUN npm run build
+# RUN npm run build
 
 #EXPOSE 3000
 EXPOSE 4000

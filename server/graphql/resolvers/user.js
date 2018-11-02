@@ -307,6 +307,9 @@ module.exports = {
                     sql = mysql.format(sql, [decoded.user_id, user_id_to_like]);
                     result = await db.conn.queryAsync(sql);
                     ret = await module.exports.addNotification({type: "unlike", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                    sql = 'DELETE FROM `chat` WHERE (`user_id1` = ? AND `user_id2` = ?) OR (`user_id1` = ? AND `user_id2` = ?);';
+                        sql = mysql.format(sql, [user_id_to_like, decoded.user_id, decoded.user_id, user_id_to_like]);
+                        await db.conn.queryAsync(sql);
                     if (ret === false) {
                         module.exports.updateScore(user_id_to_like, -2);
                         return 4; // unlike but blocked
@@ -322,6 +325,9 @@ module.exports = {
                         result = await db.conn.queryAsync(sql);
                         
                         module.exports.addNotification({type: "unmatch", user_id_from: decoded.user_id, user_id_to: user_id_to_like});
+                        sql = 'DELETE FROM `chat` WHERE (`user_id1` = ? AND `user_id2` = ?) OR (`user_id1` = ? AND `user_id2` = ?);';
+                        sql = mysql.format(sql, [user_id_to_like, decoded.user_id, decoded.user_id, user_id_to_like]);
+                        await db.conn.queryAsync(sql);
                     }
                     module.exports.updateScore(user_id_to_like, -2);
                     return 2; // unlike
@@ -354,6 +360,8 @@ module.exports = {
                     result = await db.conn.queryAsync(sql);
                     ret = await module.exports.addNotification({type: "black_list", user_id_from: decoded.user_id, user_id_to: user_id_to_black_list});
                     module.exports.updateScore(user_id_to_black_list, -2);
+                        sql = 'DELETE FROM `chat` WHERE (`user_id1` = ? AND `user_id2` = ?) OR (`user_id1` = ? AND `user_id2` = ?);';
+                        sql = mysql.format(sql, [user_id_to_black_list, decoded.user_id, decoded.user_id, user_id_to_black_list]);
                     return ret;
                 } else {
                     sql = 'DELETE FROM `black_listed` WHERE `user_id_blocked` = ? AND `user_id_blocker` = ?;';
@@ -671,7 +679,7 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             
-            let sql = 'SELECT COUNT(`user_id`) as nb FROM `profil` WHERE profil.user_id = ? AND profil.gender IS NOT NULL AND profil.birthdate IS NOT NULL AND profil.bio IS NOT NULL AND (SELECT COUNT(picture.user_id) FROM `picture` WHERE picture.user_id = ?) >= 1;'
+            let sql = 'SELECT COUNT(`user_id`) as nb FROM `profil` WHERE profil.user_id = ? AND profil.gender IS NOT NULL AND profil.birthdate IS NOT NULL AND profil.bio IS NOT NULL AND (SELECT COUNT(picture.user_id) FROM `picture` WHERE picture.user_id = ? AND picture.priority = 1) >= 1;'
             sql = mysql.format(sql, [decoded.user_id, decoded.user_id]);
             const result = await db.conn.queryAsync(sql);
             if (result[0].nb === 1)
