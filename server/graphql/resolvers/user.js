@@ -68,8 +68,8 @@ module.exports = {
                 from: config.USER,
                 to: user.email,
                 subject: 'Your Matcha\'s account has been successfully created',
-                text: `Please click on this link to activate your account: http://localhost:3000/verif/${register_token}`,
-                html: `Please click on this link to activate your account: http://localhost:3000/verif/${register_token}`
+                text: `Please click on this link to activate your account: https://10.11.3.1:4000/verif/${register_token}`,
+                html: `Please click on this link to activate your account: https://10.11.3.1:4000/verif/${register_token}`
             };
 
             transporter.sendMail(mailData, function(error, info){
@@ -574,8 +574,8 @@ module.exports = {
                     from: config.USER,
                     to: result[0].email,
                     subject: 'Matcha\'s password reset',
-                    text: `Please click on this link to reset your password: http://localhost:3000/new_password/${reset_token}`,
-                    html: `Please click on this link to reset your password: http://localhost:3000/new_password/${reset_token}`
+                    text: `Please click on this link to reset your password: https://10.11.3.1:4000/new_password/${reset_token}`,
+                    html: `Please click on this link to reset your password: https://10.11.3.1:4000/new_password/${reset_token}`
                 };
     
                 transporter.sendMail(mailData, function(error, info)

@@ -151,7 +151,7 @@ class AdvancedSearch extends Component {
         const paged = this.paginate(sorted, this.state.itemsPerPage, this.state.activePage);
         
         await this.setState({ 
-            users : users, 
+            users : sorted, 
             filteredUsers : sorted,
             pagedUsers: paged,
             tags: tags,
