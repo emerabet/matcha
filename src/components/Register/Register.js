@@ -102,7 +102,7 @@ class Register extends Component{
                     </Form.Field>
                     <Button type='submit' color='pink' fluid disabled = {this.state.userNameAlreadyTaken || this.state.emailAlreadyTaken || (!((passOK || (this.state.password1 === "" && this.state.password2 === "")) && emailOK))}>Register</Button>
                     <Divider horizontal>Or</Divider>
-                    <Button secondary fluid onClick={this.handleLogin}>Login</Button>
+                    <Button type="button" secondary fluid onClick={this.handleLogin}>Login</Button>
                 </Form>
             </div>
         )

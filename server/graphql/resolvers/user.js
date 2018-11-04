@@ -48,7 +48,7 @@ const mergeResults = (parent, child, property, { parentCmp, childCmp }) => {
 }
 
 module.exports = {
-    addUser: async ({ user, address }) => {
+    addUser: async ({ user, address }, context) => {
         const register_token = uniqid();
         const hash = bcrypt.hashSync(user.password, 10);
         let sql = "INSERT INTO `user` (`user_id`, `login`, `email`, `last_name`, `first_name`, `password`, `register_token`, `reset_token`, `last_visit`, `creation_date`, `role`, `share_location`) VALUES (NULL, ?, ?, ?, ?, ?, ?, 'asdad', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '1', '0');"; 
@@ -68,8 +68,8 @@ module.exports = {
                 from: config.USER,
                 to: user.email,
                 subject: 'Your Matcha\'s account has been successfully created',
-                text: `Please click on this link to activate your account: https://${config.IP_POST}:4000/verif/${register_token}`,
-                html: `Please click on this link to activate your account: https://${config.IP_POST}:4000/verif/${register_token}`
+                text: `Please click on this link to activate your account: https://${context.hostname}:4000/verif/${register_token}`,
+                html: `Please click on this link to activate your account: https://${context.hostname}:4000/verif/${register_token}`
             };
 
             transporter.sendMail(mailData, function(error, info){
@@ -559,7 +559,7 @@ module.exports = {
         else
             return false;
     },
-    resetPassword: async ({login}) => {
+    resetPassword: async ({login}, context) => {
         const reset_token = uniqid();
         let sql = 'UPDATE `user` SET `reset_token` =  ? WHERE `login` = ?';
         sql = mysql.format(sql, [reset_token, login]);
@@ -573,8 +573,8 @@ module.exports = {
                     from: config.USER,
                     to: result[0].email,
                     subject: 'Matcha\'s password reset',
-                    text: `Please click on this link to reset your password: https://${config.IP_POST}:4000/new_password/${reset_token}`,
-                    html: `Please click on this link to reset your password: https://${config.IP_POST}:4000/new_password/${reset_token}`
+                    text: `Please click on this link to reset your password: https://${context.hostname}:4000/new_password/${reset_token}`,
+                    html: `Please click on this link to reset your password: https://${context.hostname}:4000/new_password/${reset_token}`
                 };
     
                 transporter.sendMail(mailData, function(error, info)
