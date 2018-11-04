@@ -47,7 +47,7 @@ class  Admin extends Component {
         return (<div>
            {this.state.admin
             ?
-            <div className='Login_Register__Container'>
+            <div>
                 <h2> Reported users </h2>
                 <Table celled>
                     <Table.Header>

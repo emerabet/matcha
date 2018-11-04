@@ -17,7 +17,6 @@ class Messages extends Component {
     }
 
     render() {
-        console.log("MESS", this.props.messages.messages)
         return (
             <Aux>
                 
@@ -26,7 +25,8 @@ class Messages extends Component {
                     {
                         this.props.messages.messages.map((message) => {
                         return ( 
-                                <Message key={message.message_id} pos={this.props.pos} type={this.props.contact_id === message.user_id_sender ? "message-from-contact" : "message-from-user"} msg={message.message} from={this.props.contact_id === message.user_id_sender ? message.login : "Me"} date={message.date}/>
+
+                                <Aux key={message.message_id}>{ message.message_id !== null && <Message key={message.message_id} pos={this.props.pos} type={this.props.contact_id === message.user_id_sender ? "message-from-contact" : "message-from-user"} msg={message.message} from={this.props.contact_id === message.user_id_sender ? message.login : "Me"} date={message.date}/> }</Aux>
                         )
                     })
                     }

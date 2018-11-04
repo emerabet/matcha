@@ -50,7 +50,6 @@ class BigChat extends Component {
     // STARTING VIDEO CHAT
     bindEvents = (p) => {
         p.on('signal', data => {
-            console.log("SIGNAL")
             const initiator = this.props.videoChats.length > 0 && this.props.videoChats.filter(video => {
                 return video.from === this.state.video_chat_contact_id && video.offer === "initiated";
             }).length === 1;
