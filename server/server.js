@@ -79,7 +79,8 @@ app.use('/api', mdw, express_graphql( req =>( {
     schema: schemas.registerSchema,
     rootValue: root,
     context: {
-        token: req.cookies['sessionid']
+        token: req.cookies['sessionid'],
+        hostname: req.hostname
     },
     graphiql: true,    
     formatError: (err) => {

@@ -65,9 +65,9 @@ class  Login extends Component {
 
                     <Button fluid color='pink' type='submit'>Login</Button>
                     <Divider horizontal>Or</Divider>
-                    <Button secondary fluid onClick={this.handleRegister}>Register</Button>
+                    <Button type="button" secondary fluid onClick={this.handleRegister}>Register</Button>
                     <Divider horizontal></Divider>
-                    <Button basic fluid color='pink' onClick={this.resetPassword}>
+                    <Button type="button" basic fluid color='pink' onClick={this.resetPassword}>
                         Password forgotten
                     </Button>
                 </Form>
