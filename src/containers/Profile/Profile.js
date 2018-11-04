@@ -66,7 +66,9 @@ class Profile extends Component{
             this.setState({ [e.target.name]: e.target.value });
     }
 
-    haveProfilePicture = (pictures, get = 0) => {
+    haveProfilePicture = (pictures = [], get = 0) => {
+        if (!pictures && pictures === undefined)
+            return false;
         if (pictures.length > 0) {
             const profilePic = pictures.filter(pic => Number.parseInt(pic.priority, 10) === 1);
             if (profilePic.length > 0)

@@ -20,6 +20,7 @@ const storage = multer.diskStorage({
         return cb(null, false);}
     },
     async filename(req, file, cb) {
+        try {
         const token = req.cookies['sessionid'];
         await jwt.verify(token, config.SECRET_KEY, async (err, decoded) => {
             if (await !fs.existsSync(`${appRoot}/build/pictures/${decoded.user_id}/`)){
@@ -39,6 +40,7 @@ const storage = multer.diskStorage({
                 req.body.token = token;
                 cb(null, `/tmp/${file_name}`);
         });
+    } catch (err) { console.log("not uploaded")}
     },
 });
   

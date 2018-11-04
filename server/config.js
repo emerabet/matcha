@@ -1,4 +1,5 @@
 module.exports = Object.freeze({
+    IP_POST: "10.11.5.1",
     DB_IP: "192.168.99.100",
     DB_PORT: "3308",
     DB_NAME: 'db_matcha',

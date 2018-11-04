@@ -68,8 +68,8 @@ module.exports = {
                 from: config.USER,
                 to: user.email,
                 subject: 'Your Matcha\'s account has been successfully created',
-                text: `Please click on this link to activate your account: https://10.11.3.1:4000/verif/${register_token}`,
-                html: `Please click on this link to activate your account: https://10.11.3.1:4000/verif/${register_token}`
+                text: `Please click on this link to activate your account: https://${config.IP_POST}:4000/verif/${register_token}`,
+                html: `Please click on this link to activate your account: https://${config.IP_POST}:4000/verif/${register_token}`
             };
 
             transporter.sendMail(mailData, function(error, info){
@@ -159,7 +159,6 @@ module.exports = {
                         LEFT JOIN profil on user.user_id = profil.user_id ${criteria}
                         LEFT JOIN picture on user.user_id = picture.user_id 
                         WHERE (picture.priority = 1 OR picture.priority IS NULL);`;
-            console.log(sql);
             const users = await db.conn.queryAsync(sql);
 
             if (extended === true) {
@@ -574,8 +573,8 @@ module.exports = {
                     from: config.USER,
                     to: result[0].email,
                     subject: 'Matcha\'s password reset',
-                    text: `Please click on this link to reset your password: https://10.11.3.1:4000/new_password/${reset_token}`,
-                    html: `Please click on this link to reset your password: https://10.11.3.1:4000/new_password/${reset_token}`
+                    text: `Please click on this link to reset your password: https://${config.IP_POST}:4000/new_password/${reset_token}`,
+                    html: `Please click on this link to reset your password: https://${config.IP_POST}:4000/new_password/${reset_token}`
                 };
     
                 transporter.sendMail(mailData, function(error, info)

@@ -53,16 +53,20 @@ module.exports = {
             if (decoded.err)
                 throw new Error(errors.errorTypes.UNAUTHORIZED);
             const user_id = decoded.user_id;
-            console.log("trying to remove", `${appRoot}/build${picture_src}`);
+            
+            
+            let sql = "DELETE FROM `picture` WHERE `user_id` = ? AND `picture_id` = ?";
+            sql = mysql.format(sql, [user_id, picture_id]);
+            const r = await db.conn.queryAsync(sql);
+            console.log(r)
+            if (r && r.affectedRows === 1){
+                console.log("trying to remove", `${appRoot}/build${picture_src}`);
             if (await fs.existsSync(`${appRoot}/build${picture_src}`)){
                 await fs.unlink(`${appRoot}/build${picture_src}`, (err) => {
                     if (err) throw err;
                   });
             }
-            
-            let sql = "DELETE FROM `picture` WHERE `user_id` = ? AND `picture_id` = ?";
-            sql = mysql.format(sql, [user_id, picture_id]);
-            await db.conn.queryAsync(sql);
+            }
             return module.exports.getPicture({token: token});
         } catch (err) {
             throw (errors.errorTypes.BAD_REQUEST);
