@@ -161,7 +161,6 @@ class AdvancedSearch extends Component {
     }
 
     handleFilter = async (filters) => {
-
         if (filters.distance !== this.state.lastDistanceChecked) {
             await this.withinArea(filters.distance);
         }
@@ -192,6 +191,8 @@ class AdvancedSearch extends Component {
         if (!this.props.user || !this.props.user.latitude || !this.props.user.longitude || isNaN(parseFloat(this.props.user.latitude)) || isNaN(parseFloat(this.props.user.longitude)))
             return ;
 
+        if (dist === this.state.lastDistanceChecked)
+            return ;
         const lat = parseFloat(this.props.user.latitude);
         const lng = parseFloat(this.props.user.longitude);
         const pt = point([lat, lng]);
@@ -201,6 +202,7 @@ class AdvancedSearch extends Component {
         const newUsers = JSON.parse(JSON.stringify(this.state.users));
 
         newUsers.forEach(element => {
+            element.inArea = false;
             if (element.latitude && element.longitude) {
                 const pts = points([[element.latitude, element.longitude]]);
                 const searchWithin = polygon(buffered.geometry.coordinates);
@@ -208,7 +210,6 @@ class AdvancedSearch extends Component {
 
                 if (ptsWithin.features.length > 0) {
                     element.inArea = true;
-
                     // Check distance whith more precision
                     if (element.disance === undefined) {
                         var from = point([lat, lng]);
@@ -246,7 +247,6 @@ class AdvancedSearch extends Component {
                 return b.popularity-a.popularity
             });
         }
-
 
         const paged = this.paginate(filtered, this.state.itemsPerPage, 1);
 

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Grid, Image, Button, Icon, Segment, Card } from 'semantic-ui-react';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { point } from '@turf/turf';
+import distance from '@turf/distance';
 import * as headers from '../../Tools/Header';
 import Activity from '../../components/Activity/Activity';
 import withSocket from '../../Hoc/Socket/SocketHOC';
@@ -143,6 +145,13 @@ class Stalk extends Component {
                 colorLike =  isLike === true ? 'red' : 'grey';
                 colorBlacklist = isReported === true ? 'black' : 'grey';
                 colorReport = isReport === true ? 'red' : 'grey';
+            }
+
+           if (isNaN(parseFloat(this.props.myuser.latitude)) === false || isNaN(parseFloat(this.props.myuser.longitude)) === false ) {
+                const from = point([this.props.myuser.latitude, this.props.myuser.longitude]);
+                const to = point([user.data.data.getUser.latitude, user.data.data.getUser.longitude]);
+                const options = {units: 'kilometers'};
+                user.data.data.getUser.distance = distance(from, to, options);
             }
 
             this.setState({
