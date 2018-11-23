@@ -1,9 +1,5 @@
-# pictures of the project
+# Screenshots
 
-## register
-![Alt text](/pictures/2.png?raw=true "register")
-
-## login
 ![Alt text](/pictures/1.png?raw=true "login")
 
 ## profile
