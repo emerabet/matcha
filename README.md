@@ -9,8 +9,6 @@
 
 ![Alt text](/pictures/1.png?raw=true "login")
 
-![Alt text](/pictures/3.png?raw=true "profile")
-
 ![Alt text](/pictures/7.png?raw=true "suggestion")
 
 ![Alt text](/pictures/6.png?raw=true "search")
