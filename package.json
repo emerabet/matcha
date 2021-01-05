@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@turf/turf": "^5.1.6",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bcrypt": "^3.0.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.2",
