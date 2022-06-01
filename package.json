@@ -41,7 +41,7 @@
     "resize-image": "^0.1.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.82.5",
-    "sharp": "^0.21.0",
+    "sharp": "^0.30.5",
     "shell": "^0.5.0",
     "simple-peer": "^9.1.2",
     "socket.io": "^2.1.1",
